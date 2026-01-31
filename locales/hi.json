@@ -1,0 +1,61 @@
+{
+    "app": {
+        "title": "हैंडस्पेस",
+        "subtitle": "जेस्चर के साथ इंटरैक्टिव 3D लर्निंग"
+    },
+    "landing": {
+        "startButton": "अनुभव शुरू करें"
+    },
+    "controls": {
+        "scaleUp": "बड़ा करें",
+        "scaleDown": "छोटा करें",
+        "reset": "रीसेट करें",
+        "askAi": "AI से पूछें"
+    },
+    "gestureGuide": {
+        "title": "जेस्चर गाइड",
+        "indexPinch": "तर्जनी पिंच",
+        "rotateModel": "मॉडल घुमाएं",
+        "peaceSign": "पीस साइन",
+        "selectPart": "भाग चुनें",
+        "middlePinch": "मध्य पिंच",
+        "panCamera": "कैमरा पैन करें",
+        "pinkyPinch": "छोटी उंगली पिंच",
+        "scaleModel": "मॉडल का आकार बदलें",
+        "mouse": "माउस",
+        "orbitZoom": "ऑर्बिट / ज़ूम"
+    },
+    "gemini": {
+        "title": "जेमिनी ट्यूटर",
+        "placeholder": "मॉडल के किसी भी हिस्से पर क्लिक करें और मुझसे पूछें!",
+        "loading": "सोच रहा हूं...",
+        "listen": "सुनें"
+    },
+    "status": {
+        "idle": "स्थिति: निष्क्रिय",
+        "loading": "लोड हो रहा है...",
+        "ready": "तैयार"
+    },
+    "models": {
+        "title": "मॉडल्स"
+    },
+    "nav": {
+        "dashboard": "डैशबोर्ड",
+        "library": "लाइब्रेरी",
+        "viewer": "3D व्यूअर",
+        "quiz": "क्विज़",
+        "logout": "लॉग आउट",
+        "login": "लॉग इन"
+    },
+    "library": {
+        "title": "कोर्स लाइब्रेरी",
+        "subtitle": "अपना इंटरैक्टिव पाठ शुरू करने के लिए एक मॉडल चुनें।",
+        "exploreModel": "मॉडल देखें"
+    },
+    "dashboard": {
+        "welcome": "वापसी पर स्वागत है",
+        "exploreCourse": "एक्सप्लोर करें",
+        "startQuiz": "क्विज़ शुरू करें",
+        "viewProfile": "प्रोफ़ाइल देखें"
+    }
+}

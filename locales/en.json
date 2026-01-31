@@ -1,0 +1,61 @@
+{
+    "app": {
+        "title": "HandSpace",
+        "subtitle": "Interactive 3D Learning with Gestures"
+    },
+    "landing": {
+        "startButton": "Start Experience"
+    },
+    "controls": {
+        "scaleUp": "Scale Up",
+        "scaleDown": "Scale Down",
+        "reset": "Reset View",
+        "askAi": "Ask AI"
+    },
+    "gestureGuide": {
+        "title": "Gesture Guide",
+        "indexPinch": "Index Pinch",
+        "rotateModel": "Rotate Model",
+        "peaceSign": "Peace Sign",
+        "selectPart": "Select Part",
+        "middlePinch": "Middle Pinch",
+        "panCamera": "Pan Camera",
+        "pinkyPinch": "Pinky Pinch",
+        "scaleModel": "Scale Model",
+        "mouse": "Mouse",
+        "orbitZoom": "Orbit / Zoom"
+    },
+    "gemini": {
+        "title": "Gemini Tutor",
+        "placeholder": "Click on any part of the model to ask me about it!",
+        "loading": "Thinking...",
+        "listen": "Listen"
+    },
+    "status": {
+        "idle": "State: Idle",
+        "loading": "Loading...",
+        "ready": "Ready"
+    },
+    "models": {
+        "title": "Models"
+    },
+    "nav": {
+        "dashboard": "Dashboard",
+        "library": "Library",
+        "viewer": "3D Viewer",
+        "quiz": "Quiz",
+        "logout": "Logout",
+        "login": "Log In"
+    },
+    "library": {
+        "title": "Course Library",
+        "subtitle": "Select a model to begin your interactive lesson.",
+        "exploreModel": "Explore Model"
+    },
+    "dashboard": {
+        "welcome": "Welcome back",
+        "exploreCourse": "Explore",
+        "startQuiz": "Start Quiz",
+        "viewProfile": "View Profile"
+    }
+}

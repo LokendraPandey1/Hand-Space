@@ -1,0 +1,75 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>HandSpace Login</title>
+    <link rel="stylesheet" href="style_platform.css">
+    <script type="module">
+        import { Auth } from './src/auth/auth.js';
+
+        // Redirect if already logged in
+        if (Auth.getUser()) window.location.href = 'dashboard.html';
+
+        window.onload = () => {
+            const form = document.getElementById('login-form');
+            form.addEventListener('submit', async (e) => {
+                e.preventDefault();
+                const email = document.getElementById('email').value;
+                const password = document.getElementById('password').value;
+
+                try {
+                    const result = await Auth.login(email, password);
+                    console.log("Login Result:", result);
+
+                    if (result.success) {
+                        window.location.href = 'dashboard.html';
+                    } else {
+                        const msg = result.message || ("Error: " + JSON.stringify(result));
+                        alert(msg);
+                    }
+                } catch (err) {
+                    alert("Unexpected Error: " + err.message);
+                }
+            });
+        };
+    </script>
+</head>
+
+<body class="platform-page">
+
+    <div class="auth-container">
+        <div class="auth-form card-glass">
+            <h2 style="text-align:center; margin-bottom:20px;">Welcome Back 👋</h2>
+
+            <form id="login-form" class="auth-form">
+                <div class="form-group">
+                    <label>Email</label>
+                    <input type="email" id="email" class="form-input" required>
+                </div>
+
+                <div class="form-group">
+                    <label>Password</label>
+                    <input type="password" id="password" class="form-input" required>
+                </div>
+
+                <div style="text-align:right; font-size:0.8rem;">
+                    <a href="#" style="color:#aaa; text-decoration:none;">Forgot Password?</a>
+                </div>
+
+                <button type="submit" class="btn-primary" style="width:100%; text-align:center;">Log In</button>
+            </form>
+
+            <div style="text-align:center; margin-top:15px; font-size:0.9rem; color:#aaa;">
+                Don't have an account? <a href="signup.html" class="auth-link">Sign Up</a>
+            </div>
+            <div style="text-align:center; margin-top:5px; font-size:0.9rem;">
+                <a href="index.html" class="auth-link">← Back to Viewer</a>
+            </div>
+        </div>
+    </div>
+
+</body>
+
+</html>

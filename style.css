@@ -1,0 +1,664 @@
+body {
+    margin: 0;
+    padding: 0;
+    overflow: hidden;
+    background-color: #424141;
+    /* Updated user pref */
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+}
+
+.input_video {
+    position: absolute;
+    top: 85px;
+    /* Moved down to avoid Navbar overlap */
+    left: 10px;
+    width: 160px;
+    height: auto;
+    border-radius: 8px;
+    opacity: 1;
+    z-index: 10;
+    transform: scaleX(-1);
+    display: block;
+    pointer-events: none;
+}
+
+.output_canvas {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    z-index: 1;
+    outline: none;
+}
+
+#ui-container {
+    position: absolute;
+    bottom: 20px;
+    left: 50%;
+    transform: translateX(-50%);
+    z-index: 20;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 10px;
+    pointer-events: none;
+}
+
+.controls-group {
+    background: rgba(0, 0, 0, 0.5);
+    padding: 10px;
+    border-radius: 12px;
+    display: flex;
+    gap: 10px;
+    pointer-events: auto;
+    backdrop-filter: blur(5px);
+}
+
+.control-btn {
+    background: rgba(255, 255, 255, 0.1);
+    border: 1px solid rgba(255, 255, 255, 0.2);
+    color: white;
+    font-size: 18px;
+    width: 40px;
+    height: 40px;
+    border-radius: 8px;
+    cursor: pointer;
+    transition: background 0.2s, transform 0.1s;
+}
+
+.control-btn:hover {
+    background: rgba(255, 255, 255, 0.25);
+}
+
+.control-btn:active {
+    transform: scale(0.95);
+}
+
+#btn-reset {
+    width: auto;
+    padding: 0 15px;
+    font-size: 14px;
+    font-weight: bold;
+}
+
+/* Variant toggle button */
+.variant-btn {
+    background: linear-gradient(135deg, #ff6b6b, #ee5a5a) !important;
+    font-size: 18px !important;
+}
+
+.variant-btn:hover {
+    background: linear-gradient(135deg, #ff5252, #e53935) !important;
+}
+
+.variant-btn.active {
+    animation: pulse-heart 1s ease-in-out infinite;
+}
+
+@keyframes pulse-heart {
+
+    0%,
+    100% {
+        transform: scale(1);
+    }
+
+    50% {
+        transform: scale(1.1);
+    }
+}
+
+#status-text {
+    color: white;
+    font-size: 14px;
+    background: rgba(0, 0, 0, 0.5);
+    padding: 5px 10px;
+    border-radius: 20px;
+    margin-bottom: 5px;
+    text-shadow: 0 1px 2px black;
+}
+
+.zoom-label {
+    position: fixed;
+    bottom: 20px;
+    left: 50%;
+    transform: translateX(-50%);
+    color: white;
+    font-size: 14px;
+    background: rgba(0, 0, 0, 0.6);
+    padding: 8px 16px;
+    border-radius: 20px;
+    font-family: 'Segoe UI', sans-serif;
+    z-index: 100;
+}
+
+.instructions {
+    font-size: 12px;
+    color: rgba(255, 255, 255, 0.7);
+    text-align: center;
+    display: flex;
+    gap: 15px;
+    background: rgba(0, 0, 0, 0.3);
+    padding: 5px 15px;
+    border-radius: 15px;
+}
+
+.instructions p {
+    margin: 0;
+}
+
+/* Model Menu */
+#model-menu {
+    position: absolute;
+    top: 80px;
+    right: 20px;
+    width: 220px;
+    /* Wider for arrow */
+    background: rgba(0, 0, 0, 0.6);
+    backdrop-filter: blur(10px);
+    padding: 10px;
+    border-radius: 12px;
+    z-index: 20;
+    color: white;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.3);
+    max-height: 80vh;
+    overflow-y: auto;
+}
+
+.category-block {
+    margin-bottom: 5px;
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    border-radius: 8px;
+    overflow: hidden;
+    background: rgba(255, 255, 255, 0.05);
+}
+
+.category-header {
+    font-size: 13px;
+    text-transform: uppercase;
+    color: #00f2fe;
+    padding: 10px;
+    font-weight: bold;
+    letter-spacing: 1px;
+    cursor: pointer;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    transition: background 0.2s;
+}
+
+.category-header:hover {
+    background: rgba(255, 255, 255, 0.1);
+}
+
+.arrow {
+    font-size: 10px;
+    transition: transform 0.3s ease;
+}
+
+.category-content {
+    display: flex;
+    flex-direction: column;
+    padding: 5px;
+    gap: 5px;
+    background: rgba(0, 0, 0, 0.2);
+}
+
+#model-list {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+}
+
+.model-btn {
+    background: rgba(255, 255, 255, 0.1);
+    border: none;
+    color: white;
+    padding: 8px;
+    border-radius: 6px;
+    cursor: pointer;
+    text-align: left;
+    font-size: 14px;
+    transition: background 0.2s;
+    overflow: hidden;
+    white-space: nowrap;
+    text-overflow: ellipsis;
+}
+
+.model-btn:hover {
+    background: rgba(255, 255, 255, 0.2);
+}
+
+.model-btn.active {
+    background: rgba(0, 170, 255, 0.6);
+    font-weight: bold;
+}
+
+/* --- AI UI STYLES --- */
+.glass-panel {
+    background: rgba(20, 20, 20, 0.7);
+    backdrop-filter: blur(16px);
+    -webkit-backdrop-filter: blur(16px);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    box-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.37);
+    border-radius: 16px;
+    padding: 20px;
+    color: white;
+    width: 280px;
+    text-align: left;
+    transition: all 0.3s ease;
+
+    /* Absolute positioning to float it */
+    position: absolute;
+    bottom: 80px;
+    right: 20px;
+    z-index: 1000;
+}
+
+.hidden {
+    display: none !important;
+    opacity: 0;
+    pointer-events: none;
+}
+
+.card-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 12px;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.2);
+    padding-bottom: 8px;
+}
+
+.card-title {
+    font-weight: 600;
+    background: linear-gradient(45deg, #4facfe 0%, #00f2fe 100%);
+    -webkit-background-clip: text;
+    background-clip: text;
+    -webkit-text-fill-color: transparent;
+}
+
+.close-btn {
+    background: transparent;
+    border: none;
+    color: #aaa;
+    font-size: 20px;
+    cursor: pointer;
+}
+
+.spinner {
+    width: 24px;
+    height: 24px;
+    border: 3px solid rgba(255, 255, 255, 0.1);
+    border-top-color: #00f2fe;
+    border-radius: 50%;
+    animation: spin 1s linear infinite;
+    margin: 10px auto;
+}
+
+@keyframes spin {
+    to {
+        transform: rotate(360deg);
+    }
+}
+
+/* Landing Page Styles */
+#landing-page {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(10, 10, 10, 0.95);
+    z-index: 1000;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    color: white;
+    backdrop-filter: blur(10px);
+    transition: opacity 0.5s ease;
+}
+
+.landing-title {
+    font-size: 5rem;
+    font-weight: 700;
+    margin: 0;
+    background: linear-gradient(45deg, #00fff2, #a600ff);
+    -webkit-background-clip: text;
+    background-clip: text;
+    color: transparent;
+    text-shadow: 0 0 30px rgba(0, 242, 254, 0.3);
+    font-family: 'Segoe UI', sans-serif;
+    margin-bottom: 10px;
+}
+
+.landing-subtitle {
+    font-size: 1.5rem;
+    color: #ccc;
+    margin-bottom: 40px;
+    font-weight: 300;
+    letter-spacing: 2px;
+}
+
+#btn-start-app {
+    padding: 15px 40px;
+    font-size: 1.5rem;
+    background: transparent;
+    color: #00fff2;
+    border: 2px solid #00fff2;
+    border-radius: 50px;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    text-transform: uppercase;
+    letter-spacing: 2px;
+    box-shadow: 0 0 15px rgba(0, 255, 242, 0.2);
+}
+
+#btn-start-app:hover {
+    background: #00fff2;
+    color: #000;
+    box-shadow: 0 0 30px rgba(0, 255, 242, 0.6);
+    transform: scale(1.05);
+}
+
+/* Language Dropdown Wrapper */
+#lang-wrapper {
+    position: absolute;
+    bottom: 20px;
+    right: 20px;
+    z-index: 100;
+}
+
+/* Language Globe Button (Reset positioning as it's inside wrapper) */
+#btn-lang {
+    width: 44px;
+    height: 44px;
+    background: rgba(0, 0, 0, 0.6);
+    backdrop-filter: blur(10px);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    border-radius: 50%;
+    color: white;
+    font-size: 24px;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.3);
+}
+
+#btn-lang:hover {
+    background: rgba(255, 255, 255, 0.15);
+    transform: scale(1.1);
+    box-shadow: 0 0 15px rgba(0, 242, 254, 0.3);
+    border-color: #00f2fe;
+}
+
+/* Dropdown Menu */
+#lang-menu {
+    position: absolute;
+    bottom: 55px;
+    /* Above button */
+    right: 0;
+    /* Align right edge */
+    width: 120px;
+    background: rgba(0, 0, 0, 0.8);
+    backdrop-filter: blur(10px);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    border-radius: 8px;
+    overflow: hidden;
+    display: flex;
+    flex-direction: column;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.5);
+    transition: opacity 0.2s, transform 0.2s;
+}
+
+#lang-menu.hidden {
+    display: none;
+}
+
+.lang-opt {
+    padding: 10px 15px;
+    color: #ccc;
+    font-size: 14px;
+    cursor: pointer;
+    transition: background 0.2s, color 0.2s;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+}
+
+.lang-opt:last-child {
+    border-bottom: none;
+}
+
+.lang-opt:hover {
+    background: rgba(255, 255, 255, 0.1);
+    color: white;
+}
+
+.lang-opt.active {
+    color: #00f2fe;
+    font-weight: bold;
+    background: rgba(0, 242, 254, 0.1);
+}
+
+/* Optional: Add a small badge for content if needed via ::after, but simple is good */
+
+/* Annotation Label Styles */
+.annotation-label {
+    position: absolute;
+    background: rgba(0, 0, 0, 0.7);
+    backdrop-filter: blur(8px);
+    border: 1px solid rgba(255, 255, 255, 0.3);
+    padding: 10px 15px;
+    border-radius: 8px;
+    color: white;
+    font-family: 'Segoe UI', sans-serif;
+    pointer-events: auto;
+    /* Allow selecting text */
+    max-width: 250px;
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.5);
+    transition: opacity 0.3s;
+    transform: translate(0, -50%);
+    /* Center vertically relative to placement */
+}
+
+.annotation-title {
+    font-size: 16px;
+    font-weight: 700;
+    color: #00f2fe;
+    margin-bottom: 4px;
+    display: block;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+}
+
+.annotation-desc {
+    font-size: 13px;
+    line-height: 1.4;
+    color: #e0e0e0;
+}
+
+/* Connection Line */
+.connector-line {
+    stroke: #00f2fe;
+    stroke-width: 2;
+    filter: drop-shadow(0 0 3px #00f2fe);
+}
+
+.connector-dot {
+    fill: #00f2fe;
+    filter: drop-shadow(0 0 5px #00f2fe);
+}
+
+.annotation-speak-btn {
+    background: transparent;
+    border: 1px solid rgba(255, 255, 255, 0.3);
+    color: #00f2fe;
+    cursor: pointer;
+    font-size: 14px;
+    padding: 4px 8px;
+    margin-top: 8px;
+    border-radius: 12px;
+    transition: all 0.2s;
+    display: inline-flex;
+    align-items: center;
+    gap: 5px;
+}
+
+.annotation-speak-btn:hover {
+    background: rgba(0, 242, 254, 0.2);
+    border-color: #00f2fe;
+}
+
+/* ========== GESTURE GUIDE OVERLAY ========== */
+#gesture-guide {
+    position: absolute;
+    bottom: 20px;
+    left: 10px;
+    z-index: 100;
+    background: rgba(0, 0, 0, 0.7);
+    backdrop-filter: blur(15px);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    border-radius: 16px;
+    overflow: hidden;
+    min-width: 200px;
+    box-shadow: 0 8px 32px rgba(0, 0, 0, 0.4);
+    transition: all 0.3s ease;
+}
+
+#gesture-guide-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 12px 16px;
+    background: rgba(255, 255, 255, 0.05);
+    border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+    font-weight: 600;
+    font-size: 14px;
+    color: #fff;
+}
+
+#btn-toggle-guide {
+    background: rgba(255, 255, 255, 0.1);
+    border: none;
+    color: white;
+    width: 24px;
+    height: 24px;
+    border-radius: 6px;
+    cursor: pointer;
+    font-size: 16px;
+    line-height: 1;
+    transition: all 0.2s;
+}
+
+#btn-toggle-guide:hover {
+    background: rgba(255, 255, 255, 0.2);
+}
+
+#gesture-guide-content {
+    padding: 12px;
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+    max-height: 300px;
+    overflow-y: auto;
+    transition: max-height 0.3s ease, padding 0.3s ease, opacity 0.3s ease;
+}
+
+#gesture-guide-content.collapsed {
+    max-height: 0;
+    padding: 0 12px;
+    opacity: 0;
+    overflow: hidden;
+}
+
+/* Minimized state - just show icon */
+#gesture-guide.minimized {
+    min-width: auto;
+    border-radius: 50%;
+    width: 50px;
+    height: 50px;
+}
+
+#gesture-guide.minimized #gesture-guide-header {
+    padding: 0;
+    border: none;
+    background: transparent;
+    justify-content: center;
+    width: 50px;
+    height: 50px;
+}
+
+#gesture-guide.minimized #gesture-guide-header span {
+    display: none;
+}
+
+#gesture-guide.minimized #btn-toggle-guide {
+    width: 50px;
+    height: 50px;
+    border-radius: 50%;
+    font-size: 20px;
+}
+
+#gesture-guide.minimized #gesture-guide-content {
+    display: none;
+}
+
+.gesture-item {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    padding: 10px 12px;
+    background: rgba(255, 255, 255, 0.05);
+    border-radius: 10px;
+    transition: all 0.2s;
+}
+
+.gesture-item:hover {
+    background: rgba(0, 242, 254, 0.1);
+    transform: translateX(4px);
+}
+
+.gesture-item.active {
+    background: rgba(0, 242, 254, 0.2);
+    border-left: 3px solid #00f2fe;
+}
+
+.gesture-icon {
+    font-size: 24px;
+    width: 36px;
+    height: 36px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: rgba(0, 0, 0, 0.3);
+    border-radius: 8px;
+}
+
+.gesture-info {
+    display: flex;
+    flex-direction: column;
+}
+
+.gesture-name {
+    font-weight: 600;
+    font-size: 13px;
+    color: #fff;
+}
+
+.gesture-action {
+    font-size: 11px;
+    color: #888;
+    margin-top: 2px;
+}
+
+.gesture-item.mouse-hint {
+    border-top: 1px solid rgba(255, 255, 255, 0.1);
+    margin-top: 4px;
+    padding-top: 14px;
+}
+
+.gesture-item.mouse-hint .gesture-icon {
+    background: rgba(79, 172, 254, 0.2);
+}

@@ -1,0 +1,64 @@
+/* Landing Page Styles */
+#landing-page {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(10, 10, 10, 0.95);
+    z-index: 1000;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    color: white;
+    backdrop-filter: blur(10px);
+    transition: opacity 0.5s ease;
+}
+
+.landing-title {
+    font-size: 5rem;
+    font-weight: 700;
+    margin: 0;
+    background: linear-gradient(45deg, #00fff2, #a600ff);
+    -webkit-background-clip: text;
+    background-clip: text;
+    color: transparent;
+    text-shadow: 0 0 30px rgba(0, 242, 254, 0.3);
+    font-family: 'Segoe UI', sans-serif;
+    /* Fallback until Outfit */
+    margin-bottom: 10px;
+}
+
+.landing-subtitle {
+    font-size: 1.5rem;
+    color: #ccc;
+    margin-bottom: 40px;
+    font-weight: 300;
+    letter-spacing: 2px;
+}
+
+#btn-start-app {
+    padding: 15px 40px;
+    font-size: 1.5rem;
+    background: transparent;
+    color: #00fff2;
+    border: 2px solid #00fff2;
+    border-radius: 50px;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    text-transform: uppercase;
+    letter-spacing: 2px;
+    box-shadow: 0 0 15px rgba(0, 255, 242, 0.2);
+}
+
+#btn-start-app:hover {
+    background: #00fff2;
+    color: #000;
+    box-shadow: 0 0 30px rgba(0, 255, 242, 0.6);
+    transform: scale(1.05);
+}
+
+.hidden {
+    display: none !important;
+}

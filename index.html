@@ -1,0 +1,173 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Hand Interaction Prototype</title>
+    <link rel="stylesheet" href="style.css">
+    <link rel="stylesheet" href="style_platform.css"> <!-- Platform Styles -->
+
+    <!-- Navbar Integration -->
+    <script type="module">
+        import { initNavbar } from './src/ui/navbar.js';
+        initNavbar('viewer');
+    </script>
+
+    <!-- MediaPipe Hands & Camera Utils -->
+    <script src="https://cdn.jsdelivr.net/npm/@mediapipe/camera_utils/camera_utils.js" crossorigin="anonymous"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@mediapipe/control_utils/control_utils.js"
+        crossorigin="anonymous"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@mediapipe/drawing_utils/drawing_utils.js"
+        crossorigin="anonymous"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@mediapipe/hands/hands.js" crossorigin="anonymous"></script>
+
+    <!-- Import Map for Three.js modules -->
+    <script type="importmap">
+        {
+            "imports": {
+                "three": "https://unpkg.com/three@0.160.0/build/three.module.js",
+                "three": "https://unpkg.com/three@0.160.0/build/three.module.js",
+                "three/addons/": "https://unpkg.com/three@0.160.0/examples/jsm/",
+                "@google/generative-ai": "https://esm.run/@google/generative-ai"
+            }
+        }
+    </script>
+</head>
+
+<body>
+    <!-- Webcam Feed (Hidden or Picture-in-Picture style, but we'll keep it hidden for clean 3D view primarily, or visible for debugging) -->
+    <!-- We need the video element for MediaPipe to process -->
+    <video class="input_video"></video>
+
+    <!-- Language Controls -->
+    <div id="lang-wrapper">
+        <button id="btn-lang" title="Switch Language">🌐</button>
+        <div id="lang-menu" class="hidden">
+            <div class="lang-opt" data-lang="English">English</div>
+            <div class="lang-opt" data-lang="Hindi">हिंदी</div>
+            <div class="lang-opt" data-lang="Telugu">తెలుగు</div>
+            <div class="lang-opt" data-lang="Tamil">தமிழ்</div>
+            <div class="lang-opt" data-lang="Bengali">বাংলা</div>
+            <div class="lang-opt" data-lang="Marathi">मराठी</div>
+            <div class="lang-opt" data-lang="Gujarati">ગુજરાતી</div>
+        </div>
+    </div>
+
+    <!-- Landing Page -->
+    <div id="landing-page">
+        <h1 class="landing-title" data-i18n="app.title">HandSpace</h1>
+        <p class="landing-subtitle" data-i18n="app.subtitle">Interactive 3D Learning with Gestures</p>
+        <button id="btn-start-app" data-i18n="landing.startButton">Start Experience</button>
+    </div>
+
+    <!-- UI Overlay (Initially Hidden) -->
+    <div id="ui-container" class="hidden">
+        <div id="status-text">State: Idle</div>
+        <div class="controls-group">
+            <button id="btn-scale-up" class="control-btn" title="Scale Up">+</button>
+            <button id="btn-scale-down" class="control-btn" title="Scale Down">-</button>
+            <button id="btn-reset" class="control-btn" title="Reset View">Reset</button>
+            <button id="btn-ask-gemini" class="control-btn" title="Ask AI">🤖</button>
+            <button id="btn-toggle-variant" class="control-btn variant-btn hidden" title="Toggle Animation">💓</button>
+        </div>
+
+        <!-- Gemini Response Card -->
+        <div id="gemini-card" class="glass-panel hidden">
+            <div class="card-header">
+                <span class="card-title">✨ Gemini Tutor</span>
+                <button id="btn-close-card" class="close-btn">&times;</button>
+            </div>
+
+            <div id="gemini-body">
+                <div id="ai-spinner" class="spinner hidden"></div>
+                <p id="gemini-response-text" class="typewriter">
+                    Click on any part of the model to ask me about it!
+                </p>
+            </div>
+        </div>
+    </div>
+
+    <!-- Gesture Instructions Overlay (Bottom Left - Outside UI Container) -->
+    <div id="gesture-guide" class="minimized">
+        <div id="gesture-guide-header">
+            <span>🖐️ <span data-i18n="gestureGuide.title">Gesture Guide</span></span>
+            <button id="btn-toggle-guide" title="Toggle Guide">🖐️</button>
+        </div>
+        <div id="gesture-guide-content">
+            <div class="gesture-item">
+                <span class="gesture-icon">👆</span>
+                <div class="gesture-info">
+                    <span class="gesture-name" data-i18n="gestureGuide.indexPinch">Index Pinch</span>
+                    <span class="gesture-action" data-i18n="gestureGuide.rotateModel">Rotate Model</span>
+                </div>
+            </div>
+            <div class="gesture-item">
+                <span class="gesture-icon">☝️</span>
+                <div class="gesture-info">
+                    <span class="gesture-name">Point</span>
+                    <span class="gesture-action">Select Part</span>
+                </div>
+            </div>
+
+            <div class="gesture-item">
+                <span class="gesture-icon">✊</span>
+                <div class="gesture-info">
+                    <span class="gesture-name">Fist</span>
+                    <span class="gesture-action">Pan Model</span>
+                </div>
+            </div>
+
+            <div class="gesture-item">
+                <span class="gesture-icon">🤏</span>
+                <div class="gesture-info">
+                    <span class="gesture-name" data-i18n="gestureGuide.pinkyPinch">Pinky Pinch</span>
+                    <span class="gesture-action" data-i18n="gestureGuide.scaleModel">Scale Model</span>
+                </div>
+            </div>
+            <div class="gesture-item">
+                <span class="gesture-icon">✌️</span>
+                <div class="gesture-info">
+                    <span class="gesture-name">Peace Sign</span>
+                    <span class="gesture-action">Toggle 1/2 Hand Mode</span>
+                </div>
+            </div>
+
+            <div class="gesture-item">
+                <span class="gesture-icon">🤲</span>
+                <div class="gesture-info">
+                    <span class="gesture-name">Two-Hand Pinch</span>
+                    <span class="gesture-action">Zoom In/Out</span>
+                </div>
+            </div>
+            <div class="gesture-item mouse-hint">
+                <span class="gesture-icon">🖱️</span>
+                <div class="gesture-info">
+                    <span class="gesture-name" data-i18n="gestureGuide.mouse">Mouse</span>
+                    <span class="gesture-action" data-i18n="gestureGuide.orbitZoom">Orbit / Zoom</span>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Model Selector -->
+    <!-- Model Selector -->
+    <div id="model-menu">
+        <h3>Models</h3>
+        <div id="model-list"></div>
+    </div>
+
+    <!-- Annotation Overlay Layer -->
+    <svg id="line-layer"
+        style="position:absolute; top:0; left:0; width:100%; height:100%; pointer-events:none; z-index: 15;"></svg>
+    <div id="annotation-container"
+        style="position:absolute; top:0; left:0; width:100%; height:100%; pointer-events:none; z-index: 16;"></div>
+
+    <!-- Canvas for Three.js -->
+    <canvas class="output_canvas"></canvas>
+
+    <!-- Main Logic -->
+    <script type="module" src="src/main.js"></script>
+</body>
+
+</html>

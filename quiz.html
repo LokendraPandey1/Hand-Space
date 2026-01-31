@@ -1,0 +1,577 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Quiz - HandSpace</title>
+    <link rel="stylesheet" href="style_platform.css">
+    <style>
+        .quiz-container {
+            max-width: 800px;
+            margin: 40px auto;
+            padding: 20px;
+        }
+
+        .quiz-header {
+            text-align: center;
+            margin-bottom: 30px;
+        }
+
+        .quiz-header h1 {
+            color: #fff;
+            margin-bottom: 10px;
+        }
+
+        .quiz-meta {
+            display: flex;
+            justify-content: center;
+            gap: 20px;
+            color: #888;
+        }
+
+        .quiz-meta span {
+            display: flex;
+            align-items: center;
+            gap: 5px;
+        }
+
+        /* Quiz List */
+        .quiz-list {
+            display: grid;
+            gap: 20px;
+        }
+
+        .quiz-card {
+            background: rgba(0, 0, 0, 0.6);
+            backdrop-filter: blur(10px);
+            border-radius: 16px;
+            padding: 25px;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            transition: all 0.3s;
+        }
+
+        .quiz-card:hover {
+            transform: translateY(-5px);
+            border-color: rgba(0, 242, 254, 0.3);
+        }
+
+        .quiz-card h3 {
+            color: #fff;
+            margin: 0 0 10px 0;
+        }
+
+        .quiz-card p {
+            color: #888;
+            margin: 0 0 15px 0;
+        }
+
+        .quiz-card-meta {
+            display: flex;
+            gap: 15px;
+            margin-bottom: 15px;
+            font-size: 14px;
+        }
+
+        .quiz-card-meta span {
+            color: #aaa;
+        }
+
+        .badge {
+            padding: 4px 10px;
+            border-radius: 12px;
+            font-size: 12px;
+            font-weight: 600;
+        }
+
+        .badge-easy {
+            background: rgba(74, 222, 128, 0.2);
+            color: #4ade80;
+        }
+
+        .badge-medium {
+            background: rgba(251, 191, 36, 0.2);
+            color: #fbbf24;
+        }
+
+        .badge-hard {
+            background: rgba(239, 68, 68, 0.2);
+            color: #ef4444;
+        }
+
+        .btn-start-quiz {
+            background: linear-gradient(135deg, #00f2fe, #4facfe);
+            border: none;
+            padding: 10px 24px;
+            border-radius: 8px;
+            color: #fff;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+
+        .btn-start-quiz:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(0, 242, 254, 0.3);
+        }
+
+        /* Quiz Taking UI */
+        .quiz-taking {
+            display: none;
+        }
+
+        .question-card {
+            background: rgba(0, 0, 0, 0.6);
+            backdrop-filter: blur(10px);
+            border-radius: 16px;
+            padding: 30px;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        .question-progress {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 20px;
+            color: #888;
+        }
+
+        .progress-bar-quiz {
+            height: 6px;
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 3px;
+            margin-bottom: 30px;
+            overflow: hidden;
+        }
+
+        .progress-fill-quiz {
+            height: 100%;
+            background: linear-gradient(90deg, #00f2fe, #4facfe);
+            transition: width 0.3s;
+        }
+
+        .question-text {
+            color: #fff;
+            font-size: 1.3rem;
+            margin-bottom: 25px;
+        }
+
+        .options-list {
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+        }
+
+        .option-btn {
+            background: rgba(255, 255, 255, 0.05);
+            border: 2px solid rgba(255, 255, 255, 0.1);
+            border-radius: 10px;
+            padding: 15px 20px;
+            color: #fff;
+            text-align: left;
+            cursor: pointer;
+            transition: all 0.2s;
+            font-size: 15px;
+        }
+
+        .option-btn:hover {
+            border-color: rgba(0, 242, 254, 0.5);
+            background: rgba(0, 242, 254, 0.1);
+        }
+
+        .option-btn.selected {
+            border-color: #00f2fe;
+            background: rgba(0, 242, 254, 0.2);
+        }
+
+        .option-btn.correct {
+            border-color: #4ade80;
+            background: rgba(74, 222, 128, 0.2);
+        }
+
+        .option-btn.incorrect {
+            border-color: #ef4444;
+            background: rgba(239, 68, 68, 0.2);
+        }
+
+        .quiz-nav {
+            display: flex;
+            justify-content: space-between;
+            margin-top: 25px;
+        }
+
+        .btn-nav {
+            padding: 12px 30px;
+            border-radius: 8px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+
+        .btn-prev {
+            background: rgba(255, 255, 255, 0.1);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            color: #fff;
+        }
+
+        .btn-next {
+            background: linear-gradient(135deg, #00f2fe, #4facfe);
+            border: none;
+            color: #fff;
+        }
+
+        .btn-submit {
+            background: linear-gradient(135deg, #4ade80, #22c55e);
+            border: none;
+            color: #fff;
+        }
+
+        /* Results */
+        .quiz-results {
+            display: none;
+            text-align: center;
+        }
+
+        .result-score {
+            font-size: 5rem;
+            font-weight: 700;
+            margin: 20px 0;
+        }
+
+        .result-passed {
+            color: #4ade80;
+        }
+
+        .result-failed {
+            color: #ef4444;
+        }
+
+        .result-message {
+            font-size: 1.5rem;
+            color: #fff;
+            margin-bottom: 30px;
+        }
+
+        .result-details {
+            background: rgba(255, 255, 255, 0.05);
+            border-radius: 10px;
+            padding: 20px;
+            margin-bottom: 30px;
+        }
+
+        .result-details p {
+            color: #aaa;
+            margin: 8px 0;
+        }
+
+        .timer {
+            background: rgba(0, 0, 0, 0.4);
+            padding: 8px 16px;
+            border-radius: 20px;
+            font-family: monospace;
+            font-size: 1.2rem;
+            color: #00f2fe;
+        }
+    </style>
+</head>
+
+<body class="platform-page">
+
+    <!-- Hardcoded Navbar for reliability -->
+    <nav class="main-navbar">
+        <a href="dashboard.html" class="nav-brand">
+            <span>✋ HandSpace</span>
+        </a>
+        <div class="nav-links">
+            <a href="dashboard.html" class="nav-link">🏠 Dashboard</a>
+            <a href="library.html" class="nav-link">📚 Library</a>
+            <a href="index.html" class="nav-link">🧊 3D Viewer</a>
+            <a href="quiz.html" class="nav-link active">✅ Quiz</a>
+            <div style="width: 1px; height: 20px; background: rgba(255,255,255,0.2); margin: 0 10px;"></div>
+
+            <!-- User Section -->
+            <a href="profile.html" class="nav-link" style="display:flex; align-items:center; gap:8px;">
+                👤 <span id="nav-user-name">User</span>
+            </a>
+            <a href="#" id="nav-logout" class="nav-link" style="color:#ff6b6b;">Logout</a>
+        </div>
+    </nav>
+
+    <div class="quiz-container">
+        <!-- Quiz Selection -->
+        <div id="quiz-selection">
+            <div class="quiz-header">
+                <h1>📝 Knowledge Quizzes</h1>
+                <p style="color: #888;">Test your understanding of 3D models and concepts</p>
+            </div>
+
+            <div class="quiz-meta" style="margin-bottom: 30px;">
+                <select id="filter-category"
+                    style="background: rgba(0,0,0,0.5); border: 1px solid rgba(255,255,255,0.2); color: #fff; padding: 8px 16px; border-radius: 8px;">
+                    <option value="">All Categories</option>
+                    <option value="Anatomy">Anatomy</option>
+                    <option value="Chemistry">Chemistry</option>
+                    <option value="Earth Science">Earth Science</option>
+                    <option value="Space">Space</option>
+                    <option value="Engineering">Engineering</option>
+                </select>
+            </div>
+
+            <div id="quiz-list" class="quiz-list">
+                <p style="color: #888; text-align: center;">Loading quizzes...</p>
+            </div>
+        </div>
+
+        <!-- Quiz Taking -->
+        <div id="quiz-taking" class="quiz-taking">
+            <div class="quiz-header">
+                <h1 id="quiz-title">Quiz Title</h1>
+                <div class="quiz-meta">
+                    <span id="timer" class="timer">10:00</span>
+                </div>
+            </div>
+
+            <div class="question-card">
+                <div class="question-progress">
+                    <span>Question <span id="current-q">1</span> of <span id="total-q">10</span></span>
+                </div>
+                <div class="progress-bar-quiz">
+                    <div id="progress-fill" class="progress-fill-quiz" style="width: 10%;"></div>
+                </div>
+
+                <p id="question-text" class="question-text">What is the function of the heart?</p>
+
+                <div id="options-list" class="options-list">
+                    <!-- Options injected here -->
+                </div>
+
+                <div class="quiz-nav">
+                    <button id="btn-prev" class="btn-nav btn-prev" style="visibility: hidden;">← Previous</button>
+                    <button id="btn-next" class="btn-nav btn-next">Next →</button>
+                </div>
+            </div>
+        </div>
+
+        <!-- Results -->
+        <div id="quiz-results" class="quiz-results">
+            <h1>🎉 Quiz Complete!</h1>
+            <div id="result-score" class="result-score result-passed">85%</div>
+            <p id="result-message" class="result-message">Great job! You passed!</p>
+
+            <div class="result-details">
+                <p>Correct Answers: <strong id="correct-count">8</strong> / <span id="total-count">10</span></p>
+                <p>Time Taken: <strong id="time-taken">5:30</strong></p>
+            </div>
+
+            <div style="display: flex; gap: 15px; justify-content: center;">
+                <button onclick="location.reload()" class="btn-nav btn-prev">Try Another Quiz</button>
+                <a href="library.html" class="btn-nav btn-next" style="text-decoration: none;">Explore Models</a>
+            </div>
+        </div>
+    </div>
+
+    <script type="module">
+        import { Auth } from './src/auth/auth.js';
+
+        if (!Auth.isLoggedIn()) {
+            window.location.href = 'login.html';
+        }
+
+        // Initialize Navbar User Info
+        const user = Auth.getUser();
+        if (user) {
+            document.getElementById('nav-user-name').textContent = user.firstName || user.name.split(' ')[0] || 'User';
+
+            const logoutBtn = document.getElementById('nav-logout');
+            if (logoutBtn) {
+                logoutBtn.onclick = (e) => {
+                    e.preventDefault();
+                    Auth.logout();
+                    window.location.href = 'login.html';
+                };
+            }
+        }
+
+        // State
+
+        // State
+        let currentQuiz = null;
+        let currentQuestion = 0;
+        let answers = [];
+        let startTime = null;
+        let timerInterval = null;
+
+        // Elements
+        const selectionDiv = document.getElementById('quiz-selection');
+        const takingDiv = document.getElementById('quiz-taking');
+        const resultsDiv = document.getElementById('quiz-results');
+        const quizList = document.getElementById('quiz-list');
+        const filterCategory = document.getElementById('filter-category');
+
+        // Load quizzes
+        async function loadQuizzes(category = '') {
+            try {
+                const url = category ? `/api/quiz?category=${category}` : '/api/quiz';
+                const res = await fetch(url);
+                const quizzes = await res.json();
+
+                if (quizzes.length === 0) {
+                    quizList.innerHTML = '<p style="color: #888; text-align: center;">No quizzes available yet.</p>';
+                    return;
+                }
+
+                quizList.innerHTML = quizzes.map(q => `
+                    <div class="quiz-card">
+                        <h3>${q.title}</h3>
+                        <p>${q.description || 'Test your knowledge!'}</p>
+                        <div class="quiz-card-meta">
+                            <span>📂 ${q.category}</span>
+                            <span>❓ ${q.questionCount} questions</span>
+                            <span>⏱️ ${q.timeLimit} min</span>
+                            <span class="badge badge-${q.difficulty?.toLowerCase() || 'medium'}">${q.difficulty || 'Medium'}</span>
+                        </div>
+                        <button class="btn-start-quiz" onclick="window.startQuiz('${q._id}')">Start Quiz →</button>
+                    </div>
+                `).join('');
+            } catch (err) {
+                console.error('Error loading quizzes:', err);
+                quizList.innerHTML = `<p style="color: #ef4444; text-align: center;">Failed to load quizzes. Please check if server is running.<br><small>${err.message}</small></p>`;
+            }
+        }
+
+        // Start quiz
+        window.startQuiz = async (quizId) => {
+            try {
+                const res = await fetch(`/api/quiz/${quizId}`);
+                currentQuiz = await res.json();
+                currentQuestion = 0;
+                answers = new Array(currentQuiz.questions.length).fill(null);
+                startTime = Date.now();
+
+                document.getElementById('quiz-title').textContent = currentQuiz.title;
+                document.getElementById('total-q').textContent = currentQuiz.questions.length;
+
+                selectionDiv.style.display = 'none';
+                takingDiv.style.display = 'block';
+
+                startTimer(currentQuiz.timeLimit);
+                renderQuestion();
+            } catch (err) {
+                alert('Failed to load quiz');
+            }
+        };
+
+        // Timer
+        function startTimer(minutes) {
+            let timeLeft = minutes * 60;
+            const timerEl = document.getElementById('timer');
+
+            timerInterval = setInterval(() => {
+                const mins = Math.floor(timeLeft / 60);
+                const secs = timeLeft % 60;
+                timerEl.textContent = `${mins}:${secs.toString().padStart(2, '0')}`;
+
+                if (timeLeft <= 0) {
+                    clearInterval(timerInterval);
+                    submitQuiz();
+                }
+                timeLeft--;
+            }, 1000);
+        }
+
+        // Render question
+        function renderQuestion() {
+            const q = currentQuiz.questions[currentQuestion];
+            document.getElementById('current-q').textContent = currentQuestion + 1;
+            document.getElementById('question-text').textContent = q.question;
+
+            const progress = ((currentQuestion + 1) / currentQuiz.questions.length) * 100;
+            document.getElementById('progress-fill').style.width = progress + '%';
+
+            const optionsEl = document.getElementById('options-list');
+            optionsEl.innerHTML = q.options.map((opt, idx) => `
+                <button class="option-btn ${answers[currentQuestion] === idx ? 'selected' : ''}" 
+                        onclick="window.selectOption(${idx})">
+                    ${String.fromCharCode(65 + idx)}. ${opt}
+                </button>
+            `).join('');
+
+            // Navigation
+            document.getElementById('btn-prev').style.visibility = currentQuestion === 0 ? 'hidden' : 'visible';
+
+            const nextBtn = document.getElementById('btn-next');
+            if (currentQuestion === currentQuiz.questions.length - 1) {
+                nextBtn.textContent = 'Submit';
+                nextBtn.className = 'btn-nav btn-submit';
+                nextBtn.onclick = submitQuiz;
+            } else {
+                nextBtn.textContent = 'Next →';
+                nextBtn.className = 'btn-nav btn-next';
+                nextBtn.onclick = () => {
+                    currentQuestion++;
+                    renderQuestion();
+                };
+            }
+        }
+
+        window.selectOption = (idx) => {
+            answers[currentQuestion] = idx;
+            renderQuestion();
+        };
+
+        document.getElementById('btn-prev').onclick = () => {
+            if (currentQuestion > 0) {
+                currentQuestion--;
+                renderQuestion();
+            }
+        };
+
+        // Submit quiz
+        async function submitQuiz() {
+            clearInterval(timerInterval);
+            const timeTaken = Math.floor((Date.now() - startTime) / 1000);
+
+            try {
+                const res = await fetch(`/api/quiz/${currentQuiz._id}/submit`, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'Authorization': `Bearer ${Auth.getToken()}`
+                    },
+                    body: JSON.stringify({ answers, timeTaken })
+                });
+
+                const result = await res.json();
+                showResults(result, timeTaken);
+            } catch (err) {
+                alert('Failed to submit quiz');
+            }
+        }
+
+        function showResults(result, timeTaken) {
+            takingDiv.style.display = 'none';
+            resultsDiv.style.display = 'block';
+
+            const scoreEl = document.getElementById('result-score');
+            scoreEl.textContent = result.percentage + '%';
+            scoreEl.className = `result-score ${result.passed ? 'result-passed' : 'result-failed'}`;
+
+            document.getElementById('result-message').textContent =
+                result.passed ? '🎉 Great job! You passed!' : '📚 Keep learning and try again!';
+
+            document.getElementById('correct-count').textContent = result.score;
+            document.getElementById('total-count').textContent = result.totalQuestions;
+
+            const mins = Math.floor(timeTaken / 60);
+            const secs = timeTaken % 60;
+            document.getElementById('time-taken').textContent = `${mins}:${secs.toString().padStart(2, '0')}`;
+        }
+
+        // Filter
+        filterCategory.onchange = () => loadQuizzes(filterCategory.value);
+
+        // Initial load
+        loadQuizzes();
+    </script>
+</body>
+
+</html>

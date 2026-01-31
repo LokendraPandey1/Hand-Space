@@ -1,0 +1,61 @@
+{
+    "app": {
+        "title": "हँडस्पेस",
+        "subtitle": "जेश्चरसह इंटरॅक्टिव्ह 3D शिक्षण"
+    },
+    "landing": {
+        "startButton": "अनुभव सुरू करा"
+    },
+    "controls": {
+        "scaleUp": "मोठे करा",
+        "scaleDown": "लहान करा",
+        "reset": "रीसेट करा",
+        "askAi": "AI ला विचारा"
+    },
+    "gestureGuide": {
+        "title": "जेश्चर मार्गदर्शक",
+        "indexPinch": "तर्जनी पिंच",
+        "rotateModel": "मॉडेल फिरवा",
+        "peaceSign": "पीस साइन",
+        "selectPart": "भाग निवडा",
+        "middlePinch": "मधली पिंच",
+        "panCamera": "कॅमेरा पॅन करा",
+        "pinkyPinch": "करंगळी पिंच",
+        "scaleModel": "मॉडेलचा आकार बदला",
+        "mouse": "माउस",
+        "orbitZoom": "ऑर्बिट / झूम"
+    },
+    "gemini": {
+        "title": "जेमिनी शिक्षक",
+        "placeholder": "मॉडेलच्या कोणत्याही भागावर क्लिक करून विचारा!",
+        "loading": "विचार करतोय...",
+        "listen": "ऐका"
+    },
+    "status": {
+        "idle": "स्थिती: निष्क्रिय",
+        "loading": "लोड होत आहे...",
+        "ready": "तयार"
+    },
+    "models": {
+        "title": "मॉडेल्स"
+    },
+    "nav": {
+        "dashboard": "डॅशबोर्ड",
+        "library": "लायब्ररी",
+        "viewer": "3D व्ह्यूअर",
+        "quiz": "क्विझ",
+        "logout": "लॉग आउट",
+        "login": "लॉग इन"
+    },
+    "library": {
+        "title": "कोर्स लायब्ररी",
+        "subtitle": "तुमचा इंटरॅक्टिव्ह धडा सुरू करण्यासाठी मॉडेल निवडा.",
+        "exploreModel": "मॉडेल पहा"
+    },
+    "dashboard": {
+        "welcome": "परत स्वागत आहे",
+        "exploreCourse": "एक्सप्लोर करा",
+        "startQuiz": "क्विझ सुरू करा",
+        "viewProfile": "प्रोफाइल पहा"
+    }
+}

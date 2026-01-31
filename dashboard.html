@@ -1,0 +1,814 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>HandSpace Dashboard</title>
+    <link rel="stylesheet" href="style_platform.css">
+    <style>
+        /* Enhanced Dashboard Styles */
+        .dashboard-container {
+            max-width: 1400px;
+            margin: 30px auto;
+            padding: 0 30px;
+            display: grid;
+            grid-template-columns: repeat(12, 1fr);
+            gap: 25px;
+        }
+
+        .welcome-header {
+            grid-column: span 12;
+            padding: 30px 0;
+        }
+
+        .welcome-header h1 {
+            font-size: 2.5rem;
+            margin: 0 0 10px 0;
+            background: linear-gradient(135deg, #00f2fe 0%, #4facfe 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        /* Stats Cards Row */
+        .stats-row {
+            grid-column: span 12;
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 20px;
+        }
+
+        .stat-card {
+            background: rgba(255, 255, 255, 0.03);
+            border: 1px solid rgba(255, 255, 255, 0.08);
+            border-radius: 16px;
+            padding: 25px;
+            display: flex;
+            align-items: center;
+            gap: 20px;
+            transition: all 0.3s ease;
+        }
+
+        .stat-card:hover {
+            transform: translateY(-3px);
+            border-color: rgba(0, 242, 254, 0.3);
+            box-shadow: 0 10px 40px rgba(0, 242, 254, 0.1);
+        }
+
+        .stat-icon {
+            width: 60px;
+            height: 60px;
+            border-radius: 14px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.8rem;
+        }
+
+        .stat-icon.blue {
+            background: linear-gradient(135deg, rgba(0, 242, 254, 0.2), rgba(79, 172, 254, 0.2));
+        }
+
+        .stat-icon.green {
+            background: linear-gradient(135deg, rgba(74, 222, 128, 0.2), rgba(34, 197, 94, 0.2));
+        }
+
+        .stat-icon.purple {
+            background: linear-gradient(135deg, rgba(139, 92, 246, 0.2), rgba(99, 102, 241, 0.2));
+        }
+
+        .stat-icon.orange {
+            background: linear-gradient(135deg, rgba(251, 146, 60, 0.2), rgba(249, 115, 22, 0.2));
+        }
+
+        .stat-info h4 {
+            margin: 0;
+            font-size: 2rem;
+            font-weight: 700;
+        }
+
+        .stat-info p {
+            margin: 5px 0 0;
+            color: #888;
+            font-size: 0.9rem;
+        }
+
+        /* Card Styles */
+        .card-glass {
+            background: rgba(255, 255, 255, 0.03);
+            border: 1px solid rgba(255, 255, 255, 0.08);
+            border-radius: 16px;
+            padding: 25px;
+        }
+
+        .card-glass h3 {
+            margin: 0 0 20px;
+            font-size: 1.2rem;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        /* Progress Section */
+        .progress-section {
+            grid-column: span 8;
+        }
+
+        .progress-item {
+            margin-bottom: 20px;
+        }
+
+        .progress-header {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 8px;
+        }
+
+        .progress-header .category {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .progress-header .percent {
+            color: #4facfe;
+            font-weight: 600;
+        }
+
+        .progress-bar {
+            width: 100%;
+            height: 10px;
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 5px;
+            overflow: hidden;
+        }
+
+        .progress-fill {
+            height: 100%;
+            border-radius: 5px;
+            transition: width 1s ease;
+        }
+
+        .progress-fill.blue {
+            background: linear-gradient(90deg, #00f2fe, #4facfe);
+        }
+
+        .progress-fill.green {
+            background: linear-gradient(90deg, #4ade80, #22c55e);
+        }
+
+        .progress-fill.purple {
+            background: linear-gradient(90deg, #8b5cf6, #6366f1);
+        }
+
+        .progress-fill.orange {
+            background: linear-gradient(90deg, #fb923c, #f97316);
+        }
+
+        .progress-fill.red {
+            background: linear-gradient(90deg, #f87171, #ef4444);
+        }
+
+        /* Achievements */
+        .achievements-section {
+            grid-column: span 4;
+        }
+
+        .achievement-badge {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            padding: 15px;
+            background: rgba(0, 0, 0, 0.2);
+            border-radius: 12px;
+            margin-bottom: 12px;
+            transition: all 0.2s;
+        }
+
+        .achievement-badge:hover {
+            background: rgba(0, 242, 254, 0.1);
+        }
+
+        .achievement-badge.locked {
+            opacity: 0.4;
+        }
+
+        .badge-icon {
+            width: 50px;
+            height: 50px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.5rem;
+            background: rgba(255, 255, 255, 0.1);
+        }
+
+        .badge-info h5 {
+            margin: 0;
+            font-size: 1rem;
+        }
+
+        .badge-info p {
+            margin: 3px 0 0;
+            color: #777;
+            font-size: 0.8rem;
+        }
+
+        /* Recent Activity */
+        .activity-section {
+            grid-column: span 6;
+        }
+
+        .activity-item {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            padding: 15px;
+            background: rgba(0, 0, 0, 0.2);
+            border-radius: 12px;
+            margin-bottom: 12px;
+            transition: all 0.2s;
+            cursor: pointer;
+        }
+
+        .activity-item:hover {
+            background: rgba(0, 242, 254, 0.1);
+            transform: translateX(5px);
+        }
+
+        .activity-icon {
+            width: 50px;
+            height: 50px;
+            border-radius: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.5rem;
+            background: rgba(255, 255, 255, 0.1);
+        }
+
+        .activity-info {
+            flex: 1;
+        }
+
+        .activity-info h5 {
+            margin: 0;
+            font-size: 1rem;
+        }
+
+        .activity-info p {
+            margin: 3px 0 0;
+            color: #777;
+            font-size: 0.85rem;
+        }
+
+        .activity-time {
+            color: #555;
+            font-size: 0.8rem;
+        }
+
+        /* Quiz Results */
+        .quiz-section {
+            grid-column: span 6;
+        }
+
+        .quiz-result {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            padding: 15px;
+            background: rgba(0, 0, 0, 0.2);
+            border-radius: 12px;
+            margin-bottom: 12px;
+        }
+
+        .quiz-score {
+            width: 55px;
+            height: 55px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: bold;
+            font-size: 1.1rem;
+        }
+
+        .quiz-score.high {
+            background: rgba(74, 222, 128, 0.2);
+            color: #4ade80;
+        }
+
+        .quiz-score.medium {
+            background: rgba(251, 191, 36, 0.2);
+            color: #fbbf24;
+        }
+
+        .quiz-score.low {
+            background: rgba(248, 113, 113, 0.2);
+            color: #f87171;
+        }
+
+        /* Quick Actions */
+        .quick-actions {
+            grid-column: span 12;
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 20px;
+        }
+
+        .action-card {
+            background: rgba(255, 255, 255, 0.03);
+            border: 1px solid rgba(255, 255, 255, 0.08);
+            border-radius: 16px;
+            padding: 30px;
+            text-align: center;
+            transition: all 0.3s ease;
+            cursor: pointer;
+            text-decoration: none;
+            color: inherit;
+        }
+
+        .action-card:hover {
+            transform: translateY(-5px);
+            border-color: rgba(0, 242, 254, 0.4);
+            box-shadow: 0 15px 50px rgba(0, 242, 254, 0.15);
+        }
+
+        .action-icon {
+            font-size: 3rem;
+            margin-bottom: 15px;
+        }
+
+        .action-card h4 {
+            margin: 0 0 8px;
+            font-size: 1.1rem;
+        }
+
+        .action-card p {
+            margin: 0;
+            color: #777;
+            font-size: 0.9rem;
+        }
+
+        /* Teacher Section */
+        .teacher-section {
+            grid-column: span 12;
+            background: rgba(74, 222, 128, 0.05);
+            border: 1px solid rgba(74, 222, 128, 0.2);
+            border-radius: 16px;
+            padding: 30px;
+            display: none;
+        }
+
+        .teacher-section h3 {
+            color: #4ade80;
+            margin: 0 0 15px;
+        }
+
+        .teacher-actions {
+            display: flex;
+            gap: 15px;
+            flex-wrap: wrap;
+            margin-top: 20px;
+        }
+
+        .teacher-btn {
+            padding: 12px 25px;
+            border-radius: 10px;
+            text-decoration: none;
+            font-weight: 600;
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            transition: all 0.3s;
+        }
+
+        .teacher-btn.green {
+            background: linear-gradient(135deg, #4ade80, #22c55e);
+            color: #0a1a0a;
+        }
+
+        .teacher-btn.purple {
+            background: linear-gradient(135deg, #8b5cf6, #6366f1);
+            color: white;
+        }
+
+        .teacher-btn.orange {
+            background: linear-gradient(135deg, #fb923c, #f97316);
+            color: #0a1a0a;
+        }
+
+        .teacher-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 25px rgba(0, 0, 0, 0.3);
+        }
+
+        /* Daily Fact */
+        .fact-card {
+            grid-column: span 12;
+            background: linear-gradient(135deg, rgba(67, 206, 162, 0.1), rgba(24, 90, 157, 0.1));
+            border: 1px solid rgba(67, 206, 162, 0.2);
+            border-radius: 16px;
+            padding: 25px 30px;
+            display: flex;
+            align-items: center;
+            gap: 20px;
+        }
+
+        .fact-icon {
+            font-size: 2.5rem;
+        }
+
+        .fact-content h4 {
+            margin: 0 0 8px;
+            color: #43cea2;
+        }
+
+        .fact-content p {
+            margin: 0;
+            font-size: 1.1rem;
+            line-height: 1.5;
+            color: #ddd;
+        }
+
+        /* Responsive */
+        @media (max-width: 1200px) {
+
+            .stats-row,
+            .quick-actions {
+                grid-template-columns: repeat(2, 1fr);
+            }
+        }
+
+        @media (max-width: 768px) {
+            .dashboard-container {
+                grid-template-columns: 1fr;
+            }
+
+            .stats-row,
+            .quick-actions {
+                grid-template-columns: 1fr;
+            }
+
+            .progress-section,
+            .achievements-section,
+            .activity-section,
+            .quiz-section {
+                grid-column: span 1;
+            }
+        }
+
+        .loading-shimmer {
+            background: linear-gradient(90deg, rgba(255, 255, 255, 0.05) 0%, rgba(255, 255, 255, 0.1) 50%, rgba(255, 255, 255, 0.05) 100%);
+            background-size: 200% 100%;
+            animation: shimmer 1.5s infinite;
+        }
+
+        @keyframes shimmer {
+            0% {
+                background-position: -200% 0;
+            }
+
+            100% {
+                background-position: 200% 0;
+            }
+        }
+    </style>
+</head>
+
+<body class="platform-page">
+
+    <!-- Navbar injected here -->
+
+    <div class="dashboard-container">
+
+        <!-- Welcome Header -->
+        <div class="welcome-header">
+            <h1>Welcome back, <span id="welcome-name">Explorer</span>! 🚀</h1>
+            <p style="color: #aaa; font-size: 1.1rem; margin: 0;">Ready to discover something new today?</p>
+        </div>
+
+        <!-- Stats Cards -->
+        <div class="stats-row">
+            <div class="stat-card">
+                <div class="stat-icon blue">📚</div>
+                <div class="stat-info">
+                    <h4 id="stat-models">0</h4>
+                    <p>Models Explored</p>
+                </div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-icon green">✅</div>
+                <div class="stat-info">
+                    <h4 id="stat-quizzes">0</h4>
+                    <p>Quizzes Completed</p>
+                </div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-icon purple">⏱️</div>
+                <div class="stat-info">
+                    <h4 id="stat-time">0h</h4>
+                    <p>Learning Time</p>
+                </div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-icon orange">🔥</div>
+                <div class="stat-info">
+                    <h4 id="stat-streak">0</h4>
+                    <p>Day Streak</p>
+                </div>
+            </div>
+        </div>
+
+        <!-- Daily Fact -->
+        <div class="fact-card">
+            <div class="fact-icon">💡</div>
+            <div class="fact-content">
+                <h4>Did You Know?</h4>
+                <p id="daily-fact-text">Loading interesting fact...</p>
+            </div>
+        </div>
+
+        <!-- Progress Section -->
+        <div class="card-glass progress-section">
+            <h3>📊 Learning Progress</h3>
+            <div id="progress-container">
+                <div class="progress-item">
+                    <div class="progress-header">
+                        <span class="category">🏥 Anatomy</span>
+                        <span class="percent" id="prog-anatomy">0%</span>
+                    </div>
+                    <div class="progress-bar">
+                        <div class="progress-fill blue" id="bar-anatomy" style="width: 0%"></div>
+                    </div>
+                </div>
+                <div class="progress-item">
+                    <div class="progress-header">
+                        <span class="category">🧪 Chemistry</span>
+                        <span class="percent" id="prog-chemistry">0%</span>
+                    </div>
+                    <div class="progress-bar">
+                        <div class="progress-fill green" id="bar-chemistry" style="width: 0%"></div>
+                    </div>
+                </div>
+                <div class="progress-item">
+                    <div class="progress-header">
+                        <span class="category">🌌 Space</span>
+                        <span class="percent" id="prog-space">0%</span>
+                    </div>
+                    <div class="progress-bar">
+                        <div class="progress-fill purple" id="bar-space" style="width: 0%"></div>
+                    </div>
+                </div>
+                <div class="progress-item">
+                    <div class="progress-header">
+                        <span class="category">🌍 Earth Science</span>
+                        <span class="percent" id="prog-earth">0%</span>
+                    </div>
+                    <div class="progress-bar">
+                        <div class="progress-fill orange" id="bar-earth" style="width: 0%"></div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Achievements -->
+        <div class="card-glass achievements-section">
+            <h3>🏆 Achievements</h3>
+            <div id="achievements-container">
+                <div class="achievement-badge">
+                    <div class="badge-icon">🎓</div>
+                    <div class="badge-info">
+                        <h5>First Steps</h5>
+                        <p>Complete your first quiz</p>
+                    </div>
+                </div>
+                <div class="achievement-badge">
+                    <div class="badge-icon">🔬</div>
+                    <div class="badge-info">
+                        <h5>Explorer</h5>
+                        <p>View 5 different models</p>
+                    </div>
+                </div>
+                <div class="achievement-badge locked">
+                    <div class="badge-icon">🌟</div>
+                    <div class="badge-info">
+                        <h5>Perfect Score</h5>
+                        <p>Get 100% on any quiz</p>
+                    </div>
+                </div>
+                <div class="achievement-badge locked">
+                    <div class="badge-icon">🔥</div>
+                    <div class="badge-info">
+                        <h5>On Fire</h5>
+                        <p>7-day learning streak</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Recent Activity -->
+        <div class="card-glass activity-section">
+            <h3>🕒 Recent Activity</h3>
+            <div id="activity-container">
+                <div class="activity-item" onclick="window.location='index.html'">
+                    <div class="activity-icon">🫀</div>
+                    <div class="activity-info">
+                        <h5>Human Heart</h5>
+                        <p>Explored 3D model</p>
+                    </div>
+                    <span class="activity-time">Just now</span>
+                </div>
+                <div class="activity-item" onclick="window.location='quiz.html'">
+                    <div class="activity-icon">📝</div>
+                    <div class="activity-info">
+                        <h5>Anatomy Quiz</h5>
+                        <p>Scored 85%</p>
+                    </div>
+                    <span class="activity-time">2h ago</span>
+                </div>
+                <div class="activity-item" onclick="window.location='index.html'">
+                    <div class="activity-icon">🧬</div>
+                    <div class="activity-info">
+                        <h5>DNA Structure</h5>
+                        <p>Explored 3D model</p>
+                    </div>
+                    <span class="activity-time">Yesterday</span>
+                </div>
+            </div>
+        </div>
+
+        <!-- Quiz Results -->
+        <div class="card-glass quiz-section">
+            <h3>📈 Recent Quiz Results</h3>
+            <div id="quiz-results-container">
+                <div class="quiz-result">
+                    <div class="quiz-score high">85%</div>
+                    <div class="activity-info">
+                        <h5>Human Heart Quiz</h5>
+                        <p>8/10 correct • 5 min</p>
+                    </div>
+                </div>
+                <div class="quiz-result">
+                    <div class="quiz-score medium">70%</div>
+                    <div class="activity-info">
+                        <h5>Solar System Quiz</h5>
+                        <p>7/10 correct • 8 min</p>
+                    </div>
+                </div>
+                <div class="quiz-result">
+                    <div class="quiz-score high">95%</div>
+                    <div class="activity-info">
+                        <h5>Chemistry Basics</h5>
+                        <p>9/10 correct • 4 min</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Quick Actions -->
+        <div class="quick-actions">
+            <a href="index.html" class="action-card">
+                <div class="action-icon">🌐</div>
+                <h4>3D Viewer</h4>
+                <p>Explore interactive models</p>
+            </a>
+            <a href="library.html" class="action-card">
+                <div class="action-icon">📚</div>
+                <h4>Model Library</h4>
+                <p>Browse 20+ models</p>
+            </a>
+            <a href="quiz.html" class="action-card">
+                <div class="action-icon">✅</div>
+                <h4>Take a Quiz</h4>
+                <p>Test your knowledge</p>
+            </a>
+            <a href="#" class="action-card" id="leaderboard-card">
+                <div class="action-icon">🏆</div>
+                <h4>Leaderboard</h4>
+                <p>See top learners</p>
+            </a>
+        </div>
+
+        <!-- Teacher Section -->
+        <div class="teacher-section" id="teacher-section">
+            <h3>👨‍🏫 Teacher Dashboard</h3>
+            <p style="color: #aaa; margin: 0;">Manage your educational content and track student progress.</p>
+            <div class="teacher-actions">
+                <a href="upload.html" class="teacher-btn green">📤 Upload Model</a>
+                <a href="create-quiz.html" class="teacher-btn purple">📝 Create Quiz</a>
+                <a href="#" class="teacher-btn orange" id="btn-manage-students">👥 Manage Students</a>
+            </div>
+        </div>
+
+    </div>
+
+    <script type="module">
+        import { initNavbar } from './src/ui/navbar.js';
+        import { Auth } from './src/auth/auth.js';
+
+        // Initialize Navbar
+        initNavbar('dashboard');
+
+        // Personalize Welcome Message
+        const user = Auth.getUser();
+        if (user && user.name) {
+            document.getElementById('welcome-name').innerText = user.name.split(' ')[0];
+        }
+
+        // Show teacher section
+        if (Auth.isTeacher()) {
+            document.getElementById('teacher-section').style.display = 'block';
+        }
+
+        // Random Facts
+        const facts = [
+            "The human brain generates enough electricity to power a small light bulb.",
+            "Your heart beats over 100,000 times a day.",
+            "Bones are stronger than concrete, ounce for ounce.",
+            "The small intestine is about 20 feet long!",
+            "Your eyes can distinguish about 10 million different colors.",
+            "The human body contains enough iron to make a 3-inch nail.",
+            "Neurons in the brain can transmit signals at 200 mph.",
+            "The surface area of human lungs equals a tennis court."
+        ];
+        document.getElementById('daily-fact-text').innerText = facts[Math.floor(Math.random() * facts.length)];
+
+        // Simulate loading stats (in real app, fetch from API)
+        setTimeout(() => {
+            // Animate stats
+            animateValue('stat-models', 0, 12, 1000);
+            animateValue('stat-quizzes', 0, 5, 1000);
+            document.getElementById('stat-time').textContent = '4.5h';
+            animateValue('stat-streak', 0, 3, 1000);
+
+            // Animate progress bars
+            animateProgress('anatomy', 45);
+            animateProgress('chemistry', 30);
+            animateProgress('space', 15);
+            animateProgress('earth', 20);
+        }, 500);
+
+        function animateValue(id, start, end, duration) {
+            const elem = document.getElementById(id);
+            const range = end - start;
+            const startTime = performance.now();
+
+            function update(currentTime) {
+                const elapsed = currentTime - startTime;
+                const progress = Math.min(elapsed / duration, 1);
+                const value = Math.floor(start + range * progress);
+                elem.textContent = value;
+                if (progress < 1) requestAnimationFrame(update);
+            }
+            requestAnimationFrame(update);
+        }
+
+        function animateProgress(category, percent) {
+            const bar = document.getElementById(`bar-${category}`);
+            const text = document.getElementById(`prog-${category}`);
+            bar.style.width = percent + '%';
+            text.textContent = percent + '%';
+        }
+
+        // Fetch real quiz history if available
+        try {
+            const token = Auth.getToken();
+            if (token) {
+                fetch('/api/quizzes/history/me', {
+                    headers: { 'Authorization': `Bearer ${token}` }
+                })
+                    .then(res => res.json())
+                    .then(data => {
+                        if (Array.isArray(data) && data.length > 0) {
+                            const container = document.getElementById('quiz-results-container');
+                            container.innerHTML = '';
+
+                            data.slice(0, 3).forEach(attempt => {
+                                const scoreClass = attempt.percentage >= 80 ? 'high' :
+                                    attempt.percentage >= 60 ? 'medium' : 'low';
+
+                                container.innerHTML += `
+                                <div class="quiz-result">
+                                    <div class="quiz-score ${scoreClass}">${attempt.percentage}%</div>
+                                    <div class="activity-info">
+                                        <h5>${attempt.quiz?.title || 'Quiz'}</h5>
+                                        <p>${attempt.score}/${attempt.totalQuestions} correct</p>
+                                    </div>
+                                </div>
+                            `;
+                            });
+                        }
+                    })
+                    .catch(err => console.log('Could not fetch quiz history:', err));
+            }
+        } catch (e) {
+            console.log('Quiz history fetch skipped');
+        }
+    </script>
+
+</body>
+
+</html>

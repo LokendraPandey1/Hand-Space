@@ -1,0 +1,142 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>HandSpace Library</title>
+    <link rel="stylesheet" href="style_platform.css">
+
+    <!-- Three.js Import Map (Required because modelLoader.js imports three) -->
+    <script type="importmap">
+        {
+            "imports": {
+                "three": "https://unpkg.com/three@0.160.0/build/three.module.js",
+                "three/addons/": "https://unpkg.com/three@0.160.0/examples/jsm/"
+            }
+        }
+    </script>
+
+    <script type="module">
+        import { initNavbar } from './src/ui/navbar.js';
+        import { MODELS } from './src/models/modelLoader.js'; // Import models source
+
+        initNavbar('library');
+
+        // Dynamically load models into the grid
+        window.onload = async () => {
+            const grid = document.getElementById('library-grid');
+
+            // Fetch uploaded models from API
+            let uploadedModels = [];
+            try {
+                const res = await fetch('/api/models');
+                if (res.ok) {
+                    const data = await res.json();
+                    uploadedModels = data.map(m => ({
+                        name: m.name,
+                        file: m.filename,
+                        category: m.category,
+                        icon: '📤', // Upload icon for user-uploaded models
+                        isUploaded: true
+                    }));
+                }
+            } catch (err) {
+                console.warn('Could not fetch uploaded models:', err);
+            }
+
+            // Combine built-in and uploaded models
+            const allModels = [...MODELS, ...uploadedModels];
+
+            // Group by category
+            const categories = {};
+            allModels.forEach(m => {
+                if (!categories[m.category]) categories[m.category] = [];
+                categories[m.category].push(m);
+            });
+
+            // Render
+            for (const [cat, models] of Object.entries(categories)) {
+                // Section Header
+                const header = document.createElement('h2');
+                header.style.gridColumn = '1 / -1';
+                header.style.marginTop = '40px';
+                header.style.borderBottom = '1px solid rgba(255,255,255,0.1)';
+                header.style.paddingBottom = '10px';
+                header.innerText = cat;
+                grid.appendChild(header);
+
+                models.forEach(m => {
+                    const card = document.createElement('div');
+                    card.className = 'library-card card-glass';
+
+                    // Use icon from model or category fallback
+                    const categoryIcons = {
+                        'Anatomy': '🏥',
+                        'Chemistry': '🧪',
+                        'Earth Science': '🌏',
+                        'Space': '🌌',
+                        'Engineering': '⚙️',
+                        'Basics': '📦',
+                        'Other': '📁'
+                    };
+
+                    const icon = m.icon || categoryIcons[cat] || '📦';
+
+                    // Category color themes
+                    const categoryColors = {
+                        'Anatomy': '#ff6b6b',
+                        'Chemistry': '#4ecdc4',
+                        'Earth Science': '#45b7d1',
+                        'Space': '#a855f7',
+                        'Engineering': '#f59e0b',
+                        'Basics': '#6b7280',
+                        'Other': '#00f2fe'
+                    };
+
+                    const accentColor = categoryColors[cat] || '#00f2fe';
+
+                    // Show icon with uploaded badge if applicable
+                    const uploadedBadge = m.isUploaded ? '<span style="position:absolute;top:5px;right:5px;font-size:12px;background:#4ade80;padding:2px 6px;border-radius:4px;">User</span>' : '';
+                    const displayContent = `<span style="font-size: 3rem;">${icon}</span>${uploadedBadge}`;
+
+                    card.innerHTML = `
+                        <div class="library-card-icon" style="background: linear-gradient(135deg, ${accentColor}22, ${accentColor}44); position:relative;">
+                            ${displayContent}
+                        </div>
+                        <div class="library-card-content">
+                            <span class="library-card-category" style="color: ${accentColor};">${cat}</span>
+                            <h3 class="library-card-title">${m.name}</h3>
+                            <p class="library-card-desc">${m.isUploaded ? 'User Uploaded Model' : 'Interactive 3D Model'}</p>
+                        </div>
+                        <a href="index.html?model=${encodeURIComponent(m.file)}" class="btn-primary library-card-btn" style="background: linear-gradient(135deg, ${accentColor}, ${accentColor}cc);">
+                            Explore Model →
+                        </a>
+                    `;
+                    grid.appendChild(card);
+                });
+            }
+        };
+    </script>
+</head>
+
+<body class="platform-page">
+
+    <!-- Navbar injected here -->
+
+    <div class="dashboard-container">
+
+        <div class="welcome-header">
+            <h1>Course Library 📚</h1>
+            <p style="color: #aaa; font-size: 1.2rem;">Select a model to begin your interactive lesson.</p>
+        </div>
+
+        <div id="library-grid" class="model-grid" style="grid-column: span 12;">
+            <!-- Content Injected via JS -->
+        </div>
+
+    </div>
+
+</body>
+
+</html>

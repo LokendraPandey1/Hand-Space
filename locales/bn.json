@@ -1,0 +1,61 @@
+{
+    "app": {
+        "title": "হ্যান্ডস্পেস",
+        "subtitle": "জেসচারের সাথে ইন্টারঅ্যাক্টিভ 3D শেখা"
+    },
+    "landing": {
+        "startButton": "অভিজ্ঞতা শুরু করুন"
+    },
+    "controls": {
+        "scaleUp": "বড় করুন",
+        "scaleDown": "ছোট করুন",
+        "reset": "রিসেট করুন",
+        "askAi": "AI কে জিজ্ঞাসা করুন"
+    },
+    "gestureGuide": {
+        "title": "জেসচার গাইড",
+        "indexPinch": "ইনডেক্স পিঞ্চ",
+        "rotateModel": "মডেল ঘোরান",
+        "peaceSign": "পিস সাইন",
+        "selectPart": "অংশ নির্বাচন করুন",
+        "middlePinch": "মিডল পিঞ্চ",
+        "panCamera": "ক্যামেরা প্যান করুন",
+        "pinkyPinch": "পিঙ্কি পিঞ্চ",
+        "scaleModel": "মডেলের আকার পরিবর্তন করুন",
+        "mouse": "মাউস",
+        "orbitZoom": "অরবিট / জুম"
+    },
+    "gemini": {
+        "title": "জেমিনি টিউটর",
+        "placeholder": "মডেলের যেকোনো অংশে ক্লিক করে জিজ্ঞাসা করুন!",
+        "loading": "ভাবছি...",
+        "listen": "শুনুন"
+    },
+    "status": {
+        "idle": "অবস্থা: নিষ্ক্রিয়",
+        "loading": "লোড হচ্ছে...",
+        "ready": "প্রস্তুত"
+    },
+    "models": {
+        "title": "মডেলস"
+    },
+    "nav": {
+        "dashboard": "ড্যাশবোর্ড",
+        "library": "লাইব্রেরি",
+        "viewer": "3D ভিউয়ার",
+        "quiz": "কুইজ",
+        "logout": "লগ আউট",
+        "login": "লগ ইন"
+    },
+    "library": {
+        "title": "কোর্স লাইব্রেরি",
+        "subtitle": "আপনার ইন্টারঅ্যাক্টিভ পাঠ শুরু করতে একটি মডেল নির্বাচন করুন।",
+        "exploreModel": "মডেল দেখুন"
+    },
+    "dashboard": {
+        "welcome": "স্বাগতম",
+        "exploreCourse": "এক্সপ্লোর করুন",
+        "startQuiz": "কুইজ শুরু করুন",
+        "viewProfile": "প্রোফাইল দেখুন"
+    }
+}
