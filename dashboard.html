@@ -7,7 +7,7 @@
     <title>HandSpace Dashboard</title>
     <link rel="stylesheet" href="style_platform.css">
     <style>
-        /* Enhanced Dashboard Styles */
+        /* Enhanced Dashboard Styles - Teacher Edition */
         .dashboard-container {
             max-width: 1400px;
             margin: 30px auto;
@@ -19,16 +19,20 @@
 
         .welcome-header {
             grid-column: span 12;
-            padding: 30px 0;
+            padding: 20px 0;
         }
 
         .welcome-header h1 {
-            font-size: 2.5rem;
+            font-size: 2.8rem;
             margin: 0 0 10px 0;
-            background: linear-gradient(135deg, #00f2fe 0%, #4facfe 100%);
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
-            background-clip: text;
+            color: white;
+            font-weight: 700;
+        }
+
+        .welcome-header p {
+            color: #888;
+            font-size: 1.1rem;
+            margin: 0;
         }
 
         /* Stats Cards Row */
@@ -37,13 +41,14 @@
             display: grid;
             grid-template-columns: repeat(4, 1fr);
             gap: 20px;
+            margin-bottom: 20px;
         }
 
         .stat-card {
-            background: rgba(255, 255, 255, 0.03);
-            border: 1px solid rgba(255, 255, 255, 0.08);
-            border-radius: 16px;
-            padding: 25px;
+            background: rgba(18, 18, 30, 0.6);
+            border: 1px solid rgba(255, 255, 255, 0.05);
+            border-radius: 12px;
+            padding: 20px;
             display: flex;
             align-items: center;
             gap: 20px;
@@ -52,275 +57,73 @@
 
         .stat-card:hover {
             transform: translateY(-3px);
-            border-color: rgba(0, 242, 254, 0.3);
-            box-shadow: 0 10px 40px rgba(0, 242, 254, 0.1);
+            border-color: rgba(255, 255, 255, 0.1);
+            background: rgba(25, 25, 40, 0.8);
         }
 
         .stat-icon {
-            width: 60px;
-            height: 60px;
-            border-radius: 14px;
+            width: 50px;
+            height: 50px;
+            border-radius: 12px;
             display: flex;
             align-items: center;
             justify-content: center;
-            font-size: 1.8rem;
-        }
-
-        .stat-icon.blue {
-            background: linear-gradient(135deg, rgba(0, 242, 254, 0.2), rgba(79, 172, 254, 0.2));
-        }
-
-        .stat-icon.green {
-            background: linear-gradient(135deg, rgba(74, 222, 128, 0.2), rgba(34, 197, 94, 0.2));
+            font-size: 1.5rem;
         }
 
         .stat-icon.purple {
-            background: linear-gradient(135deg, rgba(139, 92, 246, 0.2), rgba(99, 102, 241, 0.2));
+            background: rgba(139, 92, 246, 0.2);
+            color: #a78bfa;
+        }
+
+        .stat-icon.green {
+            background: rgba(16, 185, 129, 0.2);
+            color: #34d399;
+        }
+
+        .stat-icon.blue {
+            background: rgba(59, 130, 246, 0.2);
+            color: #60a5fa;
         }
 
         .stat-icon.orange {
-            background: linear-gradient(135deg, rgba(251, 146, 60, 0.2), rgba(249, 115, 22, 0.2));
+            background: rgba(245, 158, 11, 0.2);
+            color: #fbbf24;
         }
 
         .stat-info h4 {
             margin: 0;
-            font-size: 2rem;
+            font-size: 1.8rem;
             font-weight: 700;
+            color: white;
         }
 
         .stat-info p {
             margin: 5px 0 0;
-            color: #888;
+            color: #ccc;
             font-size: 0.9rem;
         }
 
-        /* Card Styles */
-        .card-glass {
-            background: rgba(255, 255, 255, 0.03);
-            border: 1px solid rgba(255, 255, 255, 0.08);
-            border-radius: 16px;
-            padding: 25px;
-        }
-
-        .card-glass h3 {
-            margin: 0 0 20px;
-            font-size: 1.2rem;
-            display: flex;
-            align-items: center;
-            gap: 10px;
-        }
-
-        /* Progress Section */
-        .progress-section {
-            grid-column: span 8;
-        }
-
-        .progress-item {
-            margin-bottom: 20px;
-        }
-
-        .progress-header {
-            display: flex;
-            justify-content: space-between;
-            margin-bottom: 8px;
-        }
-
-        .progress-header .category {
-            display: flex;
-            align-items: center;
-            gap: 8px;
-        }
-
-        .progress-header .percent {
-            color: #4facfe;
-            font-weight: 600;
-        }
-
-        .progress-bar {
-            width: 100%;
-            height: 10px;
-            background: rgba(255, 255, 255, 0.1);
-            border-radius: 5px;
-            overflow: hidden;
-        }
-
-        .progress-fill {
-            height: 100%;
-            border-radius: 5px;
-            transition: width 1s ease;
-        }
-
-        .progress-fill.blue {
-            background: linear-gradient(90deg, #00f2fe, #4facfe);
-        }
-
-        .progress-fill.green {
-            background: linear-gradient(90deg, #4ade80, #22c55e);
-        }
-
-        .progress-fill.purple {
-            background: linear-gradient(90deg, #8b5cf6, #6366f1);
-        }
-
-        .progress-fill.orange {
-            background: linear-gradient(90deg, #fb923c, #f97316);
-        }
-
-        .progress-fill.red {
-            background: linear-gradient(90deg, #f87171, #ef4444);
-        }
-
-        /* Achievements */
-        .achievements-section {
-            grid-column: span 4;
-        }
-
-        .achievement-badge {
-            display: flex;
-            align-items: center;
-            gap: 15px;
-            padding: 15px;
-            background: rgba(0, 0, 0, 0.2);
-            border-radius: 12px;
-            margin-bottom: 12px;
-            transition: all 0.2s;
-        }
-
-        .achievement-badge:hover {
-            background: rgba(0, 242, 254, 0.1);
-        }
-
-        .achievement-badge.locked {
-            opacity: 0.4;
-        }
-
-        .badge-icon {
-            width: 50px;
-            height: 50px;
-            border-radius: 50%;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-size: 1.5rem;
-            background: rgba(255, 255, 255, 0.1);
-        }
-
-        .badge-info h5 {
-            margin: 0;
-            font-size: 1rem;
-        }
-
-        .badge-info p {
-            margin: 3px 0 0;
-            color: #777;
-            font-size: 0.8rem;
-        }
-
-        /* Recent Activity */
-        .activity-section {
-            grid-column: span 6;
-        }
-
-        .activity-item {
-            display: flex;
-            align-items: center;
-            gap: 15px;
-            padding: 15px;
-            background: rgba(0, 0, 0, 0.2);
-            border-radius: 12px;
-            margin-bottom: 12px;
-            transition: all 0.2s;
-            cursor: pointer;
-        }
-
-        .activity-item:hover {
-            background: rgba(0, 242, 254, 0.1);
-            transform: translateX(5px);
-        }
-
-        .activity-icon {
-            width: 50px;
-            height: 50px;
-            border-radius: 12px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-size: 1.5rem;
-            background: rgba(255, 255, 255, 0.1);
-        }
-
-        .activity-info {
-            flex: 1;
-        }
-
-        .activity-info h5 {
-            margin: 0;
-            font-size: 1rem;
-        }
-
-        .activity-info p {
-            margin: 3px 0 0;
-            color: #777;
-            font-size: 0.85rem;
-        }
-
-        .activity-time {
-            color: #555;
-            font-size: 0.8rem;
-        }
-
-        /* Quiz Results */
-        .quiz-section {
-            grid-column: span 6;
-        }
-
-        .quiz-result {
-            display: flex;
-            align-items: center;
-            gap: 15px;
-            padding: 15px;
-            background: rgba(0, 0, 0, 0.2);
-            border-radius: 12px;
-            margin-bottom: 12px;
-        }
-
-        .quiz-score {
-            width: 55px;
-            height: 55px;
-            border-radius: 50%;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-weight: bold;
-            font-size: 1.1rem;
-        }
-
-        .quiz-score.high {
-            background: rgba(74, 222, 128, 0.2);
-            color: #4ade80;
-        }
-
-        .quiz-score.medium {
-            background: rgba(251, 191, 36, 0.2);
-            color: #fbbf24;
-        }
-
-        .quiz-score.low {
-            background: rgba(248, 113, 113, 0.2);
-            color: #f87171;
-        }
-
         /* Quick Actions */
+        .section-title {
+            grid-column: span 12;
+            margin: 10px 0 0;
+            font-size: 1.2rem;
+            font-weight: 600;
+            color: white;
+        }
+
         .quick-actions {
             grid-column: span 12;
             display: grid;
-            grid-template-columns: repeat(4, 1fr);
-            gap: 20px;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 25px;
+            margin-bottom: 10px;
         }
 
         .action-card {
-            background: rgba(255, 255, 255, 0.03);
-            border: 1px solid rgba(255, 255, 255, 0.08);
+            background: rgba(18, 18, 30, 0.6);
+            border: 1px solid rgba(255, 255, 255, 0.05);
             border-radius: 16px;
             padding: 30px;
             text-align: center;
@@ -328,151 +131,260 @@
             cursor: pointer;
             text-decoration: none;
             color: inherit;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            height: 100%;
         }
 
         .action-card:hover {
             transform: translateY(-5px);
-            border-color: rgba(0, 242, 254, 0.4);
-            box-shadow: 0 15px 50px rgba(0, 242, 254, 0.15);
+            background: rgba(25, 25, 40, 0.8);
+            border-color: rgba(255, 255, 255, 0.1);
         }
 
         .action-icon {
-            font-size: 3rem;
+            font-size: 2.5rem;
             margin-bottom: 15px;
+            color: #4facfe;
+        }
+
+        .action-card:nth-child(2) .action-icon {
+            color: #4ade80;
+        }
+
+        .action-card:nth-child(3) .action-icon {
+            color: #f472b6;
         }
 
         .action-card h4 {
             margin: 0 0 8px;
             font-size: 1.1rem;
+            font-weight: 600;
         }
 
         .action-card p {
             margin: 0;
-            color: #777;
+            color: #888;
             font-size: 0.9rem;
         }
 
-        /* Teacher Section */
-        .teacher-section {
-            grid-column: span 12;
-            background: rgba(74, 222, 128, 0.05);
-            border: 1px solid rgba(74, 222, 128, 0.2);
+        /* Bottom Section Grid */
+        .chart-section {
+            grid-column: span 8;
+            background: rgba(18, 18, 30, 0.6);
+            border: 1px solid rgba(255, 255, 255, 0.05);
             border-radius: 16px;
-            padding: 30px;
-            display: none;
-        }
-
-        .teacher-section h3 {
-            color: #4ade80;
-            margin: 0 0 15px;
-        }
-
-        .teacher-actions {
+            padding: 25px;
             display: flex;
-            gap: 15px;
-            flex-wrap: wrap;
-            margin-top: 20px;
+            flex-direction: column;
         }
 
-        .teacher-btn {
-            padding: 12px 25px;
-            border-radius: 10px;
-            text-decoration: none;
+        .activity-section {
+            grid-column: span 4;
+            background: rgba(18, 18, 30, 0.6);
+            border: 1px solid rgba(255, 255, 255, 0.05);
+            border-radius: 16px;
+            padding: 25px;
+            height: 100%;
+        }
+
+        .card-header {
+            margin-bottom: 20px;
+            font-size: 1.1rem;
             font-weight: 600;
-            display: inline-flex;
-            align-items: center;
-            gap: 8px;
-            transition: all 0.3s;
-        }
-
-        .teacher-btn.green {
-            background: linear-gradient(135deg, #4ade80, #22c55e);
-            color: #0a1a0a;
-        }
-
-        .teacher-btn.purple {
-            background: linear-gradient(135deg, #8b5cf6, #6366f1);
             color: white;
         }
 
-        .teacher-btn.orange {
-            background: linear-gradient(135deg, #fb923c, #f97316);
-            color: #0a1a0a;
+        /* Simulated Bar Chart */
+        .bar-chart {
+            display: flex;
+            align-items: flex-end;
+            justify-content: space-around;
+            height: 200px;
+            padding-top: 20px;
+            gap: 15px;
         }
 
-        .teacher-btn:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 8px 25px rgba(0, 0, 0, 0.3);
+        .bar-group {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            flex: 1;
+            height: 100%;
+            justify-content: flex-end;
+            position: relative;
         }
 
-        /* Daily Fact */
-        .fact-card {
-            grid-column: span 12;
-            background: linear-gradient(135deg, rgba(67, 206, 162, 0.1), rgba(24, 90, 157, 0.1));
-            border: 1px solid rgba(67, 206, 162, 0.2);
-            border-radius: 16px;
-            padding: 25px 30px;
+        .bar {
+            width: 40px;
+            background: linear-gradient(180deg, #00f2fe 0%, #4facfe 100%);
+            border-radius: 6px 6px 0 0;
+            transition: height 1s ease, transform 0.2s;
+            min-height: 5px;
+            position: relative;
+            cursor: pointer;
+        }
+
+        .bar:hover {
+            transform: scaleX(1.1);
+            filter: brightness(1.2);
+            z-index: 10;
+        }
+
+        /* Tooltip */
+        .bar::after {
+            content: attr(data-percent);
+            position: absolute;
+            bottom: 100%;
+            left: 50%;
+            transform: translateX(-50%) translateY(-8px);
+            background: rgba(0, 0, 0, 0.9);
+            color: #00f2fe;
+            padding: 5px 10px;
+            border-radius: 6px;
+            font-size: 0.9rem;
+            font-weight: bold;
+            white-space: nowrap;
+            opacity: 0;
+            pointer-events: none;
+            transition: opacity 0.2s, transform 0.2s;
+            border: 1px solid rgba(0, 242, 254, 0.3);
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.3);
+            z-index: 20;
+        }
+
+        /* Arrow for tooltip */
+        .bar::before {
+            content: '';
+            position: absolute;
+            bottom: 100%;
+            left: 50%;
+            transform: translateX(-50%) translateY(-3px);
+            border-width: 5px;
+            border-style: solid;
+            border-color: rgba(0, 242, 254, 0.3) transparent transparent transparent;
+            opacity: 0;
+            transition: opacity 0.2s, transform 0.2s;
+            z-index: 20;
+        }
+
+        .bar:hover::after {
+            opacity: 1;
+            transform: translateX(-50%) translateY(-12px);
+        }
+
+        .bar:hover::before {
+            opacity: 1;
+            transform: translateX(-50%) translateY(-7px);
+        }
+
+        .bar-label {
+            margin-top: 10px;
+            font-size: 0.8rem;
+            color: #888;
+        }
+
+        /* Activity List */
+        .activity-list {
+            display: flex;
+            flex-direction: column;
+            gap: 15px;
+            max-height: 250px;
+            overflow-y: auto;
+            padding-right: 5px;
+        }
+
+        .activity-list::-webkit-scrollbar {
+            width: 4px;
+        }
+
+        .activity-list::-webkit-scrollbar-thumb {
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 4px;
+        }
+
+        .activity-item {
+            display: flex;
+            gap: 15px;
+            align-items: flex-start;
+            padding-bottom: 10px;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+        }
+
+        .activity-item:last-child {
+            border-bottom: none;
+        }
+
+        .activity-avatar {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            background: #3b82f6;
             display: flex;
             align-items: center;
-            gap: 20px;
+            justify-content: center;
+            color: white;
+            font-weight: bold;
+            font-size: 0.9rem;
+            flex-shrink: 0;
         }
 
-        .fact-icon {
-            font-size: 2.5rem;
+        .activity-avatar.pink {
+            background: #ec4899;
         }
 
-        .fact-content h4 {
-            margin: 0 0 8px;
-            color: #43cea2;
+        .activity-avatar.orange {
+            background: #f97316;
         }
 
-        .fact-content p {
+        .activity-details h5 {
+            margin: 0 0 4px;
+            font-size: 0.95rem;
+            color: white;
+            font-weight: 500;
+        }
+
+        .activity-details p {
             margin: 0;
-            font-size: 1.1rem;
-            line-height: 1.5;
-            color: #ddd;
+            color: #888;
+            font-size: 0.8rem;
+        }
+
+        .activity-details span {
+            color: white;
+            font-weight: 600;
         }
 
         /* Responsive */
         @media (max-width: 1200px) {
-
-            .stats-row,
-            .quick-actions {
+            .stats-row {
                 grid-template-columns: repeat(2, 1fr);
+            }
+
+            .chart-section,
+            .activity-section {
+                grid-column: span 12;
             }
         }
 
         @media (max-width: 768px) {
-            .dashboard-container {
-                grid-template-columns: 1fr;
-            }
-
-            .stats-row,
             .quick-actions {
                 grid-template-columns: 1fr;
             }
 
-            .progress-section,
-            .achievements-section,
-            .activity-section,
-            .quiz-section {
-                grid-column: span 1;
-            }
-        }
-
-        .loading-shimmer {
-            background: linear-gradient(90deg, rgba(255, 255, 255, 0.05) 0%, rgba(255, 255, 255, 0.1) 50%, rgba(255, 255, 255, 0.05) 100%);
-            background-size: 200% 100%;
-            animation: shimmer 1.5s infinite;
-        }
-
-        @keyframes shimmer {
-            0% {
-                background-position: -200% 0;
+            .stats-row {
+                grid-template-columns: 1fr;
             }
 
-            100% {
-                background-position: 200% 0;
+            .welcome-header h1 {
+                font-size: 2rem;
+            }
+
+            .chart-section {
+                display: none;
+                /* Hide chart on mobile for simplicity or adjust */
             }
         }
     </style>
@@ -486,220 +398,120 @@
 
         <!-- Welcome Header -->
         <div class="welcome-header">
-            <h1>Welcome back, <span id="welcome-name">Explorer</span>! 🚀</h1>
-            <p style="color: #aaa; font-size: 1.1rem; margin: 0;">Ready to discover something new today?</p>
+            <h1>Good Morning, <span id="welcome-name">Teacher</span></h1>
+            <p>Here is what's happening in your classroom today.</p>
         </div>
 
-        <!-- Stats Cards -->
+        <!-- Teacher Stats -->
         <div class="stats-row">
             <div class="stat-card">
-                <div class="stat-icon blue">📚</div>
+                <div class="stat-icon purple">👥</div>
                 <div class="stat-info">
-                    <h4 id="stat-models">0</h4>
-                    <p>Models Explored</p>
+                    <h4 id="stat-students">24</h4>
+                    <p>Active Students</p>
                 </div>
             </div>
             <div class="stat-card">
-                <div class="stat-icon green">✅</div>
+                <div class="stat-icon green">📝</div>
                 <div class="stat-info">
-                    <h4 id="stat-quizzes">0</h4>
-                    <p>Quizzes Completed</p>
+                    <h4 id="stat-score">85%</h4>
+                    <p>Avg. Quiz Score</p>
                 </div>
             </div>
             <div class="stat-card">
-                <div class="stat-icon purple">⏱️</div>
+                <div class="stat-icon blue">📤</div>
                 <div class="stat-info">
-                    <h4 id="stat-time">0h</h4>
-                    <p>Learning Time</p>
+                    <h4 id="stat-uploads">12</h4>
+                    <p>Models Uploaded</p>
                 </div>
             </div>
             <div class="stat-card">
-                <div class="stat-icon orange">🔥</div>
+                <div class="stat-icon orange">⚠️</div>
                 <div class="stat-info">
-                    <h4 id="stat-streak">0</h4>
-                    <p>Day Streak</p>
-                </div>
-            </div>
-        </div>
-
-        <!-- Daily Fact -->
-        <div class="fact-card">
-            <div class="fact-icon">💡</div>
-            <div class="fact-content">
-                <h4>Did You Know?</h4>
-                <p id="daily-fact-text">Loading interesting fact...</p>
-            </div>
-        </div>
-
-        <!-- Progress Section -->
-        <div class="card-glass progress-section">
-            <h3>📊 Learning Progress</h3>
-            <div id="progress-container">
-                <div class="progress-item">
-                    <div class="progress-header">
-                        <span class="category">🏥 Anatomy</span>
-                        <span class="percent" id="prog-anatomy">0%</span>
-                    </div>
-                    <div class="progress-bar">
-                        <div class="progress-fill blue" id="bar-anatomy" style="width: 0%"></div>
-                    </div>
-                </div>
-                <div class="progress-item">
-                    <div class="progress-header">
-                        <span class="category">🧪 Chemistry</span>
-                        <span class="percent" id="prog-chemistry">0%</span>
-                    </div>
-                    <div class="progress-bar">
-                        <div class="progress-fill green" id="bar-chemistry" style="width: 0%"></div>
-                    </div>
-                </div>
-                <div class="progress-item">
-                    <div class="progress-header">
-                        <span class="category">🌌 Space</span>
-                        <span class="percent" id="prog-space">0%</span>
-                    </div>
-                    <div class="progress-bar">
-                        <div class="progress-fill purple" id="bar-space" style="width: 0%"></div>
-                    </div>
-                </div>
-                <div class="progress-item">
-                    <div class="progress-header">
-                        <span class="category">🌍 Earth Science</span>
-                        <span class="percent" id="prog-earth">0%</span>
-                    </div>
-                    <div class="progress-bar">
-                        <div class="progress-fill orange" id="bar-earth" style="width: 0%"></div>
-                    </div>
-                </div>
-            </div>
-        </div>
-
-        <!-- Achievements -->
-        <div class="card-glass achievements-section">
-            <h3>🏆 Achievements</h3>
-            <div id="achievements-container">
-                <div class="achievement-badge">
-                    <div class="badge-icon">🎓</div>
-                    <div class="badge-info">
-                        <h5>First Steps</h5>
-                        <p>Complete your first quiz</p>
-                    </div>
-                </div>
-                <div class="achievement-badge">
-                    <div class="badge-icon">🔬</div>
-                    <div class="badge-info">
-                        <h5>Explorer</h5>
-                        <p>View 5 different models</p>
-                    </div>
-                </div>
-                <div class="achievement-badge locked">
-                    <div class="badge-icon">🌟</div>
-                    <div class="badge-info">
-                        <h5>Perfect Score</h5>
-                        <p>Get 100% on any quiz</p>
-                    </div>
-                </div>
-                <div class="achievement-badge locked">
-                    <div class="badge-icon">🔥</div>
-                    <div class="badge-info">
-                        <h5>On Fire</h5>
-                        <p>7-day learning streak</p>
-                    </div>
-                </div>
-            </div>
-        </div>
-
-        <!-- Recent Activity -->
-        <div class="card-glass activity-section">
-            <h3>🕒 Recent Activity</h3>
-            <div id="activity-container">
-                <div class="activity-item" onclick="window.location='index.html'">
-                    <div class="activity-icon">🫀</div>
-                    <div class="activity-info">
-                        <h5>Human Heart</h5>
-                        <p>Explored 3D model</p>
-                    </div>
-                    <span class="activity-time">Just now</span>
-                </div>
-                <div class="activity-item" onclick="window.location='quiz.html'">
-                    <div class="activity-icon">📝</div>
-                    <div class="activity-info">
-                        <h5>Anatomy Quiz</h5>
-                        <p>Scored 85%</p>
-                    </div>
-                    <span class="activity-time">2h ago</span>
-                </div>
-                <div class="activity-item" onclick="window.location='index.html'">
-                    <div class="activity-icon">🧬</div>
-                    <div class="activity-info">
-                        <h5>DNA Structure</h5>
-                        <p>Explored 3D model</p>
-                    </div>
-                    <span class="activity-time">Yesterday</span>
-                </div>
-            </div>
-        </div>
-
-        <!-- Quiz Results -->
-        <div class="card-glass quiz-section">
-            <h3>📈 Recent Quiz Results</h3>
-            <div id="quiz-results-container">
-                <div class="quiz-result">
-                    <div class="quiz-score high">85%</div>
-                    <div class="activity-info">
-                        <h5>Human Heart Quiz</h5>
-                        <p>8/10 correct • 5 min</p>
-                    </div>
-                </div>
-                <div class="quiz-result">
-                    <div class="quiz-score medium">70%</div>
-                    <div class="activity-info">
-                        <h5>Solar System Quiz</h5>
-                        <p>7/10 correct • 8 min</p>
-                    </div>
-                </div>
-                <div class="quiz-result">
-                    <div class="quiz-score high">95%</div>
-                    <div class="activity-info">
-                        <h5>Chemistry Basics</h5>
-                        <p>9/10 correct • 4 min</p>
-                    </div>
+                    <h4 id="stat-attention">3</h4>
+                    <p>Needs Attention</p>
                 </div>
             </div>
         </div>
 
         <!-- Quick Actions -->
+        <h3 class="section-title">Quick Actions</h3>
         <div class="quick-actions">
-            <a href="index.html" class="action-card">
-                <div class="action-icon">🌐</div>
-                <h4>3D Viewer</h4>
-                <p>Explore interactive models</p>
+            <a href="upload.html" class="action-card">
+                <div class="action-icon">📤</div>
+                <h4>Upload New Model</h4>
+                <p>Add 3D assets to the class library</p>
             </a>
-            <a href="library.html" class="action-card">
-                <div class="action-icon">📚</div>
-                <h4>Model Library</h4>
-                <p>Browse 20+ models</p>
+            <a href="create-quiz.html" class="action-card">
+                <div class="action-icon">📝</div>
+                <h4>Create Quiz</h4>
+                <p>Design assessments for your students</p>
             </a>
-            <a href="quiz.html" class="action-card">
-                <div class="action-icon">✅</div>
-                <h4>Take a Quiz</h4>
-                <p>Test your knowledge</p>
-            </a>
-            <a href="#" class="action-card" id="leaderboard-card">
-                <div class="action-icon">🏆</div>
-                <h4>Leaderboard</h4>
-                <p>See top learners</p>
+            <a href="manage-students.html" class="action-card">
+                <div class="action-icon">👥</div>
+                <h4>Manage Students</h4>
+                <p>View roster and track progress</p>
             </a>
         </div>
 
-        <!-- Teacher Section -->
-        <div class="teacher-section" id="teacher-section">
-            <h3>👨‍🏫 Teacher Dashboard</h3>
-            <p style="color: #aaa; margin: 0;">Manage your educational content and track student progress.</p>
-            <div class="teacher-actions">
-                <a href="upload.html" class="teacher-btn green">📤 Upload Model</a>
-                <a href="create-quiz.html" class="teacher-btn purple">📝 Create Quiz</a>
-                <a href="#" class="teacher-btn orange" id="btn-manage-students">👥 Manage Students</a>
+        <!-- Class Performance & Recent Activity -->
+        <div class="chart-section">
+            <div class="card-header">Class Performance (Last 5 Quizzes)</div>
+            <div class="bar-chart">
+                <div class="bar-group">
+                    <div class="bar" style="height: 65%;" data-percent="65%"></div>
+                    <div class="bar-label">Anatomy</div>
+                </div>
+                <div class="bar-group">
+                    <div class="bar" style="height: 85%;" data-percent="85%"></div>
+                    <div class="bar-label">Chemistry</div>
+                </div>
+                <div class="bar-group">
+                    <div class="bar" style="height: 72%;" data-percent="72%"></div>
+                    <div class="bar-label">Physics</div>
+                </div>
+                <div class="bar-group">
+                    <div class="bar" style="height: 90%;" data-percent="90%"></div>
+                    <div class="bar-label">Space</div>
+                </div>
+                <div class="bar-group">
+                    <div class="bar" style="height: 78%;" data-percent="78%"></div>
+                    <div class="bar-label">Biology</div>
+                </div>
+            </div>
+        </div>
+
+        <div class="activity-section">
+            <div class="card-header">Recent Activity</div>
+            <div class="activity-list">
+                <div class="activity-item">
+                    <div class="activity-avatar">JD</div>
+                    <div class="activity-details">
+                        <h5>John Doe completed <span>Heart Quiz</span></h5>
+                        <p>2 mins ago - Score: 90%</p>
+                    </div>
+                </div>
+                <div class="activity-item">
+                    <div class="activity-avatar pink">SS</div>
+                    <div class="activity-details">
+                        <h5>Sarah Smith uploaded <span>Project</span></h5>
+                        <p>1 hour ago</p>
+                    </div>
+                </div>
+                <div class="activity-item">
+                    <div class="activity-avatar orange">MK</div>
+                    <div class="activity-details">
+                        <h5>Mike K. completed <span>Space Quiz</span></h5>
+                        <p>3 hours ago - Score: 75%</p>
+                    </div>
+                </div>
+                <div class="activity-item">
+                    <div class="activity-avatar">AL</div>
+                    <div class="activity-details">
+                        <h5>Amy Lee joined <span>Class 5A</span></h5>
+                        <p>Yesterday</p>
+                    </div>
+                </div>
             </div>
         </div>
 
@@ -715,44 +527,19 @@
         // Personalize Welcome Message
         const user = Auth.getUser();
         if (user && user.name) {
-            document.getElementById('welcome-name').innerText = user.name.split(' ')[0];
+            document.getElementById('welcome-name').innerText = user.name.split(' ')[0]; // Just first name
         }
 
-        // Show teacher section
-        if (Auth.isTeacher()) {
-            document.getElementById('teacher-section').style.display = 'block';
-        }
-
-        // Random Facts
-        const facts = [
-            "The human brain generates enough electricity to power a small light bulb.",
-            "Your heart beats over 100,000 times a day.",
-            "Bones are stronger than concrete, ounce for ounce.",
-            "The small intestine is about 20 feet long!",
-            "Your eyes can distinguish about 10 million different colors.",
-            "The human body contains enough iron to make a 3-inch nail.",
-            "Neurons in the brain can transmit signals at 200 mph.",
-            "The surface area of human lungs equals a tennis court."
-        ];
-        document.getElementById('daily-fact-text').innerText = facts[Math.floor(Math.random() * facts.length)];
-
-        // Simulate loading stats (in real app, fetch from API)
+        // Animation for stats
         setTimeout(() => {
-            // Animate stats
-            animateValue('stat-models', 0, 12, 1000);
-            animateValue('stat-quizzes', 0, 5, 1000);
-            document.getElementById('stat-time').textContent = '4.5h';
-            animateValue('stat-streak', 0, 3, 1000);
-
-            // Animate progress bars
-            animateProgress('anatomy', 45);
-            animateProgress('chemistry', 30);
-            animateProgress('space', 15);
-            animateProgress('earth', 20);
+            animateValue('stat-students', 0, 24, 1000);
+            animateValue('stat-uploads', 0, 12, 1000);
+            // animateValue('stat-attention', 0, 3, 1000); // Small number, maybe no animation needed
         }, 500);
 
         function animateValue(id, start, end, duration) {
             const elem = document.getElementById(id);
+            if (!elem) return;
             const range = end - start;
             const startTime = performance.now();
 
@@ -765,50 +552,7 @@
             }
             requestAnimationFrame(update);
         }
-
-        function animateProgress(category, percent) {
-            const bar = document.getElementById(`bar-${category}`);
-            const text = document.getElementById(`prog-${category}`);
-            bar.style.width = percent + '%';
-            text.textContent = percent + '%';
-        }
-
-        // Fetch real quiz history if available
-        try {
-            const token = Auth.getToken();
-            if (token) {
-                fetch('/api/quizzes/history/me', {
-                    headers: { 'Authorization': `Bearer ${token}` }
-                })
-                    .then(res => res.json())
-                    .then(data => {
-                        if (Array.isArray(data) && data.length > 0) {
-                            const container = document.getElementById('quiz-results-container');
-                            container.innerHTML = '';
-
-                            data.slice(0, 3).forEach(attempt => {
-                                const scoreClass = attempt.percentage >= 80 ? 'high' :
-                                    attempt.percentage >= 60 ? 'medium' : 'low';
-
-                                container.innerHTML += `
-                                <div class="quiz-result">
-                                    <div class="quiz-score ${scoreClass}">${attempt.percentage}%</div>
-                                    <div class="activity-info">
-                                        <h5>${attempt.quiz?.title || 'Quiz'}</h5>
-                                        <p>${attempt.score}/${attempt.totalQuestions} correct</p>
-                                    </div>
-                                </div>
-                            `;
-                            });
-                        }
-                    })
-                    .catch(err => console.log('Could not fetch quiz history:', err));
-            }
-        } catch (e) {
-            console.log('Quiz history fetch skipped');
-        }
     </script>
-
 </body>
 
 </html>
