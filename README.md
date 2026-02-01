@@ -157,7 +157,3 @@ Accessibility enhancements for diverse learners
 -   [Three.js](https://threejs.org/) - 3D Library
 -   [MediaPipe Hands](https://developers.google.com/mediapipe/solutions/vision/hand_landmarker) - Hand Tracking
 -   Vanilla HTML5/CSS/JS
-
-## 📄 License
-
-This project is open-source and available under the [MIT License](LICENSE).
