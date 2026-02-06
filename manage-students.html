@@ -1,0 +1,340 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Manage Students - HandSpace</title>
+    <link rel="stylesheet" href="style_platform.css">
+    <style>
+        .manage-container {
+            max-width: 1200px;
+            margin: 30px auto;
+            padding: 0 30px;
+        }
+
+        .page-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 30px;
+        }
+
+        .header-content h1 {
+            font-size: 2.5rem;
+            margin: 0 0 5px 0;
+            color: white;
+            font-weight: 700;
+        }
+
+        .header-content p {
+            color: #888;
+            font-size: 1.1rem;
+            margin: 0;
+        }
+
+        .btn-add {
+            background: linear-gradient(135deg, #00f2fe 0%, #4facfe 100%);
+            color: #000;
+            border: none;
+            padding: 12px 25px;
+            border-radius: 10px;
+            font-weight: 600;
+            font-size: 1rem;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            transition: all 0.3s;
+            text-decoration: none;
+        }
+
+        .btn-add:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(0, 242, 254, 0.3);
+        }
+
+        /* Controls Bar */
+        .controls-bar {
+            display: flex;
+            gap: 20px;
+            margin-bottom: 25px;
+            background: rgba(18, 18, 30, 0.6);
+            border: 1px solid rgba(255, 255, 255, 0.05);
+            padding: 20px;
+            border-radius: 16px;
+        }
+
+        .search-box {
+            flex: 1;
+            position: relative;
+        }
+
+        .search-box input {
+            width: 100%;
+            background: rgba(0, 0, 0, 0.3);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            padding: 12px 20px 12px 45px;
+            border-radius: 10px;
+            color: white;
+            font-size: 1rem;
+        }
+
+        .search-icon {
+            position: absolute;
+            left: 15px;
+            top: 50%;
+            transform: translateY(-50%);
+            color: #888;
+        }
+
+        .filter-select {
+            background: rgba(0, 0, 0, 0.3);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            color: white;
+            padding: 0 20px;
+            border-radius: 10px;
+            cursor: pointer;
+            outline: none;
+        }
+
+        /* Student Table */
+        .student-list {
+            background: rgba(18, 18, 30, 0.6);
+            border: 1px solid rgba(255, 255, 255, 0.05);
+            border-radius: 16px;
+            overflow: hidden;
+        }
+
+        .list-header {
+            display: grid;
+            grid-template-columns: 3fr 2fr 2fr 2fr 1fr;
+            padding: 15px 25px;
+            background: rgba(255, 255, 255, 0.03);
+            border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+            color: #888;
+            font-weight: 600;
+            font-size: 0.9rem;
+        }
+
+        .student-row {
+            display: grid;
+            grid-template-columns: 3fr 2fr 2fr 2fr 1fr;
+            padding: 20px 25px;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.02);
+            align-items: center;
+            transition: background 0.2s;
+        }
+
+        .student-row:hover {
+            background: rgba(255, 255, 255, 0.03);
+        }
+
+        .col-name {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+
+        .student-avatar {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            background: #3b82f6;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-weight: bold;
+        }
+
+        .student-info h4 {
+            margin: 0;
+            color: white;
+            font-size: 1rem;
+        }
+
+        .student-info span {
+            color: #888;
+            font-size: 0.85rem;
+        }
+
+        .status-badge {
+            padding: 5px 12px;
+            border-radius: 20px;
+            font-size: 0.85rem;
+            font-weight: 500;
+        }
+
+        .status-badge.active {
+            background: rgba(16, 185, 129, 0.2);
+            color: #34d399;
+        }
+
+        .status-badge.offline {
+            background: rgba(107, 114, 128, 0.2);
+            color: #9ca3af;
+        }
+
+        /* Progress Bar Small */
+        .progress-wrapper {
+            width: 100%;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .progress-track {
+            flex: 1;
+            height: 6px;
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 3px;
+        }
+
+        .progress-fill {
+            height: 100%;
+            background: linear-gradient(90deg, #00f2fe, #4facfe);
+            border-radius: 3px;
+        }
+
+        .action-btn {
+            background: none;
+            border: none;
+            color: #888;
+            cursor: pointer;
+            font-size: 1.2rem;
+            transition: color 0.2s;
+        }
+
+        .action-btn:hover {
+            color: white;
+        }
+    </style>
+</head>
+
+<body class="platform-page">
+
+    <!-- Navbar injected here -->
+
+    <div class="manage-container">
+
+        <div class="page-header">
+            <div class="header-content">
+                <h1>Manage Students</h1>
+                <p>24 Active Students • Class 5A</p>
+            </div>
+            <a href="#" class="btn-add">
+                <span>+</span> Add Student
+            </a>
+        </div>
+
+        <div class="controls-bar">
+            <div class="search-box">
+                <span class="search-icon">🔍</span>
+                <input type="text" id="student-search" placeholder="Search by name or email...">
+            </div>
+            <select class="filter-select">
+                <option value="all">All Grades</option>
+                <option value="A">Grade A</option>
+                <option value="B">Grade B</option>
+                <option value="C">Grade C</option>
+            </select>
+            <select class="filter-select">
+                <option value="active">All Status</option>
+                <option value="online">Online</option>
+                <option value="offline">Offline</option>
+            </select>
+        </div>
+
+        <div class="student-list">
+            <div class="list-header">
+                <div>STUDENT</div>
+                <div>STATUS</div>
+                <div>PROGRESS</div>
+                <div>LAST ACTIVE</div>
+                <div>ACTION</div>
+            </div>
+            <div id="student-rows">
+                <!-- Rows injected via JS -->
+            </div>
+        </div>
+
+    </div>
+
+    <script type="module">
+        import { initNavbar } from './src/ui/navbar.js';
+
+        initNavbar('dashboard');
+
+        // Mock Data with Classes
+        const allStudents = [
+            { name: "John Doe", email: "john@school.com", status: "online", progress: 85, lastActive: "Now", avatar: "JD", color: "#3b82f6", class: "5A" },
+            { name: "Sarah Smith", email: "sarah@school.com", status: "offline", progress: 92, lastActive: "2h ago", avatar: "SS", color: "#ec4899", class: "5A" },
+            { name: "Mike Johnson", email: "mike@school.com", status: "online", progress: 64, lastActive: "Now", avatar: "MJ", color: "#f97316", class: "5B" },
+            { name: "Emily Brown", email: "emily@school.com", status: "offline", progress: 78, lastActive: "1d ago", avatar: "EB", color: "#8b5cf6", class: "9A" },
+            { name: "Alex Lee", email: "alex@school.com", status: "offline", progress: 45, lastActive: "3d ago", avatar: "AL", color: "#10b981", class: "5A" },
+            { name: "Chris Wilson", email: "chris@school.com", status: "online", progress: 88, lastActive: "Now", avatar: "CW", color: "#ef4444", class: "8C" },
+            { name: "David Kim", email: "david@school.com", status: "online", progress: 70, lastActive: "10m ago", avatar: "DK", color: "#60a5fa", class: "5A" },
+            { name: "Lisa Wong", email: "lisa@school.com", status: "offline", progress: 95, lastActive: "5h ago", avatar: "LW", color: "#f472b6", class: "9A" },
+        ];
+
+        let displayedStudents = [];
+
+        function renderStudents(list) {
+            const container = document.getElementById('student-rows');
+            if (list.length === 0) {
+                container.innerHTML = '<div style="padding: 20px; text-align: center; color: #888;">No students found in this class.</div>';
+                return;
+            }
+            container.innerHTML = list.map(student => `
+                <div class="student-row">
+                    <div class="col-name">
+                        <div class="student-avatar" style="background: ${student.color}">${student.avatar}</div>
+                        <div class="student-info">
+                            <h4>${student.name}</h4>
+                            <span>${student.email}</span>
+                        </div>
+                    </div>
+                    <div>
+                        <span class="status-badge ${student.status}">${student.status === 'online' ? '● Online' : '○ Offline'}</span>
+                    </div>
+                    <div class="progress-wrapper">
+                        <div class="progress-track">
+                            <div class="progress-fill" style="width: ${student.progress}%"></div>
+                        </div>
+                        <span style="font-size: 0.9rem; color: #ccc; width: 30px;">${student.progress}%</span>
+                    </div>
+                    <div style="color: #aaa; font-size: 0.9rem;">${student.lastActive}</div>
+                    <div>
+                        <button class="action-btn">⋮</button>
+                    </div>
+                </div>
+            `).join('');
+        }
+
+        function filterStudents() {
+            const currentClass = localStorage.getItem('handspace_class') || '5A';
+            const searchTerm = document.getElementById('student-search').value.toLowerCase();
+
+            const classFiltered = allStudents.filter(s => s.class === currentClass);
+            document.querySelector('.header-content p').textContent = `${classFiltered.length} Active Students • Class ${currentClass}`;
+
+            const finalFiltered = classFiltered.filter(s =>
+                s.name.toLowerCase().includes(searchTerm) || s.email.toLowerCase().includes(searchTerm)
+            );
+
+            renderStudents(finalFiltered);
+        }
+
+        // Initial Load
+        filterStudents();
+
+        // Listeners
+        document.getElementById('student-search').addEventListener('input', filterStudents);
+
+        window.addEventListener('class_changed', filterStudents);
+
+    </script>
+</body>
+
+</html>

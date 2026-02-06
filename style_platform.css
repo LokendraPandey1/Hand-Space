@@ -211,6 +211,30 @@ body.platform-page {
     text-decoration: underline;
 }
 
+/* Navbar Dropdown */
+.nav-class-select {
+    background: rgba(255, 255, 255, 0.1);
+    color: white;
+    border: 1px solid rgba(255, 255, 255, 0.2);
+    padding: 5px 10px;
+    border-radius: 6px;
+    outline: none;
+    cursor: pointer;
+    font-family: inherit;
+    font-size: 0.9rem;
+    transition: all 0.2s;
+}
+
+.nav-class-select:hover {
+    background: rgba(255, 255, 255, 0.2);
+    border-color: rgba(0, 242, 254, 0.5);
+}
+
+.nav-class-select option {
+    background: #1a1a2e;
+    color: white;
+}
+
 /* Grids for Library (for later) */
 .model-grid {
     display: grid;
@@ -306,4 +330,85 @@ body.platform-page {
 .library-card-btn:hover {
     opacity: 0.9;
     transform: scale(1.02);
+}
+
+/* =========================================
+   Accessibility Themes & User Preferences
+   ========================================= */
+
+/* High Contrast Mode */
+body.high-contrast {
+    background: black !important;
+    color: #ffd700 !important;
+    /* Gold text */
+}
+
+body.high-contrast .card-glass,
+body.high-contrast .nav-class-select,
+body.high-contrast .form-input,
+body.high-contrast .settings-section {
+    background: black !important;
+    border: 2px solid #ffd700 !important;
+    backdrop-filter: none !important;
+    box-shadow: none !important;
+}
+
+body.high-contrast h1,
+body.high-contrast h2,
+body.high-contrast h3,
+body.high-contrast a,
+body.high-contrast .nav-link,
+body.high-contrast .nav-brand span {
+    color: #00ffff !important;
+    /* Cyan headers/links */
+    background: none !important;
+    -webkit-text-fill-color: #00ffff !important;
+}
+
+body.high-contrast .btn-primary,
+body.high-contrast .btn-save {
+    background: #000 !important;
+    color: #ffd700 !important;
+    border: 2px solid #ffd700 !important;
+}
+
+/* Large Text Mode */
+body.large-text {
+    font-size: 1.25rem !important;
+}
+
+body.large-text h1 {
+    font-size: 3.5rem !important;
+}
+
+body.large-text h2 {
+    font-size: 2.2rem !important;
+}
+
+body.large-text p,
+body.large-text a,
+body.large-text button {
+    font-size: 1.3rem !important;
+}
+
+/* Reduce Motion */
+@media (prefers-reduced-motion: reduce) {
+
+    *,
+    *::before,
+    *::after {
+        animation-duration: 0.01ms !important;
+        animation-iteration-count: 1 !important;
+        transition-duration: 0.01ms !important;
+        scroll-behavior: auto !important;
+    }
+}
+
+body.reduce-motion *,
+body.reduce-motion *::before,
+body.reduce-motion *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
 }

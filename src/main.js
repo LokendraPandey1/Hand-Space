@@ -23,6 +23,9 @@ let modelMgr, handViz, stateTracker;
 let selectedMesh = null; // Track currently highlighted part
 let pointedMesh = null; // Track mesh being pointed at by finger
 let pointedHitData = null; // Store hit data for AI trigger
+let targetMarker; // Global marker for dynamic scaling
+let attachedMesh = null; // Mesh the marker is stuck to
+let attachedLocalPoint = null; // Point in mesh's local space
 
 function init() {
     ({ scene: sceneObj, renderer: rendererObj } = initScene(canvasElem));
@@ -62,6 +65,13 @@ function init() {
         // Show UI
         uiContainer.classList.remove('hidden');
         modelMenu.classList.remove('hidden');
+
+        // Apply Preferences (Auto-Rotate)
+        const prefs = JSON.parse(localStorage.getItem('handspace_prefs') || '{}');
+        if (orbitControls) {
+            orbitControls.autoRotate = !!prefs.autoRotate;
+            orbitControls.autoRotateSpeed = 2.0; // Default speed
+        }
 
         // Check URL for specific model
         const urlParams = new URLSearchParams(window.location.search);
@@ -275,7 +285,7 @@ function init() {
     // Create Target Marker (Red Sphere)
     const markerGeo = new THREE.SphereGeometry(0.05, 16, 16); // Small sphere
     const markerMat = new THREE.MeshBasicMaterial({ color: 0xff0000 }); // Bright Red
-    const targetMarker = new THREE.Mesh(markerGeo, markerMat);
+    targetMarker = new THREE.Mesh(markerGeo, markerMat);
     targetMarker.visible = false;
     sceneObj.add(targetMarker);
 
@@ -326,6 +336,10 @@ function init() {
             // 1. Position marker at exact click point
             targetMarker.position.copy(hitData.point);
             targetMarker.visible = true;
+
+            // TRACKING: Store local point to stick to model
+            attachedMesh = hitMesh;
+            attachedLocalPoint = hitMesh.worldToLocal(hitData.point.clone());
 
             // 2. Force Render to show marker
             rendererObj.render(sceneObj, cameraObj);
@@ -452,11 +466,22 @@ function init() {
         } else {
             // Clicked background? Hide marker and annotations
             targetMarker.visible = false;
+            attachedMesh = null; // Stop tracking
             rendererObj.render(sceneObj, cameraObj);
             document.getElementById('line-layer').innerHTML = '';
             document.getElementById('annotation-container').innerHTML = '';
             synth.cancel(); // Stop speaking
             // textAi.innerText = ... (Cards hidden now)
+        }
+    });
+
+
+
+    // Listen for preference changes (Auto-Rotate dynamic update)
+    window.addEventListener('storage', (e) => {
+        if (e.key === 'handspace_prefs' && orbitControls) {
+            const newPrefs = JSON.parse(e.newValue || '{}');
+            orbitControls.autoRotate = !!newPrefs.autoRotate;
         }
     });
 
@@ -595,6 +620,58 @@ function renderLoop() {
     modelMgr.update();  // Update animations
     orbitControls.update();
     rendererObj.render(sceneObj, cameraObj);
+
+    // Dynamic Marker Scaling & Annotation Positioning
+    if (targetMarker && targetMarker.visible) {
+
+        // 0. Update Position Tracking (Stick to Model)
+        if (attachedMesh && attachedLocalPoint) {
+            // Convert local point back to world space based on current model transform
+            const worldPos = attachedLocalPoint.clone().applyMatrix4(attachedMesh.matrixWorld);
+            targetMarker.position.copy(worldPos);
+        }
+
+        // 1. Scale Marker
+        const distance = cameraObj.position.distanceTo(targetMarker.position);
+        const scale = distance * 0.15;
+        targetMarker.scale.setScalar(scale);
+
+        // 2. Project to 2D Screen Coordinates
+        const p3d = targetMarker.position.clone();
+        p3d.project(cameraObj);
+
+        const x = (p3d.x * 0.5 + 0.5) * canvasElem.clientWidth;
+        const y = (-(p3d.y * 0.5) + 0.5) * canvasElem.clientHeight;
+
+        // 3. Update Text Label Position
+        const labelDiv = document.querySelector('.annotation-label');
+        if (labelDiv) {
+            // Check if point is behind camera
+            if (p3d.z > 1) {
+                labelDiv.style.display = 'none';
+                document.getElementById('line-layer').style.display = 'none';
+            } else {
+                labelDiv.style.display = '';
+                document.getElementById('line-layer').style.display = '';
+
+                const labelX = x + 100;
+                const labelY = y - 80;
+
+                labelDiv.style.left = `${labelX}px`;
+                labelDiv.style.top = `${y - 50}px`;
+
+                // 4. Update SVG Line
+                const lineLayer = document.getElementById('line-layer');
+                if (lineLayer) {
+                    const lineHtml = `
+                        <circle cx="${x}" cy="${y}" r="3" class="connector-dot" />
+                        <path d="M ${x} ${y} L ${x + 50} ${y - 50} L ${labelX} ${y - 50}" fill="none" class="connector-line" />
+                    `;
+                    lineLayer.innerHTML = lineHtml;
+                }
+            }
+        }
+    }
 }
 
 window.onload = init;

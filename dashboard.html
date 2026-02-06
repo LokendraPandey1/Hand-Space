@@ -524,18 +524,36 @@
         // Initialize Navbar
         initNavbar('dashboard');
 
-        // Personalize Welcome Message
-        const user = Auth.getUser();
-        if (user && user.name) {
-            document.getElementById('welcome-name').innerText = user.name.split(' ')[0]; // Just first name
+        // Personalize Welcome Message and Stats
+        function updateDashboard() {
+            const user = Auth.getUser();
+            const currentClass = localStorage.getItem('handspace_class') || '';
+            const classText = currentClass ? ` (Class ${currentClass})` : '';
+
+            if (user && user.name) {
+                document.getElementById('welcome-name').innerText = user.name.split(' ')[0] + classText;
+            }
+
+            // Simulate fetching new stats for the class
+            if (currentClass) {
+                // Randomize mock data for visual feedback
+                const rand = (min, max) => Math.floor(Math.random() * (max - min + 1)) + min;
+                animateValue('stat-students', 0, rand(20, 35), 800);
+                animateValue('stat-score', 0, rand(60, 95), 800);
+                animateValue('stat-uploads', 0, rand(5, 15), 800);
+            } else {
+                // Initial Load defaults
+                animateValue('stat-students', 0, 24, 1000);
+                animateValue('stat-uploads', 0, 12, 1000);
+            }
         }
 
-        // Animation for stats
-        setTimeout(() => {
-            animateValue('stat-students', 0, 24, 1000);
-            animateValue('stat-uploads', 0, 12, 1000);
-            // animateValue('stat-attention', 0, 3, 1000); // Small number, maybe no animation needed
-        }, 500);
+        updateDashboard();
+
+        // Listen for class changes (from navbar)
+        window.addEventListener('class_changed', () => {
+            updateDashboard();
+        });
 
         function animateValue(id, start, end, duration) {
             const elem = document.getElementById(id);
@@ -547,7 +565,7 @@
                 const elapsed = currentTime - startTime;
                 const progress = Math.min(elapsed / duration, 1);
                 const value = Math.floor(start + range * progress);
-                elem.textContent = value;
+                elem.textContent = value + (id === 'stat-score' ? '%' : '');
                 if (progress < 1) requestAnimationFrame(update);
             }
             requestAnimationFrame(update);
