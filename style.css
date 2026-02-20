@@ -362,6 +362,82 @@ body {
     transform: scale(1.05);
 }
 
+/* Landing Page - Light Mode */
+body.light-mode #landing-page {
+    background: rgba(240, 242, 245, 0.97);
+}
+
+body.light-mode .landing-title {
+    background: linear-gradient(45deg, #0891b2, #7c3aed);
+    -webkit-background-clip: text;
+    background-clip: text;
+    color: transparent;
+    text-shadow: none;
+}
+
+body.light-mode .landing-subtitle {
+    color: #555;
+}
+
+body.light-mode #btn-start-app {
+    color: #0891b2;
+    border-color: #0891b2;
+    box-shadow: 0 0 15px rgba(8, 145, 178, 0.15);
+}
+
+body.light-mode #btn-start-app:hover {
+    background: #0891b2;
+    color: white;
+    box-shadow: 0 0 30px rgba(8, 145, 178, 0.4);
+}
+
+/* Viewer UI - Light Mode */
+body.light-mode {
+    background-color: #e4e7eb;
+}
+
+body.light-mode #model-menu {
+    background: rgba(255, 255, 255, 0.85);
+    border: 1px solid rgba(0, 0, 0, 0.08);
+    box-shadow: 0 4px 16px rgba(0, 0, 0, 0.1);
+    color: #1a1a2e;
+}
+
+body.light-mode #model-menu h3 {
+    color: #1a1a2e;
+}
+
+body.light-mode .category-block {
+    border-color: rgba(0, 0, 0, 0.08);
+    background: rgba(0, 0, 0, 0.03);
+}
+
+body.light-mode .category-header {
+    color: #0891b2;
+}
+
+body.light-mode .category-header:hover {
+    background: rgba(0, 0, 0, 0.05);
+}
+
+body.light-mode .category-content {
+    background: rgba(0, 0, 0, 0.02);
+}
+
+body.light-mode .model-btn {
+    background: rgba(0, 0, 0, 0.04);
+    color: #1a1a2e;
+}
+
+body.light-mode .model-btn:hover {
+    background: rgba(0, 0, 0, 0.08);
+}
+
+body.light-mode .model-btn.active {
+    background: rgba(8, 145, 178, 0.15);
+    color: #0891b2;
+}
+
 /* Language Dropdown Wrapper */
 #lang-wrapper {
     position: absolute;

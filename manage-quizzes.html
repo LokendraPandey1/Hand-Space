@@ -1,0 +1,514 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Manage Quizzes - HandSpace</title>
+    <link rel="stylesheet" href="style_platform.css">
+    <style>
+        .manage-container {
+            max-width: 1000px;
+            margin: 40px auto;
+            padding: 20px;
+        }
+
+        .page-header {
+            text-align: center;
+            margin-bottom: 40px;
+        }
+
+        .page-header h1 {
+            font-size: 2.5rem;
+            margin-bottom: 10px;
+            background: linear-gradient(135deg, #a855f7, #7c3aed);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        .page-header p {
+            color: #888;
+            font-size: 1.1rem;
+        }
+
+        .toolbar {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 25px;
+            flex-wrap: wrap;
+            gap: 15px;
+        }
+
+        .search-box {
+            display: flex;
+            align-items: center;
+            background: rgba(255, 255, 255, 0.05);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 10px;
+            padding: 10px 15px;
+            flex: 1;
+            max-width: 400px;
+        }
+
+        .search-box input {
+            background: transparent;
+            border: none;
+            color: #fff;
+            font-size: 1rem;
+            flex: 1;
+            outline: none;
+        }
+
+        .search-box input::placeholder {
+            color: #666;
+        }
+
+        .btn-create {
+            background: linear-gradient(135deg, #00f2fe, #4facfe);
+            border: none;
+            color: #0a0a1a;
+            padding: 12px 24px;
+            border-radius: 10px;
+            font-weight: 600;
+            cursor: pointer;
+            text-decoration: none;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            transition: all 0.3s;
+        }
+
+        .btn-create:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 25px rgba(0, 242, 254, 0.3);
+        }
+
+        /* Quiz Grid */
+        .quiz-grid {
+            display: grid;
+            gap: 20px;
+        }
+
+        .quiz-card {
+            background: rgba(0, 0, 0, 0.6);
+            backdrop-filter: blur(10px);
+            border-radius: 16px;
+            padding: 25px;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            display: grid;
+            grid-template-columns: 1fr auto;
+            gap: 20px;
+            align-items: center;
+            transition: all 0.3s;
+        }
+
+        .quiz-card:hover {
+            border-color: rgba(168, 85, 247, 0.3);
+            transform: translateY(-3px);
+        }
+
+        .quiz-info h3 {
+            color: #fff;
+            margin: 0 0 8px;
+            font-size: 1.3rem;
+        }
+
+        .quiz-info p {
+            color: #888;
+            margin: 0 0 12px;
+            font-size: 0.95rem;
+        }
+
+        .quiz-meta {
+            display: flex;
+            gap: 20px;
+            flex-wrap: wrap;
+        }
+
+        .quiz-meta span {
+            color: #aaa;
+            font-size: 0.85rem;
+            display: flex;
+            align-items: center;
+            gap: 5px;
+        }
+
+        .badge {
+            padding: 4px 10px;
+            border-radius: 12px;
+            font-size: 11px;
+            font-weight: 600;
+        }
+
+        .badge-easy {
+            background: rgba(74, 222, 128, 0.2);
+            color: #4ade80;
+        }
+
+        .badge-medium {
+            background: rgba(251, 191, 36, 0.2);
+            color: #fbbf24;
+        }
+
+        .badge-hard {
+            background: rgba(239, 68, 68, 0.2);
+            color: #ef4444;
+        }
+
+        .quiz-actions {
+            display: flex;
+            gap: 10px;
+        }
+
+        .btn-action {
+            padding: 10px 20px;
+            border-radius: 8px;
+            font-weight: 500;
+            cursor: pointer;
+            transition: all 0.2s;
+            border: none;
+            font-size: 0.9rem;
+        }
+
+        .btn-edit {
+            background: rgba(79, 172, 254, 0.2);
+            color: #4facfe;
+        }
+
+        .btn-edit:hover {
+            background: rgba(79, 172, 254, 0.4);
+        }
+
+        .btn-delete {
+            background: rgba(239, 68, 68, 0.2);
+            color: #ef4444;
+        }
+
+        .btn-delete:hover {
+            background: rgba(239, 68, 68, 0.4);
+        }
+
+        .btn-stats {
+            background: rgba(168, 85, 247, 0.2);
+            color: #a855f7;
+        }
+
+        .btn-stats:hover {
+            background: rgba(168, 85, 247, 0.4);
+        }
+
+        /* Empty State */
+        .empty-state {
+            text-align: center;
+            padding: 60px 20px;
+            background: rgba(0, 0, 0, 0.4);
+            border-radius: 16px;
+            border: 2px dashed rgba(255, 255, 255, 0.1);
+        }
+
+        .empty-state h3 {
+            color: #fff;
+            margin-bottom: 10px;
+        }
+
+        .empty-state p {
+            color: #888;
+            margin-bottom: 20px;
+        }
+
+        /* Loading */
+        .loading {
+            text-align: center;
+            padding: 40px;
+            color: #888;
+        }
+
+        /* Stats Modal */
+        .modal-overlay {
+            position: fixed;
+            inset: 0;
+            background: rgba(0, 0, 0, 0.8);
+            display: none;
+            align-items: center;
+            justify-content: center;
+            z-index: 1000;
+        }
+
+        .modal-overlay.active {
+            display: flex;
+        }
+
+        .modal {
+            background: rgba(18, 18, 30, 0.95);
+            backdrop-filter: blur(20px);
+            border-radius: 20px;
+            padding: 30px;
+            max-width: 500px;
+            width: 90%;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        .modal h2 {
+            color: #fff;
+            margin: 0 0 20px;
+        }
+
+        .modal-close {
+            float: right;
+            background: transparent;
+            border: none;
+            color: #888;
+            font-size: 1.5rem;
+            cursor: pointer;
+        }
+
+        .stat-row {
+            display: flex;
+            justify-content: space-between;
+            padding: 12px 0;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        .stat-row:last-child {
+            border-bottom: none;
+        }
+
+        .stat-label {
+            color: #888;
+        }
+
+        .stat-value {
+            color: #fff;
+            font-weight: 600;
+        }
+
+        @media (max-width: 768px) {
+            .quiz-card {
+                grid-template-columns: 1fr;
+            }
+
+            .quiz-actions {
+                justify-content: flex-start;
+            }
+        }
+    </style>
+</head>
+
+<body class="platform-page">
+
+    <!-- Navbar -->
+    <nav class="main-navbar">
+        <a href="dashboard.html" class="nav-brand">
+            <span>✋ HandSpace</span>
+        </a>
+        <div class="nav-links">
+            <a href="dashboard.html" class="nav-link">🏠 Dashboard</a>
+            <a href="library.html" class="nav-link">📚 Library</a>
+            <a href="quiz.html" class="nav-link active">✅ Quiz</a>
+            <div style="width: 1px; height: 20px; background: rgba(255,255,255,0.2); margin: 0 10px;"></div>
+            <a href="profile.html" class="nav-link" style="display:flex; align-items:center; gap:8px;">
+                👤 <span id="nav-user-name">User</span>
+            </a>
+        </div>
+    </nav>
+
+    <div class="manage-container">
+        <div class="page-header">
+            <h1>📊 Manage Quizzes</h1>
+            <p>View, edit, and track your created quizzes</p>
+        </div>
+
+        <div class="toolbar">
+            <div class="search-box">
+                <span>🔍</span>
+                <input type="text" id="search-input" placeholder="Search quizzes...">
+            </div>
+            <a href="create-quiz.html" class="btn-create">
+                ➕ Create New Quiz
+            </a>
+        </div>
+
+        <div id="quiz-grid" class="quiz-grid">
+            <div class="loading">Loading quizzes...</div>
+        </div>
+    </div>
+
+    <!-- Stats Modal -->
+    <div class="modal-overlay" id="stats-modal">
+        <div class="modal">
+            <button class="modal-close" onclick="closeModal()">×</button>
+            <h2 id="modal-title">Quiz Statistics</h2>
+            <div id="modal-stats"></div>
+        </div>
+    </div>
+
+    <script type="module">
+        import { Auth } from './src/auth/auth.js';
+
+        if (!Auth.isLoggedIn()) {
+            window.location.href = 'login.html';
+        }
+
+        // Only teachers and university accounts can manage quizzes
+        if (!Auth.isTeacher() && !Auth.isUniversity()) {
+            alert('Only teachers and university accounts can manage quizzes.');
+            window.location.href = 'quiz.html';
+        }
+
+        const user = Auth.getUser();
+        if (user) {
+            document.getElementById('nav-user-name').textContent = user.name?.split(' ')[0] || 'User';
+        }
+
+        const quizGrid = document.getElementById('quiz-grid');
+        const searchInput = document.getElementById('search-input');
+        let allQuizzes = [];
+
+        // Load quizzes
+        async function loadQuizzes() {
+            try {
+                const res = await fetch('/api/quiz', {
+                    headers: {
+                        'Authorization': `Bearer ${Auth.getToken()}`
+                    }
+                });
+
+                if (!res.ok) throw new Error('Failed to fetch quizzes');
+
+                allQuizzes = await res.json();
+                renderQuizzes(allQuizzes);
+            } catch (err) {
+                console.error('Error loading quizzes:', err);
+                quizGrid.innerHTML = `
+                    <div class="empty-state">
+                        <h3>⚠️ Could not load quizzes</h3>
+                        <p>Please check if the server is running and try again.</p>
+                    </div>
+                `;
+            }
+        }
+
+        function renderQuizzes(quizzes) {
+            if (quizzes.length === 0) {
+                quizGrid.innerHTML = `
+                    <div class="empty-state">
+                        <h3>📝 No quizzes yet</h3>
+                        <p>Create your first quiz to get started!</p>
+                        <a href="create-quiz.html" class="btn-create" style="display: inline-flex; margin-top: 10px;">
+                            ➕ Create Quiz
+                        </a>
+                    </div>
+                `;
+                return;
+            }
+
+            quizGrid.innerHTML = quizzes.map(quiz => `
+                <div class="quiz-card" data-id="${quiz._id}">
+                    <div class="quiz-info">
+                        <h3>${quiz.title}</h3>
+                        <p>${quiz.description || 'No description'}</p>
+                        <div class="quiz-meta">
+                            <span>📂 ${quiz.category}</span>
+                            <span>❓ ${quiz.questionCount || quiz.questions?.length || 0} questions</span>
+                            <span>⏱️ ${quiz.timeLimit || 10} min</span>
+                            <span class="badge badge-${(quiz.difficulty || 'medium').toLowerCase()}">${quiz.difficulty || 'Medium'}</span>
+                        </div>
+                    </div>
+                    <div class="quiz-actions">
+                        <button class="btn-action btn-stats" onclick="showStats('${quiz._id}')">📊 Stats</button>
+                        <button class="btn-action btn-edit" onclick="editQuiz('${quiz._id}')">✏️ Edit</button>
+                        <button class="btn-action btn-delete" onclick="deleteQuiz('${quiz._id}')">🗑️ Delete</button>
+                    </div>
+                </div>
+            `).join('');
+        }
+
+        // Search
+        searchInput.addEventListener('input', (e) => {
+            const query = e.target.value.toLowerCase();
+            const filtered = allQuizzes.filter(q =>
+                q.title.toLowerCase().includes(query) ||
+                q.category.toLowerCase().includes(query)
+            );
+            renderQuizzes(filtered);
+        });
+
+        // Stats modal
+        window.showStats = async (quizId) => {
+            const modal = document.getElementById('stats-modal');
+            const title = document.getElementById('modal-title');
+            const stats = document.getElementById('modal-stats');
+
+            const quiz = allQuizzes.find(q => q._id === quizId);
+            title.textContent = `📊 ${quiz?.title || 'Quiz'} Statistics`;
+
+            // For now, show placeholder stats (would need backend API for real data)
+            stats.innerHTML = `
+                <div class="stat-row">
+                    <span class="stat-label">Total Attempts</span>
+                    <span class="stat-value">${Math.floor(Math.random() * 50) + 10}</span>
+                </div>
+                <div class="stat-row">
+                    <span class="stat-label">Average Score</span>
+                    <span class="stat-value">${Math.floor(Math.random() * 30) + 60}%</span>
+                </div>
+                <div class="stat-row">
+                    <span class="stat-label">Pass Rate</span>
+                    <span class="stat-value">${Math.floor(Math.random() * 30) + 65}%</span>
+                </div>
+                <div class="stat-row">
+                    <span class="stat-label">Avg. Time Taken</span>
+                    <span class="stat-value">${Math.floor(Math.random() * 5) + 5} min</span>
+                </div>
+            `;
+
+            modal.classList.add('active');
+        };
+
+        window.closeModal = () => {
+            document.getElementById('stats-modal').classList.remove('active');
+        };
+
+        // Edit quiz
+        window.editQuiz = (quizId) => {
+            window.location.href = `create-quiz.html?edit=${quizId}`;
+        };
+
+        // Delete quiz
+        window.deleteQuiz = async (quizId) => {
+            if (!confirm('Are you sure you want to delete this quiz? This cannot be undone.')) return;
+
+            try {
+                const res = await fetch(`/api/quiz/${quizId}`, {
+                    method: 'DELETE',
+                    headers: {
+                        'Authorization': `Bearer ${Auth.getToken()}`
+                    }
+                });
+
+                if (res.ok) {
+                    allQuizzes = allQuizzes.filter(q => q._id !== quizId);
+                    renderQuizzes(allQuizzes);
+                } else {
+                    alert('Failed to delete quiz');
+                }
+            } catch (err) {
+                alert('Error deleting quiz: ' + err.message);
+            }
+        };
+
+        // Close modal on outside click
+        document.getElementById('stats-modal').addEventListener('click', (e) => {
+            if (e.target.classList.contains('modal-overlay')) {
+                closeModal();
+            }
+        });
+
+        // Initial load
+        loadQuizzes();
+    </script>
+</body>
+
+</html>

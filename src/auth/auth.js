@@ -107,6 +107,12 @@ export const Auth = {
         return user?.role === 'teacher';
     },
 
+    // Check if user is a university/school account
+    isUniversity: () => {
+        const user = JSON.parse(localStorage.getItem(KEY_USER));
+        return user?.role === 'university';
+    },
+
     // Check if logged in
     isLoggedIn: () => {
         return !!localStorage.getItem(KEY_TOKEN);

@@ -521,40 +521,10 @@
         import { initNavbar } from './src/ui/navbar.js';
         import { Auth } from './src/auth/auth.js';
 
-        // Initialize Navbar
+        // Initialize Navbar first
         initNavbar('dashboard');
 
-        // Personalize Welcome Message and Stats
-        function updateDashboard() {
-            const user = Auth.getUser();
-            const currentClass = localStorage.getItem('handspace_class') || '';
-            const classText = currentClass ? ` (Class ${currentClass})` : '';
-
-            if (user && user.name) {
-                document.getElementById('welcome-name').innerText = user.name.split(' ')[0] + classText;
-            }
-
-            // Simulate fetching new stats for the class
-            if (currentClass) {
-                // Randomize mock data for visual feedback
-                const rand = (min, max) => Math.floor(Math.random() * (max - min + 1)) + min;
-                animateValue('stat-students', 0, rand(20, 35), 800);
-                animateValue('stat-score', 0, rand(60, 95), 800);
-                animateValue('stat-uploads', 0, rand(5, 15), 800);
-            } else {
-                // Initial Load defaults
-                animateValue('stat-students', 0, 24, 1000);
-                animateValue('stat-uploads', 0, 12, 1000);
-            }
-        }
-
-        updateDashboard();
-
-        // Listen for class changes (from navbar)
-        window.addEventListener('class_changed', () => {
-            updateDashboard();
-        });
-
+        // animateValue function - needs to be defined before use
         function animateValue(id, start, end, duration) {
             const elem = document.getElementById(id);
             if (!elem) return;
@@ -565,10 +535,188 @@
                 const elapsed = currentTime - startTime;
                 const progress = Math.min(elapsed / duration, 1);
                 const value = Math.floor(start + range * progress);
-                elem.textContent = value + (id === 'stat-score' ? '%' : '');
+                elem.textContent = value + (id === 'stat-score' || id === 'stat-avg' ? '%' : '');
                 if (progress < 1) requestAnimationFrame(update);
             }
             requestAnimationFrame(update);
+        }
+
+        // University Dashboard
+        if (Auth.isUniversity()) {
+            const container = document.querySelector('.dashboard-container');
+            if (container) {
+                container.innerHTML = `
+                    <!-- University Welcome Header -->
+                    <div class="welcome-header">
+                        <h1>🏫 Welcome, <span id="welcome-name">University</span></h1>
+                        <p>Your Quiz Hosting Portal - Create and manage educational assessments</p>
+                    </div>
+
+                    <!-- University Stats -->
+                    <div class="stats-row">
+                        <div class="stat-card">
+                            <div class="stat-icon purple">📝</div>
+                            <div class="stat-info">
+                                <h4 id="stat-quizzes">0</h4>
+                                <p>Quizzes Created</p>
+                            </div>
+                        </div>
+                        <div class="stat-card">
+                            <div class="stat-icon green">✅</div>
+                            <div class="stat-info">
+                                <h4 id="stat-attempts">0</h4>
+                                <p>Total Attempts</p>
+                            </div>
+                        </div>
+                        <div class="stat-card">
+                            <div class="stat-icon blue">📊</div>
+                            <div class="stat-info">
+                                <h4 id="stat-avg">0%</h4>
+                                <p>Avg. Score</p>
+                            </div>
+                        </div>
+                        <div class="stat-card">
+                            <div class="stat-icon orange">📚</div>
+                            <div class="stat-info">
+                                <h4 id="stat-models">0</h4>
+                                <p>Models Available</p>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Quick Actions -->
+                    <h3 class="section-title">Quick Actions</h3>
+                    <div class="quick-actions">
+                        <a href="create-quiz.html" class="action-card">
+                            <div class="action-icon" style="color: #a855f7;">✏️</div>
+                            <h4>Create New Quiz</h4>
+                            <p>Design assessments for students</p>
+                        </a>
+                        <a href="manage-quizzes.html" class="action-card">
+                            <div class="action-icon" style="color: #00f2fe;">📊</div>
+                            <h4>Manage Quizzes</h4>
+                            <p>View, edit, and track your quizzes</p>
+                        </a>
+                        <a href="library.html" class="action-card">
+                            <div class="action-icon" style="color: #4ade80;">📚</div>
+                            <h4>Browse Library</h4>
+                            <p>Explore 3D models for quizzes</p>
+                        </a>
+                        <a href="host-live-quiz.html" class="action-card">
+                            <div class="action-icon" style="color: #f472b6;">🎮</div>
+                            <h4>Host Live Quiz</h4>
+                            <p>Run real-time quiz sessions</p>
+                        </a>
+                    </div>
+
+                    <!-- Info Cards -->
+                    <div class="chart-section" style="grid-column: span 6;">
+                        <div class="card-header">💡 Quiz Creation Tips</div>
+                        <div style="padding: 10px 0;">
+                            <div style="display: flex; align-items: center; gap: 12px; margin-bottom: 15px; padding: 12px; background: rgba(168, 85, 247, 0.1); border-radius: 10px;">
+                                <span style="font-size: 1.5rem;">🎯</span>
+                                <div>
+                                    <strong style="color: #fff;">Clear Questions</strong>
+                                    <p style="color: #888; margin: 4px 0 0; font-size: 0.85rem;">Write concise, unambiguous questions</p>
+                                </div>
+                            </div>
+                            <div style="display: flex; align-items: center; gap: 12px; margin-bottom: 15px; padding: 12px; background: rgba(0, 242, 254, 0.1); border-radius: 10px;">
+                                <span style="font-size: 1.5rem;">🖼️</span>
+                                <div>
+                                    <strong style="color: #fff;">Use 3D Models</strong>
+                                    <p style="color: #888; margin: 4px 0 0; font-size: 0.85rem;">Link quizzes to interactive models</p>
+                                </div>
+                            </div>
+                            <div style="display: flex; align-items: center; gap: 12px; padding: 12px; background: rgba(74, 222, 128, 0.1); border-radius: 10px;">
+                                <span style="font-size: 1.5rem;">⏱️</span>
+                                <div>
+                                    <strong style="color: #fff;">Reasonable Time</strong>
+                                    <p style="color: #888; margin: 4px 0 0; font-size: 0.85rem;">Set appropriate time limits</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="activity-section" style="grid-column: span 6;">
+                        <div class="card-header">🚀 Getting Started</div>
+                        <div class="activity-list" style="padding: 10px 0;">
+                            <div class="activity-item">
+                                <div class="activity-avatar" style="background: linear-gradient(135deg, #a855f7, #7c3aed);">1</div>
+                                <div class="activity-details">
+                                    <h5>Create Your First Quiz</h5>
+                                    <p style="color: #888;">Click "Create New Quiz" to get started</p>
+                                </div>
+                            </div>
+                            <div class="activity-item">
+                                <div class="activity-avatar" style="background: linear-gradient(135deg, #00f2fe, #4facfe);">2</div>
+                                <div class="activity-details">
+                                    <h5>Add Questions</h5>
+                                    <p style="color: #888;">Include multiple choice questions</p>
+                                </div>
+                            </div>
+                            <div class="activity-item">
+                                <div class="activity-avatar" style="background: linear-gradient(135deg, #4ade80, #22c55e);">3</div>
+                                <div class="activity-details">
+                                    <h5>Share with Students</h5>
+                                    <p style="color: #888;">Students can take quizzes from their accounts</p>
+                                </div>
+                            </div>
+                            <div class="activity-item">
+                                <div class="activity-avatar" style="background: linear-gradient(135deg, #f472b6, #ec4899);">4</div>
+                                <div class="activity-details">
+                                    <h5>Track Results</h5>
+                                    <p style="color: #888;">View analytics in Manage Quizzes</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                `;
+            }
+
+            // Animate university stats
+            const rand = (min, max) => Math.floor(Math.random() * (max - min + 1)) + min;
+            setTimeout(() => {
+                animateValue('stat-quizzes', 0, rand(3, 12), 800);
+                animateValue('stat-attempts', 0, rand(50, 200), 800);
+                animateValue('stat-avg', 0, rand(65, 90), 800);
+                animateValue('stat-models', 0, rand(15, 40), 800);
+            }, 100);
+
+            // Update welcome name for university
+            const user = Auth.getUser();
+            if (user && user.name) {
+                document.getElementById('welcome-name').innerText = user.name.split(' ')[0];
+            }
+        } else {
+            // Teacher/Student Dashboard Logic
+            function updateDashboard() {
+                const user = Auth.getUser();
+                const currentClass = localStorage.getItem('handspace_class') || '';
+                const classText = currentClass ? ` (Class ${currentClass})` : '';
+
+                if (user && user.name) {
+                    document.getElementById('welcome-name').innerText = user.name.split(' ')[0] + classText;
+                }
+
+                if (currentClass) {
+                    // Randomize mock data for visual feedback
+                    const rand = (min, max) => Math.floor(Math.random() * (max - min + 1)) + min;
+                    animateValue('stat-students', 0, rand(20, 35), 800);
+                    animateValue('stat-score', 0, rand(60, 95), 800);
+                    animateValue('stat-uploads', 0, rand(5, 15), 800);
+                } else {
+                    // Initial Load defaults
+                    animateValue('stat-students', 0, 24, 1000);
+                    animateValue('stat-uploads', 0, 12, 1000);
+                }
+            }
+
+            updateDashboard();
+
+            // Listen for class changes (from navbar)
+            window.addEventListener('class_changed', () => {
+                updateDashboard();
+            });
         }
     </script>
 </body>

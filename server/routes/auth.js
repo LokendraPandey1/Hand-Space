@@ -18,7 +18,7 @@ router.post('/signup', async (req, res) => {
         const hashedPassword = await bcrypt.hash(password, salt);
 
         // Validate role
-        const validRole = ['student', 'teacher'].includes(role) ? role : 'student';
+        const validRole = ['student', 'teacher', 'university'].includes(role) ? role : 'student';
 
         // Save
         user = new User({

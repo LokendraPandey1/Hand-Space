@@ -374,6 +374,23 @@
         <!-- Preferences Tab -->
         <div class="tab-content" id="tab-preferences">
             <div class="settings-section">
+                <h3 class="section-title">🎨 Appearance</h3>
+
+                <div class="setting-row">
+                    <div class="setting-info">
+                        <h4>Dark Mode</h4>
+                        <p>Switch between light and dark themes</p>
+                    </div>
+                    <div class="setting-control">
+                        <label class="toggle-switch">
+                            <input type="checkbox" id="pref-dark-mode" checked>
+                            <span class="toggle-slider"></span>
+                        </label>
+                    </div>
+                </div>
+            </div>
+
+            <div class="settings-section">
                 <h3 class="section-title">🌐 Language & Region</h3>
 
                 <div class="setting-row">
@@ -658,7 +675,17 @@
             document.getElementById('input-name').value = user.name || '';
             document.getElementById('input-email').value = user.email || '';
             document.getElementById('avatar-initials').textContent = (user.name || 'U')[0].toUpperCase();
-            document.getElementById('role-badge').textContent = user.role === 'teacher' ? '👨‍🏫 Teacher' : '🎓 Student';
+
+            // Display role badge based on account type
+            const roleBadge = document.getElementById('role-badge');
+            if (user.role === 'teacher') {
+                roleBadge.textContent = '👨‍🏫 Teacher';
+            } else if (user.role === 'university') {
+                roleBadge.textContent = '🏫 University';
+                roleBadge.style.background = 'linear-gradient(135deg, #a855f7, #7c3aed)';
+            } else {
+                roleBadge.textContent = '🎓 Student';
+            }
         }
 
         // Tab switching
@@ -689,9 +716,13 @@
         if (prefs.largeText !== undefined) document.getElementById('pref-large-text').checked = prefs.largeText;
         if (prefs.reduceMotion !== undefined) document.getElementById('pref-reduce-motion').checked = prefs.reduceMotion;
 
+        // Dark mode toggle: checked = dark mode (default), unchecked = light mode
+        document.getElementById('pref-dark-mode').checked = prefs.theme !== 'light';
+
         // Save preferences
         document.getElementById('btn-save').addEventListener('click', () => {
             const newPrefs = {
+                theme: document.getElementById('pref-dark-mode').checked ? 'dark' : 'light',
                 language: document.getElementById('pref-language').value,
                 handMode: document.getElementById('pref-hand-mode').value,
                 quality: document.getElementById('pref-quality').value,
@@ -708,6 +739,9 @@
 
             localStorage.setItem('handspace_prefs', JSON.stringify(newPrefs));
             localStorage.setItem('handspace_lang', newPrefs.language);
+
+            // Apply theme immediately
+            window.dispatchEvent(new Event('prefs_updated'));
 
             // Show toast
             const toast = document.getElementById('toast');

@@ -412,3 +412,664 @@ body.reduce-motion *::after {
     transition-duration: 0.01ms !important;
     scroll-behavior: auto !important;
 }
+
+/* =========================================
+   Light Mode Theme
+   ========================================= */
+
+/* Smooth theme transition */
+body.platform-page {
+    transition: background 0.4s ease, color 0.4s ease;
+}
+
+body.platform-page.light-mode {
+    background: linear-gradient(135deg, #f0f2f5 0%, #e4e7eb 50%, #f0f2f5 100%);
+    color: #1a1a2e;
+}
+
+/* Navbar */
+body.light-mode .main-navbar {
+    background: rgba(255, 255, 255, 0.85);
+    border-bottom: 1px solid rgba(0, 0, 0, 0.08);
+    box-shadow: 0 2px 12px rgba(0, 0, 0, 0.06);
+}
+
+body.light-mode .nav-links a,
+body.light-mode .nav-link {
+    color: #555;
+}
+
+body.light-mode .nav-links a:hover,
+body.light-mode .nav-link:hover {
+    color: #0891b2;
+}
+
+body.light-mode .nav-link.active {
+    color: #0891b2;
+    border-bottom-color: #0891b2;
+}
+
+/* Cards & Glass Panels */
+body.light-mode .card-glass,
+body.light-mode .stat-card,
+body.light-mode .action-card,
+body.light-mode .chart-section,
+body.light-mode .activity-section,
+body.light-mode .settings-section {
+    background: rgba(255, 255, 255, 0.85);
+    border: 1px solid rgba(0, 0, 0, 0.08);
+    box-shadow: 0 2px 12px rgba(0, 0, 0, 0.06);
+    backdrop-filter: blur(10px);
+}
+
+body.light-mode .card-glass:hover,
+body.light-mode .stat-card:hover,
+body.light-mode .action-card:hover {
+    background: rgba(255, 255, 255, 0.95);
+    border-color: rgba(0, 0, 0, 0.12);
+    box-shadow: 0 8px 24px rgba(0, 0, 0, 0.1);
+}
+
+/* Text Colors */
+body.light-mode h1,
+body.light-mode h2,
+body.light-mode h3,
+body.light-mode h4,
+body.light-mode h5 {
+    color: #1a1a2e;
+}
+
+body.light-mode .welcome-header h1 {
+    background: none;
+    -webkit-background-clip: unset;
+    -webkit-text-fill-color: unset;
+    color: #1a1a2e;
+}
+
+/* Fix gradient text stripping emoji colors in light mode */
+body.light-mode .settings-header h1,
+body.light-mode .card-title {
+    background: none;
+    -webkit-background-clip: unset;
+    -webkit-text-fill-color: unset;
+    color: #0891b2;
+}
+
+body.light-mode .section-title {
+    color: #0891b2;
+}
+
+body.light-mode .welcome-header p,
+body.light-mode .action-card p,
+body.light-mode .bar-label,
+body.light-mode .activity-details p,
+body.light-mode .library-card-desc,
+body.light-mode .settings-header p,
+body.light-mode .setting-info p,
+body.light-mode .gesture-action {
+    color: #666;
+}
+
+body.light-mode .stat-info h4,
+body.light-mode .stat-info p {
+    color: #1a1a2e;
+}
+
+body.light-mode .stat-info p {
+    color: #555;
+}
+
+body.light-mode .card-header {
+    color: #1a1a2e;
+}
+
+body.light-mode .section-title {
+    color: #1a1a2e;
+}
+
+body.light-mode .activity-details h5 {
+    color: #1a1a2e;
+}
+
+body.light-mode .activity-details span {
+    color: #0891b2;
+}
+
+body.light-mode .library-card-title {
+    color: #1a1a2e;
+}
+
+/* Forms & Inputs */
+body.light-mode .form-input,
+body.light-mode .setting-control select,
+body.light-mode .setting-control input[type="text"],
+body.light-mode .setting-control input[type="email"] {
+    background: rgba(0, 0, 0, 0.04);
+    border: 1px solid rgba(0, 0, 0, 0.15);
+    color: #1a1a2e;
+}
+
+body.light-mode .form-input:focus,
+body.light-mode .setting-control select:focus,
+body.light-mode .setting-control input:focus {
+    border-color: #0891b2;
+    box-shadow: 0 0 0 3px rgba(8, 145, 178, 0.1);
+}
+
+body.light-mode .form-input::placeholder {
+    color: #999;
+}
+
+body.light-mode .form-group label {
+    color: #444;
+}
+
+/* Navbar Class Select */
+body.light-mode .nav-class-select {
+    background: rgba(0, 0, 0, 0.06);
+    color: #1a1a2e;
+    border: 1px solid rgba(0, 0, 0, 0.12);
+}
+
+body.light-mode .nav-class-select:hover {
+    background: rgba(0, 0, 0, 0.1);
+    border-color: #0891b2;
+}
+
+body.light-mode .nav-class-select option {
+    background: #fff;
+    color: #1a1a2e;
+}
+
+/* Auth Container */
+body.light-mode .auth-container {
+    background: radial-gradient(circle at center, #f0f2f5 0%, #e4e7eb 100%);
+}
+
+/* Buttons */
+body.light-mode .btn-primary {
+    background: linear-gradient(45deg, #0891b2, #0ea5e9);
+    color: white;
+}
+
+body.light-mode .btn-save {
+    background: linear-gradient(135deg, #0891b2, #0ea5e9);
+    color: white;
+}
+
+/* Tabs (Settings) */
+body.light-mode .tab-btn {
+    color: #666;
+}
+
+body.light-mode .tab-btn:hover {
+    color: #1a1a2e;
+    background: rgba(0, 0, 0, 0.04);
+}
+
+body.light-mode .tab-btn.active {
+    color: #0891b2;
+    background: rgba(8, 145, 178, 0.08);
+}
+
+body.light-mode .settings-tabs {
+    border-bottom-color: rgba(0, 0, 0, 0.1);
+}
+
+/* Toggle Switch (light mode looks) */
+body.light-mode .toggle-slider {
+    background-color: rgba(0, 0, 0, 0.15);
+}
+
+/* Setting rows */
+body.light-mode .setting-row {
+    border-bottom-color: rgba(0, 0, 0, 0.06);
+}
+
+body.light-mode .setting-info h4 {
+    color: #1a1a2e;
+}
+
+/* Activity items */
+body.light-mode .activity-item {
+    border-bottom-color: rgba(0, 0, 0, 0.06);
+}
+
+body.light-mode .activity-list::-webkit-scrollbar-thumb {
+    background: rgba(0, 0, 0, 0.15);
+}
+
+/* Bar chart tooltip */
+body.light-mode .bar::after {
+    background: rgba(255, 255, 255, 0.95);
+    color: #0891b2;
+    border: 1px solid rgba(0, 0, 0, 0.1);
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+}
+
+/* Profile avatar text */
+body.light-mode .avatar {
+    color: white;
+}
+
+/* Badge */
+body.light-mode .profile-info .badge {
+    background: rgba(74, 222, 128, 0.15);
+    color: #16a34a;
+}
+
+/* Auth link */
+body.light-mode .auth-link {
+    color: #0891b2;
+}
+
+/* Toast */
+body.light-mode .toast {
+    box-shadow: 0 8px 24px rgba(0, 0, 0, 0.15);
+}
+
+/* Library cards */
+body.light-mode .library-card {
+    box-shadow: 0 2px 12px rgba(0, 0, 0, 0.06);
+}
+
+body.light-mode .library-card:hover {
+    box-shadow: 0 12px 32px rgba(0, 0, 0, 0.12);
+}
+
+/* Nav brand stays gradient */
+body.light-mode .nav-brand {
+    background: linear-gradient(45deg, #0891b2, #0ea5e9);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+}
+
+/* Logout link */
+body.light-mode #nav-logout {
+    color: #ef4444 !important;
+}
+
+/* Theme toggle button in navbar */
+.theme-toggle-btn {
+    background: rgba(255, 255, 255, 0.1);
+    border: 1px solid rgba(255, 255, 255, 0.2);
+    color: white;
+    width: 38px;
+    height: 38px;
+    border-radius: 50%;
+    cursor: pointer;
+    font-size: 18px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: all 0.3s ease;
+    flex-shrink: 0;
+}
+
+.theme-toggle-btn:hover {
+    background: rgba(255, 255, 255, 0.2);
+    transform: scale(1.1);
+}
+
+body.light-mode .theme-toggle-btn {
+    background: rgba(0, 0, 0, 0.06);
+    border: 1px solid rgba(0, 0, 0, 0.12);
+    color: #1a1a2e;
+}
+
+body.light-mode .theme-toggle-btn:hover {
+    background: rgba(0, 0, 0, 0.1);
+}
+
+/* ============================================
+   Manage Students - Light Mode
+   ============================================ */
+
+body.light-mode .header-content h1 {
+    color: #1a1a2e;
+}
+
+body.light-mode .header-content p {
+    color: #666;
+}
+
+body.light-mode .controls-bar {
+    background: rgba(255, 255, 255, 0.85);
+    border: 1px solid rgba(0, 0, 0, 0.08);
+    box-shadow: 0 2px 12px rgba(0, 0, 0, 0.06);
+}
+
+body.light-mode .search-box input {
+    background: rgba(0, 0, 0, 0.04);
+    border: 1px solid rgba(0, 0, 0, 0.12);
+    color: #1a1a2e;
+}
+
+body.light-mode .search-box input::placeholder {
+    color: #999;
+}
+
+body.light-mode .search-icon {
+    color: #888;
+}
+
+body.light-mode .filter-select {
+    background: rgba(0, 0, 0, 0.04);
+    border: 1px solid rgba(0, 0, 0, 0.12);
+    color: #1a1a2e;
+}
+
+body.light-mode .filter-select option {
+    background: #fff;
+    color: #1a1a2e;
+}
+
+body.light-mode .student-list {
+    background: rgba(255, 255, 255, 0.85);
+    border: 1px solid rgba(0, 0, 0, 0.08);
+    box-shadow: 0 2px 12px rgba(0, 0, 0, 0.06);
+}
+
+body.light-mode .list-header {
+    background: rgba(0, 0, 0, 0.03);
+    border-bottom: 1px solid rgba(0, 0, 0, 0.08);
+    color: #888;
+}
+
+body.light-mode .student-row {
+    border-bottom: 1px solid rgba(0, 0, 0, 0.05);
+}
+
+body.light-mode .student-row:hover {
+    background: rgba(0, 0, 0, 0.03);
+}
+
+body.light-mode .student-info h4 {
+    color: #1a1a2e;
+}
+
+body.light-mode .student-info span {
+    color: #666;
+}
+
+body.light-mode .progress-track {
+    background: rgba(0, 0, 0, 0.08);
+}
+
+body.light-mode .action-btn {
+    color: #999;
+}
+
+body.light-mode .action-btn:hover {
+    color: #1a1a2e;
+}
+
+/* ============================================
+   Create Quiz - Light Mode
+   ============================================ */
+
+body.light-mode .quiz-form {
+    background: rgba(255, 255, 255, 0.85);
+    border: 1px solid rgba(0, 0, 0, 0.08);
+    box-shadow: 0 2px 12px rgba(0, 0, 0, 0.06);
+    backdrop-filter: blur(10px);
+}
+
+body.light-mode .form-header h1 {
+    background: none;
+    -webkit-background-clip: unset;
+    -webkit-text-fill-color: unset;
+    color: #0891b2;
+}
+
+body.light-mode .form-header p {
+    color: #666;
+}
+
+body.light-mode .form-section h3 {
+    color: #0891b2;
+}
+
+body.light-mode .quiz-form .form-group label {
+    color: #444;
+}
+
+body.light-mode .quiz-form .form-group input,
+body.light-mode .quiz-form .form-group select,
+body.light-mode .quiz-form .form-group textarea {
+    background: rgba(0, 0, 0, 0.04);
+    border: 1px solid rgba(0, 0, 0, 0.12);
+    color: #1a1a2e;
+}
+
+body.light-mode .quiz-form .form-group input::placeholder,
+body.light-mode .quiz-form .form-group textarea::placeholder {
+    color: #999;
+}
+
+body.light-mode .quiz-form .form-group input:focus,
+body.light-mode .quiz-form .form-group select:focus,
+body.light-mode .quiz-form .form-group textarea:focus {
+    border-color: #0891b2;
+    box-shadow: 0 0 0 3px rgba(8, 145, 178, 0.1);
+}
+
+body.light-mode .quiz-form .form-group select option {
+    background: #fff;
+    color: #1a1a2e;
+}
+
+body.light-mode .question-card {
+    background: rgba(0, 0, 0, 0.02);
+    border: 1px solid rgba(0, 0, 0, 0.08);
+}
+
+body.light-mode .question-card.editing {
+    border-color: #0891b2;
+}
+
+body.light-mode .option-item {
+    background: rgba(0, 0, 0, 0.03);
+}
+
+body.light-mode .option-item.correct {
+    background: rgba(74, 222, 128, 0.1);
+    border: 1px solid rgba(74, 222, 128, 0.25);
+}
+
+body.light-mode .btn-add-question {
+    background: rgba(8, 145, 178, 0.06);
+    border: 2px dashed rgba(8, 145, 178, 0.25);
+    color: #0891b2;
+}
+
+body.light-mode .btn-add-question:hover {
+    background: rgba(8, 145, 178, 0.12);
+    border-color: #0891b2;
+}
+
+body.light-mode .btn-cancel {
+    border: 1px solid rgba(0, 0, 0, 0.15);
+    color: #666;
+}
+
+body.light-mode .btn-cancel:hover {
+    border-color: #ef4444;
+    color: #ef4444;
+}
+
+body.light-mode .question-count {
+    background: rgba(8, 145, 178, 0.1);
+    color: #0891b2;
+}
+
+/* ============================================
+   Upload Page - Light Mode
+   ============================================ */
+
+body.light-mode .upload-form {
+    background: rgba(255, 255, 255, 0.85);
+    border: 1px solid rgba(0, 0, 0, 0.08);
+    box-shadow: 0 2px 12px rgba(0, 0, 0, 0.06);
+    backdrop-filter: blur(10px);
+}
+
+body.light-mode .upload-form .form-group label {
+    color: #444;
+}
+
+body.light-mode .upload-form .form-group input,
+body.light-mode .upload-form .form-group select,
+body.light-mode .upload-form .form-group textarea {
+    background: rgba(0, 0, 0, 0.04);
+    border: 1px solid rgba(0, 0, 0, 0.12);
+    color: #1a1a2e;
+}
+
+body.light-mode .upload-form .form-group input::placeholder,
+body.light-mode .upload-form .form-group textarea::placeholder {
+    color: #999;
+}
+
+body.light-mode .upload-form .form-group input:focus,
+body.light-mode .upload-form .form-group select:focus,
+body.light-mode .upload-form .form-group textarea:focus {
+    border-color: #0891b2;
+    box-shadow: 0 0 0 3px rgba(8, 145, 178, 0.1);
+}
+
+body.light-mode .upload-form .form-group select option {
+    background: #fff;
+    color: #1a1a2e;
+}
+
+body.light-mode .file-upload-area {
+    border-color: rgba(0, 0, 0, 0.2);
+    background: rgba(0, 0, 0, 0.02);
+}
+
+body.light-mode .file-upload-area:hover {
+    border-color: #0891b2;
+    background: rgba(8, 145, 178, 0.04);
+}
+
+body.light-mode .file-upload-area.dragover {
+    border-color: #0891b2;
+    background: rgba(8, 145, 178, 0.08);
+}
+
+body.light-mode .file-upload-text {
+    color: #666;
+}
+
+body.light-mode .file-upload-hint {
+    color: #999;
+}
+
+body.light-mode .progress-bar {
+    background: rgba(0, 0, 0, 0.08);
+}
+
+body.light-mode .upload-status {
+    color: #666;
+}
+
+body.light-mode .my-models h3 {
+    color: #1a1a2e;
+}
+
+body.light-mode .model-item {
+    background: rgba(255, 255, 255, 0.85);
+    border: 1px solid rgba(0, 0, 0, 0.08);
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.04);
+}
+
+body.light-mode .model-info h4 {
+    color: #1a1a2e;
+}
+
+body.light-mode .model-info span {
+    color: #666;
+}
+
+/* ============================================
+   Auth Pages (Login/Signup) - Light Mode
+   ============================================ */
+
+body.light-mode .auth-form h2 {
+    color: #1a1a2e;
+}
+
+body.light-mode .auth-form label {
+    color: #444;
+}
+
+/* User greeting in navbar */
+body.light-mode .user-greeting {
+    color: #1a1a2e;
+}
+
+body.light-mode .btn-logout {
+    color: #ef4444;
+}
+
+/* ============================================
+   Misc Overrides for Inline Styles
+   ============================================ */
+
+/* Nav divider lines */
+body.light-mode .nav-links div[style*="background: rgba(255,255,255"] {
+    background: rgba(0, 0, 0, 0.12) !important;
+}
+
+/* Quiz page cards and stats */
+body.light-mode .quiz-card {
+    background: rgba(255, 255, 255, 0.85);
+    border: 1px solid rgba(0, 0, 0, 0.08);
+    box-shadow: 0 2px 12px rgba(0, 0, 0, 0.06);
+}
+
+body.light-mode .quiz-card:hover {
+    background: rgba(255, 255, 255, 0.95);
+    box-shadow: 0 8px 24px rgba(0, 0, 0, 0.1);
+}
+
+body.light-mode .quiz-card h3 {
+    color: #1a1a2e;
+}
+
+body.light-mode .quiz-card p {
+    color: #666;
+}
+
+/* Generic muted text styling (inline style:color:#aaa, color:#888, color:#ccc) */
+body.light-mode [style*="color:#aaa"],
+body.light-mode [style*="color: #aaa"] {
+    color: #666 !important;
+}
+
+body.light-mode [style*="color:#888"],
+body.light-mode [style*="color: #888"] {
+    color: #777 !important;
+}
+
+body.light-mode [style*="color:#ccc"],
+body.light-mode [style*="color: #ccc"] {
+    color: #555 !important;
+}
+
+body.light-mode [style*="color: #fff"],
+body.light-mode [style*="color:#fff"],
+body.light-mode [style*="color: white"] {
+    color: #1a1a2e !important;
+}
+
+/* Inline backgrounds that are dark */
+body.light-mode [style*="background: rgba(255,255,255,0.2)"] {
+    background: rgba(0, 0, 0, 0.12) !important;
+}
+
+/* Nav link styled inline with color:#ff6b6b stays red */
+body.light-mode [style*="color:#ff6b6b"] {
+    color: #ef4444 !important;
+}

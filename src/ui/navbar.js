@@ -18,9 +18,9 @@ export function initNavbar(activePage) {
         `;
     }
 
-    // Class Selector for Teachers
+    // Class Selector for Teachers (not University accounts)
     let classSelectorHtml = '';
-    if (user && Auth.isTeacher()) {
+    if (user && Auth.isTeacher() && !Auth.isUniversity()) {
         const classes = [];
         const grades = ['5', '6', '7', '8', '9'];
         const sections = ['A', 'B', 'C'];
@@ -45,6 +45,20 @@ export function initNavbar(activePage) {
     function applyPreferences() {
         const prefs = JSON.parse(localStorage.getItem('handspace_prefs') || '{}');
         const body = document.body;
+
+        // Theme (Light/Dark)
+        if (prefs.theme === 'light') {
+            body.classList.add('light-mode');
+        } else {
+            body.classList.remove('light-mode');
+        }
+
+        // Update toggle button icon if it exists
+        const themeBtn = document.getElementById('btn-theme-toggle');
+        if (themeBtn) {
+            themeBtn.textContent = prefs.theme === 'light' ? '☀️' : '🌙';
+            themeBtn.title = prefs.theme === 'light' ? 'Switch to Dark Mode' : 'Switch to Light Mode';
+        }
 
         // Accessibility Classes
         if (prefs.highContrast) body.classList.add('high-contrast');
@@ -83,6 +97,12 @@ export function initNavbar(activePage) {
         applyPreferences();
     });
 
+    // Determine current theme for toggle icon
+    const currentPrefs = JSON.parse(localStorage.getItem('handspace_prefs') || '{}');
+    const isLight = currentPrefs.theme === 'light';
+    const themeIcon = isLight ? '☀️' : '🌙';
+    const themeTitle = isLight ? 'Switch to Dark Mode' : 'Switch to Light Mode';
+
     const navHtml = `
     <nav class="main-navbar">
         <a href="${user ? 'dashboard.html' : 'index.html'}" class="nav-brand">
@@ -94,6 +114,7 @@ export function initNavbar(activePage) {
             <a href="index.html" class="nav-link ${activePage === 'viewer' ? 'active' : ''}">🧊 3D Viewer</a>
             <a href="quiz.html" class="nav-link ${activePage === 'quiz' ? 'active' : ''}">✅ Quiz</a>
             <div style="width: 1px; height: 20px; background: rgba(255,255,255,0.2); margin: 0 10px;"></div>
+            <button id="btn-theme-toggle" class="theme-toggle-btn" title="${themeTitle}">${themeIcon}</button>
             ${classSelectorHtml}
             ${userSection}
         </div>
@@ -101,6 +122,18 @@ export function initNavbar(activePage) {
     `;
 
     document.body.insertAdjacentHTML('afterbegin', navHtml);
+
+    // Theme Toggle Handler
+    const themeToggleBtn = document.getElementById('btn-theme-toggle');
+    if (themeToggleBtn) {
+        themeToggleBtn.addEventListener('click', () => {
+            const prefs = JSON.parse(localStorage.getItem('handspace_prefs') || '{}');
+            prefs.theme = prefs.theme === 'light' ? 'dark' : 'light';
+            localStorage.setItem('handspace_prefs', JSON.stringify(prefs));
+            applyPreferences();
+            window.dispatchEvent(new Event('prefs_updated'));
+        });
+    }
 
     // Attach Handlers
     if (user) {

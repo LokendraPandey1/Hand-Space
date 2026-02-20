@@ -302,6 +302,10 @@
             <div class="quiz-header">
                 <h1>📝 Knowledge Quizzes</h1>
                 <p style="color: #888;">Test your understanding of 3D models and concepts</p>
+                <a href="join-quiz.html"
+                    style="display: inline-block; margin-top: 15px; background: linear-gradient(135deg, #f472b6, #ec4899); color: #fff; padding: 12px 25px; border-radius: 10px; text-decoration: none; font-weight: 600; transition: all 0.3s;">
+                    🎮 Join Live Quiz
+                </a>
             </div>
 
             <div class="quiz-meta" style="margin-bottom: 30px;">
@@ -372,54 +376,92 @@
     <script type="module">
         import { Auth } from './src/auth/auth.js';
 
-        if (!Auth.isLoggedIn()) {
-            window.location.href = 'login.html';
-        }
-
-        // Initialize Navbar User Info
-        const user = Auth.getUser();
-        if (user) {
-            document.getElementById('nav-user-name').textContent = user.firstName || user.name.split(' ')[0] || 'User';
-
-            const logoutBtn = document.getElementById('nav-logout');
-            if (logoutBtn) {
-                logoutBtn.onclick = (e) => {
-                    e.preventDefault();
-                    Auth.logout();
-                    window.location.href = 'login.html';
-                };
+        // Wrap in IIFE to allow early return for university accounts
+        (async function () {
+            if (!Auth.isLoggedIn()) {
+                window.location.href = 'login.html';
+                return;
             }
-        }
 
-        // State
+            // Initialize Navbar User Info
+            const user = Auth.getUser();
+            if (user) {
+                document.getElementById('nav-user-name').textContent = user.firstName || user.name.split(' ')[0] || 'User';
 
-        // State
-        let currentQuiz = null;
-        let currentQuestion = 0;
-        let answers = [];
-        let startTime = null;
-        let timerInterval = null;
+                const logoutBtn = document.getElementById('nav-logout');
+                if (logoutBtn) {
+                    logoutBtn.onclick = (e) => {
+                        e.preventDefault();
+                        Auth.logout();
+                        window.location.href = 'login.html';
+                    };
+                }
+            }
 
-        // Elements
-        const selectionDiv = document.getElementById('quiz-selection');
-        const takingDiv = document.getElementById('quiz-taking');
-        const resultsDiv = document.getElementById('quiz-results');
-        const quizList = document.getElementById('quiz-list');
-        const filterCategory = document.getElementById('filter-category');
-
-        // Load quizzes
-        async function loadQuizzes(category = '') {
-            try {
-                const url = category ? `/api/quiz?category=${category}` : '/api/quiz';
-                const res = await fetch(url);
-                const quizzes = await res.json();
-
-                if (quizzes.length === 0) {
-                    quizList.innerHTML = '<p style="color: #888; text-align: center;">No quizzes available yet.</p>';
-                    return;
+            // University Account: Show Quiz HOSTING mode (not taking)
+            if (Auth.isUniversity()) {
+                const quizHeader = document.querySelector('.quiz-header');
+                if (quizHeader) {
+                    quizHeader.innerHTML = `
+                        <h1>🎓 Quiz Hosting Portal</h1>
+                        <p style="color: #888;">Create and manage quizzes for students</p>
+                    `;
                 }
 
-                quizList.innerHTML = quizzes.map(q => `
+                // Replace quiz list with hosting options
+                const quizList = document.getElementById('quiz-list');
+                if (quizList) {
+                    quizList.innerHTML = `
+                        <div class="quiz-card" style="text-align: center; padding: 40px;">
+                            <h3>📝 Create New Quiz</h3>
+                            <p>Design a quiz for students to test their knowledge</p>
+                            <a href="create-quiz.html" class="btn-start-quiz" style="text-decoration: none; display: inline-block; margin-top: 15px;">Create Quiz →</a>
+                        </div>
+                        <div class="quiz-card" style="text-align: center; padding: 40px;">
+                            <h3>📊 Manage Quizzes</h3>
+                            <p>View and edit your existing quizzes</p>
+                            <a href="manage-quizzes.html" class="btn-start-quiz" style="text-decoration: none; display: inline-block; margin-top: 15px; background: linear-gradient(135deg, #a855f7, #7c3aed);">Manage →</a>
+                        </div>
+                    `;
+                }
+
+                // Hide filter
+                const filterDiv = document.querySelector('.quiz-meta');
+                if (filterDiv) filterDiv.style.display = 'none';
+
+                // Don't load quizzes for taking - exit early
+                return;
+            }
+
+            // State
+
+            // State
+            let currentQuiz = null;
+            let currentQuestion = 0;
+            let answers = [];
+            let startTime = null;
+            let timerInterval = null;
+
+            // Elements
+            const selectionDiv = document.getElementById('quiz-selection');
+            const takingDiv = document.getElementById('quiz-taking');
+            const resultsDiv = document.getElementById('quiz-results');
+            const quizList = document.getElementById('quiz-list');
+            const filterCategory = document.getElementById('filter-category');
+
+            // Load quizzes
+            async function loadQuizzes(category = '') {
+                try {
+                    const url = category ? `/api/quiz?category=${category}` : '/api/quiz';
+                    const res = await fetch(url);
+                    const quizzes = await res.json();
+
+                    if (quizzes.length === 0) {
+                        quizList.innerHTML = '<p style="color: #888; text-align: center;">No quizzes available yet.</p>';
+                        return;
+                    }
+
+                    quizList.innerHTML = quizzes.map(q => `
                     <div class="quiz-card">
                         <h3>${q.title}</h3>
                         <p>${q.description || 'Test your knowledge!'}</p>
@@ -432,145 +474,146 @@
                         <button class="btn-start-quiz" onclick="window.startQuiz('${q._id}')">Start Quiz →</button>
                     </div>
                 `).join('');
-            } catch (err) {
-                console.error('Error loading quizzes:', err);
-                quizList.innerHTML = `<p style="color: #ef4444; text-align: center;">Failed to load quizzes. Please check if server is running.<br><small>${err.message}</small></p>`;
-            }
-        }
-
-        // Start quiz
-        window.startQuiz = async (quizId) => {
-            try {
-                const res = await fetch(`/api/quiz/${quizId}`);
-                currentQuiz = await res.json();
-                currentQuestion = 0;
-                answers = new Array(currentQuiz.questions.length).fill(null);
-                startTime = Date.now();
-
-                document.getElementById('quiz-title').textContent = currentQuiz.title;
-                document.getElementById('total-q').textContent = currentQuiz.questions.length;
-
-                selectionDiv.style.display = 'none';
-                takingDiv.style.display = 'block';
-
-                startTimer(currentQuiz.timeLimit);
-                renderQuestion();
-            } catch (err) {
-                alert('Failed to load quiz');
-            }
-        };
-
-        // Timer
-        function startTimer(minutes) {
-            let timeLeft = minutes * 60;
-            const timerEl = document.getElementById('timer');
-
-            timerInterval = setInterval(() => {
-                const mins = Math.floor(timeLeft / 60);
-                const secs = timeLeft % 60;
-                timerEl.textContent = `${mins}:${secs.toString().padStart(2, '0')}`;
-
-                if (timeLeft <= 0) {
-                    clearInterval(timerInterval);
-                    submitQuiz();
+                } catch (err) {
+                    console.error('Error loading quizzes:', err);
+                    quizList.innerHTML = `<p style="color: #ef4444; text-align: center;">Failed to load quizzes. Please check if server is running.<br><small>${err.message}</small></p>`;
                 }
-                timeLeft--;
-            }, 1000);
-        }
+            }
 
-        // Render question
-        function renderQuestion() {
-            const q = currentQuiz.questions[currentQuestion];
-            document.getElementById('current-q').textContent = currentQuestion + 1;
-            document.getElementById('question-text').textContent = q.question;
+            // Start quiz
+            window.startQuiz = async (quizId) => {
+                try {
+                    const res = await fetch(`/api/quiz/${quizId}`);
+                    currentQuiz = await res.json();
+                    currentQuestion = 0;
+                    answers = new Array(currentQuiz.questions.length).fill(null);
+                    startTime = Date.now();
 
-            const progress = ((currentQuestion + 1) / currentQuiz.questions.length) * 100;
-            document.getElementById('progress-fill').style.width = progress + '%';
+                    document.getElementById('quiz-title').textContent = currentQuiz.title;
+                    document.getElementById('total-q').textContent = currentQuiz.questions.length;
 
-            const optionsEl = document.getElementById('options-list');
-            optionsEl.innerHTML = q.options.map((opt, idx) => `
+                    selectionDiv.style.display = 'none';
+                    takingDiv.style.display = 'block';
+
+                    startTimer(currentQuiz.timeLimit);
+                    renderQuestion();
+                } catch (err) {
+                    alert('Failed to load quiz');
+                }
+            };
+
+            // Timer
+            function startTimer(minutes) {
+                let timeLeft = minutes * 60;
+                const timerEl = document.getElementById('timer');
+
+                timerInterval = setInterval(() => {
+                    const mins = Math.floor(timeLeft / 60);
+                    const secs = timeLeft % 60;
+                    timerEl.textContent = `${mins}:${secs.toString().padStart(2, '0')}`;
+
+                    if (timeLeft <= 0) {
+                        clearInterval(timerInterval);
+                        submitQuiz();
+                    }
+                    timeLeft--;
+                }, 1000);
+            }
+
+            // Render question
+            function renderQuestion() {
+                const q = currentQuiz.questions[currentQuestion];
+                document.getElementById('current-q').textContent = currentQuestion + 1;
+                document.getElementById('question-text').textContent = q.question;
+
+                const progress = ((currentQuestion + 1) / currentQuiz.questions.length) * 100;
+                document.getElementById('progress-fill').style.width = progress + '%';
+
+                const optionsEl = document.getElementById('options-list');
+                optionsEl.innerHTML = q.options.map((opt, idx) => `
                 <button class="option-btn ${answers[currentQuestion] === idx ? 'selected' : ''}" 
                         onclick="window.selectOption(${idx})">
                     ${String.fromCharCode(65 + idx)}. ${opt}
                 </button>
             `).join('');
 
-            // Navigation
-            document.getElementById('btn-prev').style.visibility = currentQuestion === 0 ? 'hidden' : 'visible';
+                // Navigation
+                document.getElementById('btn-prev').style.visibility = currentQuestion === 0 ? 'hidden' : 'visible';
 
-            const nextBtn = document.getElementById('btn-next');
-            if (currentQuestion === currentQuiz.questions.length - 1) {
-                nextBtn.textContent = 'Submit';
-                nextBtn.className = 'btn-nav btn-submit';
-                nextBtn.onclick = submitQuiz;
-            } else {
-                nextBtn.textContent = 'Next →';
-                nextBtn.className = 'btn-nav btn-next';
-                nextBtn.onclick = () => {
-                    currentQuestion++;
-                    renderQuestion();
-                };
+                const nextBtn = document.getElementById('btn-next');
+                if (currentQuestion === currentQuiz.questions.length - 1) {
+                    nextBtn.textContent = 'Submit';
+                    nextBtn.className = 'btn-nav btn-submit';
+                    nextBtn.onclick = submitQuiz;
+                } else {
+                    nextBtn.textContent = 'Next →';
+                    nextBtn.className = 'btn-nav btn-next';
+                    nextBtn.onclick = () => {
+                        currentQuestion++;
+                        renderQuestion();
+                    };
+                }
             }
-        }
 
-        window.selectOption = (idx) => {
-            answers[currentQuestion] = idx;
-            renderQuestion();
-        };
-
-        document.getElementById('btn-prev').onclick = () => {
-            if (currentQuestion > 0) {
-                currentQuestion--;
+            window.selectOption = (idx) => {
+                answers[currentQuestion] = idx;
                 renderQuestion();
+            };
+
+            document.getElementById('btn-prev').onclick = () => {
+                if (currentQuestion > 0) {
+                    currentQuestion--;
+                    renderQuestion();
+                }
+            };
+
+            // Submit quiz
+            async function submitQuiz() {
+                clearInterval(timerInterval);
+                const timeTaken = Math.floor((Date.now() - startTime) / 1000);
+
+                try {
+                    const res = await fetch(`/api/quiz/${currentQuiz._id}/submit`, {
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/json',
+                            'Authorization': `Bearer ${Auth.getToken()}`
+                        },
+                        body: JSON.stringify({ answers, timeTaken })
+                    });
+
+                    const result = await res.json();
+                    showResults(result, timeTaken);
+                } catch (err) {
+                    alert('Failed to submit quiz');
+                }
             }
-        };
 
-        // Submit quiz
-        async function submitQuiz() {
-            clearInterval(timerInterval);
-            const timeTaken = Math.floor((Date.now() - startTime) / 1000);
+            function showResults(result, timeTaken) {
+                takingDiv.style.display = 'none';
+                resultsDiv.style.display = 'block';
 
-            try {
-                const res = await fetch(`/api/quiz/${currentQuiz._id}/submit`, {
-                    method: 'POST',
-                    headers: {
-                        'Content-Type': 'application/json',
-                        'Authorization': `Bearer ${Auth.getToken()}`
-                    },
-                    body: JSON.stringify({ answers, timeTaken })
-                });
+                const scoreEl = document.getElementById('result-score');
+                scoreEl.textContent = result.percentage + '%';
+                scoreEl.className = `result-score ${result.passed ? 'result-passed' : 'result-failed'}`;
 
-                const result = await res.json();
-                showResults(result, timeTaken);
-            } catch (err) {
-                alert('Failed to submit quiz');
+                document.getElementById('result-message').textContent =
+                    result.passed ? '🎉 Great job! You passed!' : '📚 Keep learning and try again!';
+
+                document.getElementById('correct-count').textContent = result.score;
+                document.getElementById('total-count').textContent = result.totalQuestions;
+
+                const mins = Math.floor(timeTaken / 60);
+                const secs = timeTaken % 60;
+                document.getElementById('time-taken').textContent = `${mins}:${secs.toString().padStart(2, '0')}`;
             }
-        }
 
-        function showResults(result, timeTaken) {
-            takingDiv.style.display = 'none';
-            resultsDiv.style.display = 'block';
+            // Filter
+            filterCategory.onchange = () => loadQuizzes(filterCategory.value);
 
-            const scoreEl = document.getElementById('result-score');
-            scoreEl.textContent = result.percentage + '%';
-            scoreEl.className = `result-score ${result.passed ? 'result-passed' : 'result-failed'}`;
-
-            document.getElementById('result-message').textContent =
-                result.passed ? '🎉 Great job! You passed!' : '📚 Keep learning and try again!';
-
-            document.getElementById('correct-count').textContent = result.score;
-            document.getElementById('total-count').textContent = result.totalQuestions;
-
-            const mins = Math.floor(timeTaken / 60);
-            const secs = timeTaken % 60;
-            document.getElementById('time-taken').textContent = `${mins}:${secs.toString().padStart(2, '0')}`;
-        }
-
-        // Filter
-        filterCategory.onchange = () => loadQuizzes(filterCategory.value);
-
-        // Initial load
-        loadQuizzes();
+            // Initial load
+            loadQuizzes();
+        })(); // End of IIFE
     </script>
 </body>
 

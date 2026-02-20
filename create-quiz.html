@@ -476,9 +476,9 @@
         // Check auth
         Auth.requireAuth();
 
-        // Check if user is a teacher
-        if (!Auth.isTeacher()) {
-            alert('Only teachers can create quizzes.');
+        // Check if user is a teacher or university account
+        if (!Auth.isTeacher() && !Auth.isUniversity()) {
+            alert('Only teachers and university accounts can create quizzes.');
             window.location.href = 'dashboard.html';
         }
 
