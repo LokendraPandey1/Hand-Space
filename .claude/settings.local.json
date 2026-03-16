@@ -1,0 +1,37 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(ls:*)",
+      "Bash(find:*)",
+      "Bash(head:*)",
+      "Bash(pip install:*)",
+      "Bash(grep -E \"\\\\.glb$\")",
+      "Bash(cd:*)",
+      "Bash(cp:*)",
+      "Bash(cat:*)",
+      "Bash(curl:*)",
+      "WebFetch(domain:pollinations.ai)",
+      "WebFetch(domain:github.com)",
+      "WebFetch(domain:wiki.pollinations.ai)",
+      "Bash(node:*)",
+      "WebFetch(domain:www.khanacademy.org)",
+      "WebFetch(domain:www.duolingo.com)",
+      "WebFetch(domain:brilliant.org)",
+      "WebFetch(domain:www.coursera.org)",
+      "WebSearch",
+      "WebFetch(domain:duolingo.com)",
+      "WebFetch(domain:design.duolingo.com)",
+      "WebFetch(domain:adele.uxpin.com)",
+      "WebFetch(domain:www.designsystems.com)",
+      "WebFetch(domain:linear.app)",
+      "WebFetch(domain:vercel.com)",
+      "WebFetch(domain:raycast.com)",
+      "WebFetch(domain:www.apple.com)",
+      "WebFetch(domain:stripe.com)",
+      "WebFetch(domain:notion.so)",
+      "WebFetch(domain:figma.com)",
+      "WebFetch(domain:arc.net)",
+      "WebFetch(domain:www.notion.com)"
+    ]
+  }
+}

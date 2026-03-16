@@ -6,39 +6,61 @@ export function initNavbar(activePage) {
 
     let userSection = '';
     if (user) {
+        const initials = user.name.split(' ').map(n => n[0]).join('').toUpperCase().slice(0, 2);
         userSection = `
-            <a href="profile.html" class="nav-link ${activePage === 'profile' ? 'active' : ''}" style="display:flex; align-items:center; gap:8px;">
-                👤 ${user.name.split(' ')[0]}
-            </a>
-            <a href="#" id="nav-logout" class="nav-link" style="color:#ff6b6b;">Logout</a>
+            <div class="nav-divider"></div>
+            <div class="nav-user">
+                <span class="streak-badge" title="Daily Streak">
+                    \u{1F525} <span id="nav-streak">3</span>
+                </span>
+                <a href="profile.html" class="nav-avatar" title="${user.name}">${initials}</a>
+                <button id="nav-logout" class="btn-logout">Logout</button>
+            </div>
         `;
     } else {
         userSection = `
-            <a href="login.html" class="nav-link">Log In</a>
+            <div class="nav-divider"></div>
+            <a href="login.html" class="btn-primary btn-sm">Log In</a>
         `;
     }
 
-    // Class Selector for Teachers (not University accounts)
-    let classSelectorHtml = '';
-    if (user && Auth.isTeacher() && !Auth.isUniversity()) {
-        const classes = [];
-        const grades = ['5', '6', '7', '8', '9'];
-        const sections = ['A', 'B', 'C'];
+    // Grade selector
+    let gradeSelectorHtml = '';
+    if (!Auth.isUniversity()) {
+        if (user && Auth.isTeacher()) {
+            const classes = [];
+            const grades = ['5', '6', '7', '8', '9'];
+            const sections = ['A', 'B', 'C'];
+            grades.forEach(g => sections.forEach(s => classes.push(`${g}${s}`)));
 
-        grades.forEach(g => sections.forEach(s => classes.push(`${g}${s}`)));
+            const currentClass = localStorage.getItem('handspace_class') || '5A';
+            const options = classes.map(c =>
+                `<option value="${c}" ${c === currentClass ? 'selected' : ''}>Class ${c}</option>`
+            ).join('');
 
-        const currentClass = localStorage.getItem('handspace_class') || '5A';
+            gradeSelectorHtml = `
+                <select id="nav-class-select" class="nav-grade-select">
+                    ${options}
+                </select>
+            `;
+        } else {
+            const grades = ['5', '6', '7', '8', '9'];
+            const currentGrade = localStorage.getItem('handspace_grade') || '';
 
-        const options = classes.map(c =>
-            `<option value="${c}" ${c === currentClass ? 'selected' : ''}>Class ${c}</option>`
-        ).join('');
+            const options = [
+                `<option value="" ${!currentGrade ? 'selected' : ''}>Select Class</option>`,
+                ...grades.map(g =>
+                    `<option value="${g}" ${g === currentGrade ? 'selected' : ''}>Class ${g}</option>`
+                ),
+                `<option value="other" ${currentGrade === 'other' ? 'selected' : ''}>Other</option>`
+            ].join('');
 
-        classSelectorHtml = `
-            <select id="nav-class-select" class="nav-class-select">
-                ${options}
-            </select>
-            <div style="width: 1px; height: 20px; background: rgba(255,255,255,0.2); margin: 0 10px;"></div>
-        `;
+            gradeSelectorHtml = `
+                <select id="nav-grade-select" class="nav-grade-select">
+                    ${options}
+                </select>
+            `;
+        }
     }
 
     // Apply Global Preferences
@@ -46,21 +68,18 @@ export function initNavbar(activePage) {
         const prefs = JSON.parse(localStorage.getItem('handspace_prefs') || '{}');
         const body = document.body;
 
-        // Theme (Light/Dark)
         if (prefs.theme === 'light') {
             body.classList.add('light-mode');
         } else {
             body.classList.remove('light-mode');
         }
 
-        // Update toggle button icon if it exists
         const themeBtn = document.getElementById('btn-theme-toggle');
         if (themeBtn) {
-            themeBtn.textContent = prefs.theme === 'light' ? '☀️' : '🌙';
+            themeBtn.textContent = prefs.theme === 'light' ? '\u2600\uFE0F' : '\u{1F319}';
             themeBtn.title = prefs.theme === 'light' ? 'Switch to Dark Mode' : 'Switch to Light Mode';
         }
 
-        // Accessibility Classes
         if (prefs.highContrast) body.classList.add('high-contrast');
         else body.classList.remove('high-contrast');
 
@@ -70,52 +89,51 @@ export function initNavbar(activePage) {
         if (prefs.reduceMotion) body.classList.add('reduce-motion');
         else body.classList.remove('reduce-motion');
 
-        // Gesture Guide Visibility (for index.html)
         const guide = document.getElementById('gesture-guide');
         if (guide) {
             if (prefs.gestureGuide === false) {
                 guide.classList.add('hidden');
-                guide.style.display = 'none'; // Force hide
+                guide.style.display = 'none';
             } else {
                 guide.classList.remove('hidden');
-                guide.style.display = ''; // Restore default
+                guide.style.display = '';
             }
         }
     }
 
-    applyPreferences(); // Run immediately
+    applyPreferences();
 
-    // Listen for preference changes from other tabs/pages
     window.addEventListener('storage', (e) => {
         if (e.key === 'handspace_prefs') {
             applyPreferences();
         }
     });
 
-    // Custom event listener for same-page updates (from settings page)
     window.addEventListener('prefs_updated', () => {
         applyPreferences();
     });
 
-    // Determine current theme for toggle icon
     const currentPrefs = JSON.parse(localStorage.getItem('handspace_prefs') || '{}');
     const isLight = currentPrefs.theme === 'light';
-    const themeIcon = isLight ? '☀️' : '🌙';
+    const themeIcon = isLight ? '\u2600\uFE0F' : '\u{1F319}';
     const themeTitle = isLight ? 'Switch to Dark Mode' : 'Switch to Light Mode';
 
     const navHtml = `
-    <nav class="main-navbar">
-        <a href="${user ? 'dashboard.html' : 'index.html'}" class="nav-brand">
-            <span>✋ HandSpace</span>
+    <nav class="navbar">
+        <a href="home.html" class="nav-brand">
+            <span class="nav-brand-icon">\u270B</span>
+            <span>HandSpace</span>
         </a>
         <div class="nav-links">
-            <a href="dashboard.html" class="nav-link ${activePage === 'dashboard' ? 'active' : ''}">🏠 Dashboard</a>
-            <a href="library.html" class="nav-link ${activePage === 'library' ? 'active' : ''}">📚 Library</a>
-            <a href="index.html" class="nav-link ${activePage === 'viewer' ? 'active' : ''}">🧊 3D Viewer</a>
-            <a href="quiz.html" class="nav-link ${activePage === 'quiz' ? 'active' : ''}">✅ Quiz</a>
-            <div style="width: 1px; height: 20px; background: rgba(255,255,255,0.2); margin: 0 10px;"></div>
-            <button id="btn-theme-toggle" class="theme-toggle-btn" title="${themeTitle}">${themeIcon}</button>
-            ${classSelectorHtml}
+            <a href="home.html" class="nav-link ${activePage === 'home' ? 'active' : ''}">Home</a>
+            <a href="dashboard.html" class="nav-link ${activePage === 'dashboard' ? 'active' : ''}">Dashboard</a>
+            <a href="library.html" class="nav-link ${activePage === 'library' ? 'active' : ''}">Library</a>
+            <a href="index.html" class="nav-link ${activePage === 'viewer' ? 'active' : ''}">3D Viewer</a>
+            <a href="quiz.html" class="nav-link ${activePage === 'quiz' ? 'active' : ''}">Quiz</a>
+        </div>
+        <div class="nav-right">
+            <button id="btn-theme-toggle" class="btn-theme-toggle" title="${themeTitle}">${themeIcon}</button>
+            ${gradeSelectorHtml}
             ${userSection}
         </div>
     </nav>
@@ -137,7 +155,6 @@ export function initNavbar(activePage) {
 
     // Attach Handlers
     if (user) {
-        // Logout
         const logoutBtn = document.getElementById('nav-logout');
         if (logoutBtn) {
             logoutBtn.addEventListener('click', (e) => {
@@ -146,15 +163,24 @@ export function initNavbar(activePage) {
             });
         }
 
-        // Class Selector
         const classSelect = document.getElementById('nav-class-select');
         if (classSelect) {
             classSelect.addEventListener('change', (e) => {
                 const newClass = e.target.value;
                 localStorage.setItem('handspace_class', newClass);
-                // Dispatch event for other components to listen
                 window.dispatchEvent(new Event('class_changed'));
+                window.location.reload();
             });
         }
+    }
+
+    const gradeSelect = document.getElementById('nav-grade-select');
+    if (gradeSelect) {
+        gradeSelect.addEventListener('change', (e) => {
+            const newGrade = e.target.value;
+            localStorage.setItem('handspace_grade', newGrade);
+            window.dispatchEvent(new Event('grade_changed'));
+            window.location.reload();
+        });
     }
 }

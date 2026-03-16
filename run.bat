@@ -23,7 +23,7 @@ echo ===================================================
 echo.
 
 :: Start Server and Open Browser in parallel
-start "" "http://localhost:5000/login.html"
+start "" "http://localhost:5000/home.html"
 node server/server.js
 
 pause

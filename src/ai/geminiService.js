@@ -6,7 +6,9 @@ import { GoogleGenerativeAI } from "@google/generative-ai";
 export class GeminiService {
     constructor() {
         this.genAI = null;
+        this.genAIImage = null;
         this.apiKey = null;
+        this.imageApiKey = null;
         this.initPromise = this.init();
     }
 
@@ -15,11 +17,18 @@ export class GeminiService {
             const res = await fetch('http://localhost:5000/api/config');
             const config = await res.json();
             this.apiKey = config.GEMINI_API_KEY;
+            this.imageApiKey = config.GEMINI_IMAGE_API_KEY;
 
             if (!this.apiKey) {
                 console.warn("Gemini Service: No API Key found in config.");
             } else {
                 this.genAI = new GoogleGenerativeAI(this.apiKey);
+            }
+
+            if (this.imageApiKey) {
+                this.genAIImage = new GoogleGenerativeAI(this.imageApiKey);
+            } else {
+                console.warn("Gemini Service: No Image API Key found, image gen will use default key.");
             }
         } catch (err) {
             console.error("Failed to fetch config:", err);
@@ -28,6 +37,49 @@ export class GeminiService {
 
     async ensureReady() {
         await this.initPromise;
+    }
+
+    /**
+     * Generate an AI image for a 3D model using Gemini's image generation.
+     * Takes a screenshot of the current view and generates a detailed,
+     * educational illustration related to the model.
+     *
+     * @param {string} modelName - Name of the current 3D model
+     * @param {string} [screenshotBase64] - Optional base64 screenshot of the current view
+     * @returns {Promise<{image: string|null, text: string}>} base64 image data and description
+     */
+    async generateImage(modelName, screenshotBase64 = null) {
+        const prompt = `Detailed scientific 2D illustration of ${modelName}, textbook diagram, cross-section, vibrant colors, white background, no text`;
+        // Increment variation counter so "Regenerate" fetches a different image
+        this._imageVariation = (this._imageVariation || 0) + 1;
+
+        try {
+            console.log('\u{1F3A8} Fetching educational image...');
+
+            const res = await fetch(`/api/generate-image?prompt=${encodeURIComponent(prompt)}&variation=${this._imageVariation}`);
+
+            if (!res.ok) {
+                const errData = await res.json().catch(() => ({}));
+                console.warn('\u26A0\uFE0F Image gen failed:', errData);
+                return { image: null, text: `\u26A0\uFE0F Image generation failed (status ${res.status})` };
+            }
+
+            const blob = await res.blob();
+            const imageData = await new Promise((resolve) => {
+                const reader = new FileReader();
+                reader.onloadend = () => resolve(reader.result);
+                reader.readAsDataURL(blob);
+            });
+
+            return {
+                image: imageData,
+                text: `AI-generated illustration of ${modelName}`
+            };
+
+        } catch (error) {
+            console.warn('\u26A0\uFE0F Image generation failed:', error);
+            return { image: null, text: `\u26A0\uFE0F Image generation failed: ${error.message || error}` };
+        }
     }
 
     /**

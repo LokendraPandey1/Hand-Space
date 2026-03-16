@@ -1,0 +1,70 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Hand Interaction Prototype</title>
+    <link rel="stylesheet" href="style.css">
+
+    <!-- MediaPipe Hands & Camera Utils (local via npm install) -->
+    <script defer src="node_modules/@mediapipe/camera_utils/camera_utils.js"></script>
+    <script defer src="node_modules/@mediapipe/control_utils/control_utils.js"></script>
+    <script defer src="node_modules/@mediapipe/drawing_utils/drawing_utils.js"></script>
+    <script defer src="node_modules/@mediapipe/hands/hands.js"></script>
+
+    <!-- Import Map for Three.js modules -->
+    <script type="importmap">
+        {
+            "imports": {
+                "three": "./node_modules/three/build/three.module.js",
+                "three/addons/": "./node_modules/three/examples/jsm/"
+            }
+        }
+    </script>
+</head>
+
+<body>
+    <!-- Webcam Feed (Hidden or Picture-in-Picture style, but we'll keep it hidden for clean 3D view primarily, or visible for debugging) -->
+    <!-- We need the video element for MediaPipe to process -->
+    <video class="input_video"></video>
+
+    <!-- UI Overlay -->
+    <div id="ui-container">
+        <div id="status-text">Loading app...</div>
+        <div class="controls-group">
+            <button id="btn-scale-up" class="control-btn" title="Scale Up">+</button>
+            <button id="btn-scale-down" class="control-btn" title="Scale Down">-</button>
+            <button id="btn-reset" class="control-btn" title="Reset View">Reset</button>
+        </div>
+        <div class="instructions">
+            <p>🟢 Green ring: Track hand</p>
+            <p>🖱️ Mouse: Orbit/Zoom</p>
+        </div>
+    </div>\r\n
+    <!-- Model Selector -->
+    <div id="model-menu">
+        <h3>Models</h3>
+        <div id="model-list"></div>
+    </div>
+
+    <!-- Canvas for Three.js -->
+    <canvas class="output_canvas"></canvas>
+
+    <!-- Main Logic -->
+    <script>
+        (function () {
+            const status = document.getElementById('status-text');
+            if (status) status.textContent = 'Loading app...';
+            setTimeout(() => {
+                if (!window.__handspaceModuleLoaded) {
+                    if (status) status.textContent = 'App failed to start (open DevTools Console)';
+                }
+            }, 4000);
+        })();
+    </script>
+    <script type="module" src="src/main.js" crossorigin="anonymous"></script>
+</body>
+
+</html>
+

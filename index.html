@@ -27,7 +27,6 @@
         {
             "imports": {
                 "three": "https://unpkg.com/three@0.160.0/build/three.module.js",
-                "three": "https://unpkg.com/three@0.160.0/build/three.module.js",
                 "three/addons/": "https://unpkg.com/three@0.160.0/examples/jsm/",
                 "@google/generative-ai": "https://esm.run/@google/generative-ai"
             }
@@ -69,6 +68,7 @@
             <button id="btn-scale-down" class="control-btn" title="Scale Down">-</button>
             <button id="btn-reset" class="control-btn" title="Reset View">Reset</button>
             <button id="btn-ask-gemini" class="control-btn" title="Ask AI">🤖</button>
+            <button id="btn-generate-image" class="control-btn" title="Generate AI Image">🎨</button>
             <button id="btn-toggle-variant" class="control-btn variant-btn hidden" title="Toggle Animation">💓</button>
         </div>
 
@@ -96,61 +96,43 @@
         </div>
         <div id="gesture-guide-content">
             <div class="gesture-item">
-                <span class="gesture-icon">👆</span>
+                <span class="gesture-icon">✌️</span>
                 <div class="gesture-info">
-                    <span class="gesture-name" data-i18n="gestureGuide.indexPinch">Index Pinch</span>
-                    <span class="gesture-action" data-i18n="gestureGuide.rotateModel">Rotate Model</span>
+                    <span class="gesture-name">Two-Finger Hold</span>
+                    <span class="gesture-action">Orbit / Rotate View</span>
                 </div>
             </div>
-            <div class="gesture-item">
-                <span class="gesture-icon">☝️</span>
-                <div class="gesture-info">
-                    <span class="gesture-name">Point</span>
-                    <span class="gesture-action">Select Part</span>
-                </div>
-            </div>
-
-            <div class="gesture-item">
-                <span class="gesture-icon">✊</span>
-                <div class="gesture-info">
-                    <span class="gesture-name">Fist</span>
-                    <span class="gesture-action">Pan Model</span>
-                </div>
-            </div>
-
             <div class="gesture-item">
                 <span class="gesture-icon">🤏</span>
                 <div class="gesture-info">
-                    <span class="gesture-name" data-i18n="gestureGuide.pinkyPinch">Pinky Pinch</span>
-                    <span class="gesture-action" data-i18n="gestureGuide.scaleModel">Scale Model</span>
+                    <span class="gesture-name">Pinch</span>
+                    <span class="gesture-action">Zoom In / Out</span>
                 </div>
             </div>
             <div class="gesture-item">
-                <span class="gesture-icon">✌️</span>
+                <span class="gesture-icon">🟢</span>
                 <div class="gesture-info">
-                    <span class="gesture-name">Peace Sign</span>
-                    <span class="gesture-action">Toggle 1/2 Hand Mode</span>
-                </div>
-            </div>
-
-            <div class="gesture-item">
-                <span class="gesture-icon">🤲</span>
-                <div class="gesture-info">
-                    <span class="gesture-name">Two-Hand Pinch</span>
-                    <span class="gesture-action">Zoom In/Out</span>
+                    <span class="gesture-name">Green Band</span>
+                    <span class="gesture-action">Required for hand tracking</span>
                 </div>
             </div>
             <div class="gesture-item mouse-hint">
                 <span class="gesture-icon">🖱️</span>
                 <div class="gesture-info">
-                    <span class="gesture-name" data-i18n="gestureGuide.mouse">Mouse</span>
-                    <span class="gesture-action" data-i18n="gestureGuide.orbitZoom">Orbit / Zoom</span>
+                    <span class="gesture-name">Mouse</span>
+                    <span class="gesture-action">Orbit / Zoom</span>
+                </div>
+            </div>
+            <div class="gesture-item mouse-hint">
+                <span class="gesture-icon">🤖</span>
+                <div class="gesture-info">
+                    <span class="gesture-name">Click + AI Mode</span>
+                    <span class="gesture-action">Ask AI about model parts</span>
                 </div>
             </div>
         </div>
     </div>
 
-    <!-- Model Selector -->
     <!-- Model Selector -->
     <div id="model-menu">
         <h3>Models</h3>
@@ -163,11 +145,65 @@
     <div id="annotation-container"
         style="position:absolute; top:0; left:0; width:100%; height:100%; pointer-events:none; z-index: 16;"></div>
 
+    <!-- Gesture Recognition HUD (NN Classification Display) -->
+    <div id="gesture-hud" class="hidden">
+        <div class="hud-row">
+            <span class="hud-label">Green Band:</span>
+            <span id="hud-green-band" class="hud-value" style="color:#ff4444">None</span>
+        </div>
+        <div class="hud-row">
+            <span class="hud-label">Hand Sign:</span>
+            <span id="hud-hand-sign" class="hud-value">None</span>
+        </div>
+        <div class="hud-row">
+            <span class="hud-label">Motion:</span>
+            <span id="hud-motion" class="hud-value">Stop</span>
+        </div>
+        <div class="hud-row">
+            <span class="hud-label">Engine:</span>
+            <span id="hud-mode" class="hud-value">OFF</span>
+        </div>
+    </div>
+
     <!-- Canvas for Three.js -->
     <canvas class="output_canvas"></canvas>
 
+    <!-- AI Image Generation Modal -->
+    <div id="ai-image-modal" class="ai-image-modal hidden">
+        <div class="ai-image-modal-content">
+            <div class="ai-image-modal-header">
+                <span>🎨 AI Generated Image</span>
+                <button id="btn-close-image-modal" class="close-btn">&times;</button>
+            </div>
+            <div class="ai-image-modal-body">
+                <div id="ai-image-loading" class="ai-image-loading">
+                    <div class="spinner"></div>
+                    <p id="ai-image-loading-text">Generating image with AI...</p>
+                </div>
+                <img id="ai-generated-image" class="ai-generated-image hidden" alt="AI Generated" />
+                <p id="ai-image-description" class="ai-image-description hidden"></p>
+                <div id="ai-image-error" class="ai-image-error hidden"></div>
+            </div>
+            <div class="ai-image-modal-footer">
+                <button id="btn-download-ai-image" class="btn-download-image hidden">⬇ Download</button>
+                <button id="btn-regenerate-image" class="btn-regenerate-image hidden">🔄 Regenerate</button>
+            </div>
+        </div>
+    </div>
+
     <!-- Main Logic -->
-    <script type="module" src="src/main.js"></script>
+    <script>
+        (function () {
+            const status = document.getElementById('status-text');
+            if (status) status.textContent = 'Loading app...';
+            setTimeout(() => {
+                if (!window.__handspaceModuleLoaded) {
+                    if (status) status.textContent = 'App failed to start (open DevTools Console)';
+                }
+            }, 4000);
+        })();
+    </script>
+    <script type="module" src="src/main.js" crossorigin="anonymous"></script>
 </body>
 
 </html>

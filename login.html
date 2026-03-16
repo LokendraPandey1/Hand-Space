@@ -4,68 +4,116 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>HandSpace Login</title>
+    <title>HandSpace - Login</title>
     <link rel="stylesheet" href="style_platform.css">
     <script type="module">
         import { Auth } from './src/auth/auth.js';
 
-        // Redirect if already logged in
         if (Auth.getUser()) window.location.href = 'dashboard.html';
 
         window.onload = () => {
             const form = document.getElementById('login-form');
             form.addEventListener('submit', async (e) => {
                 e.preventDefault();
+                const btn = form.querySelector('button[type="submit"]');
+                btn.textContent = 'Logging in...';
+                btn.disabled = true;
+
                 const email = document.getElementById('email').value;
                 const password = document.getElementById('password').value;
 
                 try {
                     const result = await Auth.login(email, password);
-                    console.log("Login Result:", result);
-
                     if (result.success) {
-                        window.location.href = 'dashboard.html';
+                        btn.textContent = 'Welcome back!';
+                        setTimeout(() => window.location.href = 'dashboard.html', 500);
                     } else {
                         const msg = result.message || ("Error: " + JSON.stringify(result));
-                        alert(msg);
+                        showError(msg);
+                        btn.textContent = 'Log In';
+                        btn.disabled = false;
                     }
                 } catch (err) {
-                    alert("Unexpected Error: " + err.message);
+                    showError("Connection error: " + err.message);
+                    btn.textContent = 'Log In';
+                    btn.disabled = false;
                 }
             });
         };
+
+        function showError(msg) {
+            let errEl = document.getElementById('login-error');
+            if (!errEl) {
+                errEl = document.createElement('div');
+                errEl.id = 'login-error';
+                errEl.style.cssText = 'background: var(--danger-subtle); border: 1px solid var(--danger); color: var(--danger); padding: 12px 16px; border-radius: 8px; font-size: 0.9rem; text-align: center; margin-top: 10px;';
+                document.getElementById('login-form').appendChild(errEl);
+            }
+            errEl.textContent = msg;
+        }
     </script>
 </head>
 
 <body class="platform-page">
 
     <div class="auth-container">
-        <div class="auth-form card-glass">
-            <h2 style="text-align:center; margin-bottom:20px;">Welcome Back 👋</h2>
+        <!-- Left Hero -->
+        <div class="auth-hero">
+            <div class="auth-hero-icon">&#x1F680;</div>
+            <h2>Learn with your hands</h2>
+            <p>Explore 3D models, take quizzes, and master science with gesture-based interactive learning.</p>
 
-            <form id="login-form" class="auth-form">
-                <div class="form-group">
-                    <label>Email</label>
-                    <input type="email" id="email" class="form-input" required>
+            <div class="auth-features">
+                <div class="auth-feature">
+                    <div class="auth-feature-icon" style="background: var(--primary-subtle); color: var(--primary);">&#x270B;</div>
+                    <div>
+                        <h4>Hand Gestures</h4>
+                        <p>Control 3D models naturally</p>
+                    </div>
                 </div>
-
-                <div class="form-group">
-                    <label>Password</label>
-                    <input type="password" id="password" class="form-input" required>
+                <div class="auth-feature">
+                    <div class="auth-feature-icon" style="background: var(--secondary-subtle); color: var(--secondary);">&#x1F9E0;</div>
+                    <div>
+                        <h4>AI Tutor</h4>
+                        <p>Ask about any part you see</p>
+                    </div>
                 </div>
-
-                <div style="text-align:right; font-size:0.8rem;">
-                    <a href="#" style="color:#aaa; text-decoration:none;">Forgot Password?</a>
+                <div class="auth-feature">
+                    <div class="auth-feature-icon" style="background: var(--accent-subtle); color: var(--accent);">&#x1F3AE;</div>
+                    <div>
+                        <h4>Fun Quizzes</h4>
+                        <p>Test and level up your knowledge</p>
+                    </div>
                 </div>
-
-                <button type="submit" class="btn-primary" style="width:100%; text-align:center;">Log In</button>
-            </form>
-
-            <div style="text-align:center; margin-top:15px; font-size:0.9rem; color:#aaa;">
-                Don't have an account? <a href="signup.html" class="auth-link">Sign Up</a>
             </div>
-            <div style="text-align:center; margin-top:5px; font-size:0.9rem;">
-                <a href="index.html" class="auth-link">← Back to Viewer</a>
+        </div>
+
+        <!-- Right Form -->
+        <div class="auth-form-side">
+            <div class="auth-form">
+                <h2 class="auth-form-title">HandSpace</h2>
+                <p class="auth-form-subtitle">Welcome back, explorer!</p>
+
+                <form id="login-form">
+                    <div class="form-group">
+                        <label>Email</label>
+                        <input type="email" id="email" class="form-input" placeholder="you@example.com" required>
+                    </div>
+
+                    <div class="form-group">
+                        <label>Password</label>
+                        <input type="password" id="password" class="form-input" placeholder="Your password" required>
+                    </div>
+
+                    <button type="submit" class="btn-primary">Log In</button>
+                </form>
+
+                <div class="auth-links">
+                    Don't have an account? <a href="signup.html">Sign Up</a>
+                </div>
+                <div class="auth-links" style="margin-top: 8px;">
+                    <a href="home.html" style="color: var(--text-muted);">&#x2190; Back to Home</a>
+                </div>
             </div>
         </div>
     </div>

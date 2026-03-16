@@ -7,27 +7,175 @@
     <title>HandSpace Library</title>
     <link rel="stylesheet" href="style_platform.css">
 
-    <!-- Three.js Import Map (Required because modelLoader.js imports three) -->
     <script type="importmap">
         {
             "imports": {
                 "three": "https://unpkg.com/three@0.160.0/build/three.module.js",
-                "three/addons/": "https://unpkg.com/three@0.160.0/examples/jsm/"
+                "three/addons/": "https://unpkg.com/three@0.160.0/examples/jsm/",
+                "@google/generative-ai": "https://esm.run/@google/generative-ai"
             }
         }
     </script>
 
+    <style>
+        /* Library page-specific overrides */
+        .library-header {
+            margin-bottom: 24px;
+        }
+
+        .library-header .page-title {
+            font-size: 2rem;
+        }
+
+        /* Search + filters row */
+        .library-controls {
+            display: flex;
+            gap: 10px;
+            align-items: center;
+            flex-wrap: wrap;
+            margin-top: 16px;
+        }
+
+        .library-controls .search-wrapper {
+            flex: 1;
+            min-width: 200px;
+            max-width: none;
+            margin-bottom: 0;
+        }
+
+        /* Category header within the grid */
+        .category-group-header {
+            grid-column: 1 / -1;
+        }
+
+        .category-group-header:first-child {
+            margin-top: 0;
+        }
+
+        /* Card icon area */
+        .library-card .library-card-icon {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            height: 100px;
+            border-radius: var(--radius-md);
+            margin-bottom: 14px;
+            position: relative;
+        }
+
+        .library-card .library-card-icon span {
+            font-size: 3rem;
+        }
+
+        /* Card tag / category label */
+        .library-card .library-card-tag {
+            margin-bottom: 6px;
+        }
+
+        /* Card content section */
+        .library-card-content {
+            padding: 0 0 10px 0;
+            flex: 1;
+        }
+
+        .library-card-content .library-card-category {
+            font-size: 0.78rem;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        .library-card-content .library-card-title {
+            font-family: var(--font-display);
+            font-size: 1rem;
+            font-weight: 600;
+            color: var(--text-primary);
+            margin: 6px 0 4px 0;
+        }
+
+        .library-card-content .library-card-desc {
+            font-size: 0.82rem;
+            color: var(--text-muted);
+            line-height: 1.5;
+            margin: 0;
+        }
+
+        /* Spinner */
+        .ai-spinner {
+            width: 36px;
+            height: 36px;
+            border: 3px solid var(--border);
+            border-top-color: var(--primary);
+            border-radius: 50%;
+            animation: spin 0.8s linear infinite;
+        }
+
+        @keyframes spin { to { transform: rotate(360deg); } }
+
+        /* AI modal image */
+        .ai-modal-body img {
+            width: 100%;
+            max-height: 400px;
+            object-fit: contain;
+            border-radius: var(--radius-md);
+            border: 1px solid var(--border);
+        }
+
+        .ai-modal-body .ai-desc-text {
+            color: var(--text-muted);
+            font-size: 0.9rem;
+            text-align: center;
+            line-height: 1.5;
+            margin: 0;
+        }
+
+        .ai-modal-body .ai-error-text {
+            color: var(--danger);
+            text-align: center;
+            padding: 20px;
+            font-size: 0.95rem;
+        }
+
+        /* Coming soon card fade */
+        .library-card.coming-soon {
+            opacity: 0.6;
+        }
+
+        /* No results message */
+        .no-results {
+            grid-column: 1 / -1;
+            text-align: center;
+            color: var(--text-muted);
+            padding: 40px;
+        }
+
+        /* Responsive */
+        @media (max-width: 768px) {
+            .library-controls {
+                flex-direction: column;
+            }
+
+            .library-controls .search-wrapper {
+                width: 100%;
+            }
+        }
+    </style>
+
     <script type="module">
         import { initNavbar } from './src/ui/navbar.js';
-        import { MODELS } from './src/models/modelLoader.js'; // Import models source
+        import { MODELS } from './src/models/modelLoader.js';
+        import { getModelsForGrade, getChaptersForGrade, getCurrentGrade } from './src/curriculum/grades.js';
+        import { GeminiService } from './src/ai/geminiService.js';
 
         initNavbar('library');
 
-        // Dynamically load models into the grid
         window.onload = async () => {
             const grid = document.getElementById('library-grid');
+            const searchInput = document.getElementById('search-input');
+            const filterChips = document.querySelectorAll('.filter-chip');
+            const filterContainer = document.querySelector('.library-controls');
 
-            // Fetch uploaded models from API
+            // Fetch uploaded models
             let uploadedModels = [];
             try {
                 const res = await fetch('/api/models');
@@ -37,7 +185,7 @@
                         name: m.name,
                         file: m.filename,
                         category: m.category,
-                        icon: '📤', // Upload icon for user-uploaded models
+                        icon: '\u{1F4E4}',
                         isUploaded: true
                     }));
                 }
@@ -45,97 +193,386 @@
                 console.warn('Could not fetch uploaded models:', err);
             }
 
-            // Combine built-in and uploaded models
-            const allModels = [...MODELS, ...uploadedModels];
+            // Check if a grade is selected — if so, show only curriculum models
+            const currentGrade = getCurrentGrade();
+            let allModels;
+            let isGradeMode = false;
 
-            // Group by category
-            const categories = {};
-            allModels.forEach(m => {
-                if (!categories[m.category]) categories[m.category] = [];
-                categories[m.category].push(m);
+            if (currentGrade) {
+                const gradeModels = getModelsForGrade(currentGrade);
+                // Only include models that have actual files (available: true) or uploaded
+                allModels = gradeModels.filter(m => m.available !== false);
+
+                // Also include uploaded models
+                allModels = [...allModels, ...uploadedModels];
+                isGradeMode = true;
+
+                // Update header to show grade context
+                document.querySelector('.library-header .page-title').textContent = `Class ${currentGrade} — Science Library`;
+                document.querySelector('.library-header .page-subtitle').textContent = `NCERT Science models for your curriculum`;
+
+                // Replace filter chips with subject filters
+                const subjects = [...new Set(gradeModels.map(m => m.subject))];
+                const subjectIcons = { Biology: '\u{1F9EC}', Chemistry: '\u{1F9EA}', Physics: '\u26A1' };
+
+                // Remove old chips except All and search
+                const oldChips = filterContainer.querySelectorAll('.filter-chip');
+                oldChips.forEach(c => c.remove());
+
+                // Add new subject chips
+                const allChip = document.createElement('div');
+                allChip.className = 'filter-chip active';
+                allChip.dataset.category = '';
+                allChip.textContent = 'All';
+                filterContainer.appendChild(allChip);
+
+                subjects.forEach(subj => {
+                    const chip = document.createElement('div');
+                    chip.className = 'filter-chip';
+                    chip.dataset.category = subj;
+                    chip.innerHTML = `${subjectIcons[subj] || ''} ${subj}`;
+                    filterContainer.appendChild(chip);
+                });
+
+                // Also add "Coming Soon" chip for unavailable models
+                const comingSoonModels = gradeModels.filter(m => m.available === false);
+                if (comingSoonModels.length > 0) {
+                    const chip = document.createElement('div');
+                    chip.className = 'filter-chip';
+                    chip.dataset.category = '__coming_soon__';
+                    chip.innerHTML = `\u{1F512} Coming Soon (${comingSoonModels.length})`;
+                    filterContainer.appendChild(chip);
+                }
+
+                // Store grade models for coming soon display
+                window.__gradeModels = gradeModels;
+            } else {
+                allModels = [...MODELS, ...uploadedModels];
+            }
+
+            let activeFilter = '';
+
+            // Category config — solid colors only, no gradients
+            const categoryConfig = {
+                'Anatomy':       { icon: '\u{1F3E5}', color: '#00D4AA', bg: 'rgba(0,212,170,0.10)' },
+                'Biology':       { icon: '\u{1F9EC}', color: '#00D4AA', bg: 'rgba(0,212,170,0.10)' },
+                'Chemistry':     { icon: '\u{1F9EA}', color: '#7B8CFF', bg: 'rgba(123,140,255,0.10)' },
+                'Physics':       { icon: '\u26A1',    color: '#FF7043', bg: 'rgba(255,112,67,0.10)' },
+                'Earth Science': { icon: '\u{1F30F}', color: '#FFB84D', bg: 'rgba(255,184,77,0.10)' },
+                'Space':         { icon: '\u{1F30C}', color: '#7B8CFF', bg: 'rgba(123,140,255,0.10)' },
+                'Engineering':   { icon: '\u2699\uFE0F', color: '#FF7043', bg: 'rgba(255,112,67,0.10)' },
+                'Basics':        { icon: '\u{1F4E6}', color: '#9898AD', bg: 'rgba(152,152,173,0.10)' },
+                'Other':         { icon: '\u{1F4C1}', color: '#9898AD', bg: 'rgba(152,152,173,0.10)' }
+            };
+
+            // Update stats
+            document.getElementById('total-models').textContent = allModels.length;
+            const cats = new Set(allModels.map(m => m.category || m.subject));
+            document.getElementById('total-categories').textContent = cats.size;
+
+            function renderModels(filter = '', search = '') {
+                grid.innerHTML = '';
+
+                // Special: show coming soon models
+                if (filter === '__coming_soon__' && window.__gradeModels) {
+                    const comingSoon = window.__gradeModels.filter(m => m.available === false);
+                    renderComingSoon(comingSoon);
+                    return;
+                }
+
+                let filtered = allModels;
+
+                if (filter && isGradeMode) {
+                    // Filter by subject in grade mode
+                    filtered = filtered.filter(m => (m.subject || m.category) === filter);
+                } else if (filter) {
+                    filtered = filtered.filter(m => m.category === filter);
+                }
+
+                if (search) {
+                    const s = search.toLowerCase();
+                    filtered = filtered.filter(m =>
+                        m.name.toLowerCase().includes(s) ||
+                        (m.category || '').toLowerCase().includes(s) ||
+                        (m.chapter || '').toLowerCase().includes(s) ||
+                        (m.subject || '').toLowerCase().includes(s)
+                    );
+                }
+
+                // Group by chapter (grade mode) or category
+                const groupKey = isGradeMode ? 'chapter' : 'category';
+                const groups = {};
+                filtered.forEach(m => {
+                    const key = m[groupKey] || m.category || 'Other';
+                    if (!groups[key]) groups[key] = [];
+                    groups[key].push(m);
+                });
+
+                if (Object.keys(groups).length === 0) {
+                    grid.innerHTML = '<p class="no-results">No models found matching your search.</p>';
+                    return;
+                }
+
+                for (const [groupName, models] of Object.entries(groups)) {
+                    // Determine config from first model
+                    const firstModel = models[0];
+                    const configKey = firstModel.subject || firstModel.category || 'Other';
+                    const config = categoryConfig[configKey] || categoryConfig['Other'];
+
+                    const header = document.createElement('div');
+                    header.className = 'category-group-header';
+                    header.innerHTML = `
+                        <span class="cat-icon">${firstModel.chapterIcon || config.icon}</span>
+                        <span>${groupName}</span>
+                        <span class="cat-count">${models.length} model${models.length > 1 ? 's' : ''}</span>
+                        ${isGradeMode && firstModel.subject ? `<span style="font-size:0.8rem; color:${config.color}; margin-left:auto;">${firstModel.subject}</span>` : ''}
+                    `;
+                    grid.appendChild(header);
+
+                    models.forEach((m, idx) => {
+                        const card = document.createElement('div');
+                        card.className = 'library-card';
+                        card.style.animationDelay = `${idx * 0.08}s`;
+
+                        const icon = m.icon || config.icon;
+                        const catColor = m.chapterColor || config.color;
+                        const catBg = config.bg;
+
+                        card.innerHTML = `
+                            <div class="library-card-icon" style="background: ${catBg};">
+                                <span>${icon}</span>
+                            </div>
+                            <div class="library-card-content">
+                                <span class="library-card-tag" style="background: ${catBg}; color: ${catColor};">${m.subject || m.category}</span>
+                                <h3>${m.name}</h3>
+                                <p>${m.description || 'Interactive 3D Model'}</p>
+                            </div>
+                            <div class="library-card-actions">
+                                <a href="index.html?model=${encodeURIComponent(m.file)}" class="btn-primary" style="background: ${catColor}; flex:1;">
+                                    Explore &#x2192;
+                                </a>
+                                <button class="btn-secondary btn-ai-gen" data-model-name="${m.name}" style="flex:1;">
+                                    &#x1F3A8; AI Image
+                                </button>
+                            </div>
+                        `;
+                        grid.appendChild(card);
+                    });
+                }
+            }
+
+            function renderComingSoon(models) {
+                grid.innerHTML = '';
+
+                const groups = {};
+                models.forEach(m => {
+                    const key = m.chapter || 'Other';
+                    if (!groups[key]) groups[key] = [];
+                    groups[key].push(m);
+                });
+
+                for (const [chapter, mods] of Object.entries(groups)) {
+                    const first = mods[0];
+                    const config = categoryConfig[first.subject] || categoryConfig['Other'];
+
+                    const header = document.createElement('div');
+                    header.className = 'category-group-header';
+                    header.innerHTML = `
+                        <span class="cat-icon">${first.chapterIcon || '\u{1F512}'}</span>
+                        <span>${chapter}</span>
+                        <span class="cat-count">${mods.length} coming</span>
+                    `;
+                    grid.appendChild(header);
+
+                    mods.forEach((m, idx) => {
+                        const card = document.createElement('div');
+                        card.className = 'library-card coming-soon';
+                        card.style.animationDelay = `${idx * 0.08}s`;
+
+                        card.innerHTML = `
+                            <div class="library-card-icon" style="background: ${config.bg}; position:relative;">
+                                <span>${m.icon || '\u{1F512}'}</span>
+                                <span class="coming-soon-label" style="position:absolute;top:8px;right:8px;">Coming Soon</span>
+                            </div>
+                            <div class="library-card-content">
+                                <span class="library-card-tag" style="background: rgba(100,116,139,0.15); color: #64748B;">${m.subject}</span>
+                                <h3>${m.name}</h3>
+                                <p>${m.description || 'Model will be available soon'}</p>
+                            </div>
+                            <div class="library-card-actions">
+                                <span class="btn-secondary" style="flex:1; pointer-events:none; text-align:center; color: var(--text-muted);">
+                                    Coming Soon &#x1F512;
+                                </span>
+                            </div>
+                        `;
+                        grid.appendChild(card);
+                    });
+                }
+            }
+
+            // Initial render
+            renderModels();
+
+            // Search
+            searchInput.addEventListener('input', (e) => {
+                renderModels(activeFilter, e.target.value);
             });
 
-            // Render
-            for (const [cat, models] of Object.entries(categories)) {
-                // Section Header
-                const header = document.createElement('h2');
-                header.style.gridColumn = '1 / -1';
-                header.style.marginTop = '40px';
-                header.style.borderBottom = '1px solid rgba(255,255,255,0.1)';
-                header.style.paddingBottom = '10px';
-                header.innerText = cat;
-                grid.appendChild(header);
+            // Filter chips (use event delegation since chips are dynamic in grade mode)
+            filterContainer.addEventListener('click', (e) => {
+                const chip = e.target.closest('.filter-chip');
+                if (!chip) return;
 
-                models.forEach(m => {
-                    const card = document.createElement('div');
-                    card.className = 'library-card card-glass';
+                filterContainer.querySelectorAll('.filter-chip').forEach(c => c.classList.remove('active'));
 
-                    // Use icon from model or category fallback
-                    const categoryIcons = {
-                        'Anatomy': '🏥',
-                        'Chemistry': '🧪',
-                        'Earth Science': '🌏',
-                        'Space': '🌌',
-                        'Engineering': '⚙️',
-                        'Basics': '📦',
-                        'Other': '📁'
-                    };
+                if (chip.dataset.category === activeFilter) {
+                    activeFilter = '';
+                    filterContainer.querySelector('[data-category=""]').classList.add('active');
+                } else {
+                    chip.classList.add('active');
+                    activeFilter = chip.dataset.category;
+                }
+                renderModels(activeFilter, searchInput.value);
+            });
 
-                    const icon = m.icon || categoryIcons[cat] || '📦';
+            // --- AI Image Generation from Library ---
+            const geminiSvc = new GeminiService();
 
-                    // Category color themes
-                    const categoryColors = {
-                        'Anatomy': '#ff6b6b',
-                        'Chemistry': '#4ecdc4',
-                        'Earth Science': '#45b7d1',
-                        'Space': '#a855f7',
-                        'Engineering': '#f59e0b',
-                        'Basics': '#6b7280',
-                        'Other': '#00f2fe'
-                    };
+            grid.addEventListener('click', async (e) => {
+                const btn = e.target.closest('.btn-ai-gen');
+                if (!btn) return;
+                e.preventDefault();
 
-                    const accentColor = categoryColors[cat] || '#00f2fe';
+                const modelName = btn.dataset.modelName;
+                if (!modelName) return;
 
-                    // Show icon with uploaded badge if applicable
-                    const uploadedBadge = m.isUploaded ? '<span style="position:absolute;top:5px;right:5px;font-size:12px;background:#4ade80;padding:2px 6px;border-radius:4px;">User</span>' : '';
-                    const displayContent = `<span style="font-size: 3rem;">${icon}</span>${uploadedBadge}`;
+                const modal = document.getElementById('lib-ai-image-modal');
+                const loadingEl = document.getElementById('lib-ai-loading');
+                const loadingText = document.getElementById('lib-ai-loading-text');
+                const imgEl = document.getElementById('lib-ai-image');
+                const descEl = document.getElementById('lib-ai-desc');
+                const errorEl = document.getElementById('lib-ai-error');
+                const downloadBtn = document.getElementById('lib-ai-download');
+                const regenBtn = document.getElementById('lib-ai-regen');
 
-                    card.innerHTML = `
-                        <div class="library-card-icon" style="background: linear-gradient(135deg, ${accentColor}22, ${accentColor}44); position:relative;">
-                            ${displayContent}
-                        </div>
-                        <div class="library-card-content">
-                            <span class="library-card-category" style="color: ${accentColor};">${cat}</span>
-                            <h3 class="library-card-title">${m.name}</h3>
-                            <p class="library-card-desc">${m.isUploaded ? 'User Uploaded Model' : 'Interactive 3D Model'}</p>
-                        </div>
-                        <a href="index.html?model=${encodeURIComponent(m.file)}" class="btn-primary library-card-btn" style="background: linear-gradient(135deg, ${accentColor}, ${accentColor}cc);">
-                            Explore Model →
-                        </a>
-                    `;
-                    grid.appendChild(card);
-                });
-            }
+                async function generate() {
+                    modal.classList.remove('hidden');
+                    loadingEl.classList.remove('hidden');
+                    imgEl.classList.add('hidden');
+                    descEl.classList.add('hidden');
+                    errorEl.classList.add('hidden');
+                    downloadBtn.classList.add('hidden');
+                    regenBtn.classList.add('hidden');
+                    loadingText.textContent = `Generating AI image of "${modelName}"...`;
+
+                    const result = await geminiSvc.generateImage(modelName);
+
+                    loadingEl.classList.add('hidden');
+
+                    if (result.image) {
+                        imgEl.src = result.image;
+                        imgEl.classList.remove('hidden');
+                        descEl.textContent = result.text;
+                        descEl.classList.remove('hidden');
+                        downloadBtn.classList.remove('hidden');
+                        regenBtn.classList.remove('hidden');
+                    } else {
+                        errorEl.textContent = result.text || 'Failed to generate image.';
+                        errorEl.classList.remove('hidden');
+                        regenBtn.classList.remove('hidden');
+                    }
+                }
+
+                generate();
+
+                // Wire regenerate
+                regenBtn.onclick = () => generate();
+
+                // Wire download
+                downloadBtn.onclick = () => {
+                    if (!imgEl.src) return;
+                    const a = document.createElement('a');
+                    a.href = imgEl.src;
+                    a.download = `${modelName.replace(/\s+/g, '_')}_AI_Generated.png`;
+                    a.click();
+                };
+            });
         };
     </script>
 </head>
 
 <body class="platform-page">
 
-    <!-- Navbar injected here -->
-
     <div class="dashboard-container">
 
-        <div class="welcome-header">
-            <h1>Course Library 📚</h1>
-            <p style="color: #aaa; font-size: 1.2rem;">Select a model to begin your interactive lesson.</p>
+        <div class="library-header page-header">
+            <h1 class="page-title">Model Library</h1>
+            <p class="page-subtitle">Explore interactive 3D models across science and engineering</p>
+
+            <div class="library-stats">
+                <div class="library-stat">
+                    <strong id="total-models">0</strong> Models
+                </div>
+                <div class="library-stat">
+                    <strong id="total-categories">0</strong> Categories
+                </div>
+            </div>
+
+            <div class="library-controls">
+                <div class="search-wrapper">
+                    <span class="search-icon">&#x1F50D;</span>
+                    <input type="text" id="search-input" class="search-input" placeholder="Search models...">
+                </div>
+                <div class="filter-chips" style="display:contents;">
+                    <div class="filter-chip active" data-category="">All</div>
+                    <div class="filter-chip" data-category="Anatomy">&#x1F3E5; Anatomy</div>
+                    <div class="filter-chip" data-category="Chemistry">&#x1F9EA; Chemistry</div>
+                    <div class="filter-chip" data-category="Biology">&#x1F9EC; Biology</div>
+                    <div class="filter-chip" data-category="Earth Science">&#x1F30F; Earth</div>
+                    <div class="filter-chip" data-category="Space">&#x1F30C; Space</div>
+                    <div class="filter-chip" data-category="Engineering">&#x2699;&#xFE0F; Engineering</div>
+                </div>
+            </div>
         </div>
 
-        <div id="library-grid" class="model-grid" style="grid-column: span 12;">
-            <!-- Content Injected via JS -->
-        </div>
+        <div id="library-grid" class="library-grid"></div>
 
     </div>
+
+    <!-- AI Image Modal for Library -->
+    <div id="lib-ai-image-modal" class="ai-modal-overlay hidden">
+        <div class="ai-modal">
+            <div class="ai-modal-header">
+                <h3>&#x1F3A8; AI Generated Image</h3>
+                <button id="lib-ai-close" class="ai-modal-close">&times;</button>
+            </div>
+            <div class="ai-modal-body">
+                <div id="lib-ai-loading" style="display:flex;flex-direction:column;align-items:center;gap:16px;padding:40px 0;color:var(--text-muted);">
+                    <div class="ai-spinner"></div>
+                    <p id="lib-ai-loading-text">Generating...</p>
+                </div>
+                <img id="lib-ai-image" class="hidden" alt="AI Generated" />
+                <p id="lib-ai-desc" class="hidden ai-desc-text"></p>
+                <div id="lib-ai-error" class="hidden ai-error-text"></div>
+            </div>
+            <div class="ai-modal-footer">
+                <button id="lib-ai-download" class="btn-primary hidden" style="background: var(--mint);">&#x2B07; Download</button>
+                <button id="lib-ai-regen" class="btn-primary hidden" style="background: var(--indigo);">&#x1F504; Regenerate</button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Close modal handlers
+        document.getElementById('lib-ai-close').addEventListener('click', () => {
+            document.getElementById('lib-ai-image-modal').classList.add('hidden');
+        });
+        document.getElementById('lib-ai-image-modal').addEventListener('click', (e) => {
+            if (e.target === document.getElementById('lib-ai-image-modal')) {
+                document.getElementById('lib-ai-image-modal').classList.add('hidden');
+            }
+        });
+    </script>
 
 </body>
 

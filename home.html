@@ -1,0 +1,689 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>HandSpace - Interactive 3D Learning with Gestures</title>
+    <link rel="stylesheet" href="style_platform.css">
+    <style>
+        /* ── Hero Section ─────────────────────────────── */
+        .landing-hero {
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            text-align: center;
+            padding: 100px 30px 60px;
+            position: relative;
+            overflow: hidden;
+            background: var(--bg-base);
+        }
+
+        .hero-inner {
+            position: relative;
+            z-index: 1;
+            max-width: 800px;
+        }
+
+        .hero-badge {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            background: var(--primary-subtle);
+            border: 1px solid var(--border);
+            padding: 8px 20px;
+            border-radius: 30px;
+            font-size: 0.85rem;
+            color: var(--primary);
+            font-weight: 500;
+            margin-bottom: 28px;
+            animation: fadeInUp 0.6s ease forwards;
+        }
+
+        .hero-badge-dot {
+            width: 8px;
+            height: 8px;
+            border-radius: 50%;
+            background: var(--secondary);
+            animation: pulse 2s ease-in-out infinite;
+        }
+
+        @keyframes pulse {
+            0%, 100% { opacity: 1; transform: scale(1); }
+            50% { opacity: 0.5; transform: scale(0.8); }
+        }
+
+        .hero-title {
+            font-family: 'Space Grotesk', var(--font-display);
+            font-size: 4.5rem;
+            font-weight: 800;
+            line-height: 1.1;
+            margin-bottom: 24px;
+            color: var(--text-primary);
+            animation: fadeInUp 0.6s ease 0.1s both;
+        }
+
+        .hero-title .accent-text {
+            color: var(--mint);
+        }
+
+        .hero-subtitle {
+            font-size: 1.25rem;
+            color: var(--text-secondary);
+            line-height: 1.7;
+            max-width: 600px;
+            margin: 0 auto 40px;
+            animation: fadeInUp 0.6s ease 0.2s both;
+        }
+
+        .hero-actions {
+            display: flex;
+            gap: 16px;
+            justify-content: center;
+            flex-wrap: wrap;
+            animation: fadeInUp 0.6s ease 0.3s both;
+        }
+
+        .btn-hero-primary {
+            display: inline-flex;
+            align-items: center;
+            gap: 10px;
+            padding: 16px 36px;
+            background: var(--primary);
+            color: var(--text-inverse);
+            border: none;
+            border-radius: var(--radius-lg);
+            font-size: 1.05rem;
+            font-weight: 600;
+            font-family: 'Inter', var(--font-main);
+            cursor: pointer;
+            text-decoration: none;
+            transition: all 0.2s ease;
+            box-shadow: var(--shadow-md);
+        }
+
+        .btn-hero-primary:hover {
+            background: var(--primary-hover);
+            transform: translateY(-3px);
+            box-shadow: var(--shadow-lg);
+        }
+
+        .btn-hero-secondary {
+            display: inline-flex;
+            align-items: center;
+            gap: 10px;
+            padding: 16px 36px;
+            background: var(--bg-raised);
+            border: 1px solid var(--border);
+            color: var(--text-primary);
+            border-radius: var(--radius-lg);
+            font-size: 1.05rem;
+            font-weight: 600;
+            font-family: 'Inter', var(--font-main);
+            cursor: pointer;
+            text-decoration: none;
+            transition: all 0.2s ease;
+        }
+
+        .btn-hero-secondary:hover {
+            background: var(--bg-overlay);
+            border-color: var(--border-hover);
+            transform: translateY(-3px);
+        }
+
+        .hero-stats {
+            display: flex;
+            justify-content: center;
+            gap: 50px;
+            margin-top: 60px;
+            animation: fadeInUp 0.6s ease 0.4s both;
+        }
+
+        .hero-stat {
+            text-align: center;
+        }
+
+        .hero-stat-num {
+            font-family: 'Space Grotesk', var(--font-display);
+            font-size: 2rem;
+            font-weight: 700;
+            color: var(--text-primary);
+        }
+
+        .hero-stat-label {
+            font-size: 0.85rem;
+            color: var(--text-muted);
+            margin-top: 4px;
+        }
+
+        /* ── Decorative Elements ─────────────────────── */
+        .hero-decoration {
+            position: absolute;
+            border-radius: 50%;
+            pointer-events: none;
+            z-index: 0;
+        }
+
+        .hero-decoration-1 {
+            width: 300px;
+            height: 300px;
+            background: var(--primary-subtle);
+            top: -5%;
+            left: -5%;
+            opacity: 0.5;
+        }
+
+        .hero-decoration-2 {
+            width: 200px;
+            height: 200px;
+            background: var(--secondary-subtle);
+            bottom: 10%;
+            right: -3%;
+            opacity: 0.5;
+        }
+
+        /* ── Features Section ──────────────────────────── */
+        .landing-section {
+            padding: 100px 30px;
+            position: relative;
+            z-index: 1;
+        }
+
+        .section-header {
+            text-align: center;
+            max-width: 600px;
+            margin: 0 auto 60px;
+        }
+
+        .section-tag {
+            display: inline-block;
+            font-size: 0.8rem;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            color: var(--secondary);
+            margin-bottom: 14px;
+        }
+
+        .section-title {
+            font-family: 'Space Grotesk', var(--font-display);
+            font-size: 2.5rem;
+            font-weight: 700;
+            margin-bottom: 16px;
+            color: var(--text-primary);
+        }
+
+        .section-desc {
+            color: var(--text-secondary);
+            font-size: 1.05rem;
+            line-height: 1.6;
+        }
+
+        .features-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 24px;
+            max-width: 1100px;
+            margin: 0 auto;
+        }
+
+        .feature-card {
+            background: var(--bg-card);
+            border: 1px solid var(--border);
+            border-radius: var(--radius-xl);
+            padding: 36px 28px;
+            transition: all 0.2s ease;
+            position: relative;
+            overflow: hidden;
+            border-top: 3px solid transparent;
+        }
+
+        .feature-card:hover {
+            transform: translateY(-6px);
+            border-color: var(--border-hover);
+            border-top-color: var(--primary);
+            box-shadow: var(--shadow-lg);
+        }
+
+        .feature-icon {
+            width: 56px;
+            height: 56px;
+            border-radius: var(--radius-md);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.8rem;
+            margin-bottom: 20px;
+        }
+
+        .feature-card h3 {
+            font-family: 'Space Grotesk', var(--font-display);
+            font-size: 1.2rem;
+            font-weight: 600;
+            margin-bottom: 10px;
+            color: var(--text-primary);
+        }
+
+        .feature-card p {
+            color: var(--text-secondary);
+            font-size: 0.92rem;
+            line-height: 1.6;
+        }
+
+        /* ── How It Works ──────────────────────────────── */
+        .steps-grid {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 30px;
+            max-width: 1100px;
+            margin: 0 auto;
+        }
+
+        .step-card {
+            text-align: center;
+            position: relative;
+        }
+
+        .step-card::after {
+            content: '';
+            position: absolute;
+            top: 40px;
+            right: -15px;
+            width: 30px;
+            height: 2px;
+            background: var(--border);
+        }
+
+        .step-card:last-child::after {
+            display: none;
+        }
+
+        .step-number {
+            width: 64px;
+            height: 64px;
+            border-radius: 50%;
+            background: var(--mint);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-family: 'Space Grotesk', var(--font-display);
+            font-size: 1.5rem;
+            font-weight: 700;
+            color: var(--text-inverse);
+            margin: 0 auto 20px;
+            box-shadow: var(--shadow-md);
+        }
+
+        .step-card h4 {
+            font-family: 'Space Grotesk', var(--font-display);
+            font-size: 1.05rem;
+            font-weight: 600;
+            color: var(--text-primary);
+            margin-bottom: 8px;
+        }
+
+        .step-card p {
+            color: var(--text-secondary);
+            font-size: 0.88rem;
+            line-height: 1.5;
+        }
+
+        /* ── Subjects Preview ──────────────────────────── */
+        .subjects-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 24px;
+            max-width: 900px;
+            margin: 0 auto;
+        }
+
+        .subject-card {
+            background: var(--bg-card);
+            border: 1px solid var(--border);
+            border-radius: var(--radius-lg);
+            padding: 28px;
+            text-align: center;
+            transition: all 0.2s ease;
+        }
+
+        .subject-card:hover {
+            transform: translateY(-4px);
+            box-shadow: var(--shadow-lg);
+        }
+
+        .subject-icon {
+            font-size: 3rem;
+            display: block;
+            margin-bottom: 14px;
+        }
+
+        .subject-card h3 {
+            font-family: 'Space Grotesk', var(--font-display);
+            font-size: 1.1rem;
+            font-weight: 600;
+            color: var(--text-primary);
+            margin-bottom: 6px;
+        }
+
+        .subject-card p {
+            color: var(--text-muted);
+            font-size: 0.85rem;
+        }
+
+        .subject-tag {
+            display: inline-block;
+            padding: 4px 12px;
+            border-radius: 20px;
+            font-size: 0.75rem;
+            font-weight: 600;
+            margin-top: 12px;
+        }
+
+        /* ── CTA Section ───────────────────────────────── */
+        .cta-section {
+            text-align: center;
+            padding: 80px 30px 100px;
+            position: relative;
+            z-index: 1;
+        }
+
+        .cta-box {
+            max-width: 700px;
+            margin: 0 auto;
+            background: var(--bg-raised);
+            border: 1px solid var(--border);
+            border-radius: var(--radius-xl);
+            padding: 60px 40px;
+            box-shadow: var(--shadow-lg);
+        }
+
+        .cta-box h2 {
+            font-family: 'Space Grotesk', var(--font-display);
+            font-size: 2.2rem;
+            font-weight: 700;
+            margin-bottom: 14px;
+            color: var(--text-primary);
+        }
+
+        .cta-box p {
+            color: var(--text-secondary);
+            font-size: 1.05rem;
+            margin-bottom: 30px;
+        }
+
+        /* ── Footer ────────────────────────────────────── */
+        .landing-footer {
+            border-top: 1px solid var(--border);
+            padding: 30px;
+            text-align: center;
+            color: var(--text-muted);
+            font-size: 0.85rem;
+            position: relative;
+            z-index: 1;
+        }
+
+        .landing-footer a {
+            color: var(--primary);
+            text-decoration: none;
+        }
+
+        .landing-footer a:hover {
+            color: var(--secondary);
+        }
+
+        /* ── Animations ────────────────────────────────── */
+        @keyframes fadeInUp {
+            from { opacity: 0; transform: translateY(30px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .animate-on-scroll {
+            opacity: 0;
+            transform: translateY(30px);
+            transition: opacity 0.6s ease, transform 0.6s ease;
+        }
+
+        .animate-on-scroll.visible {
+            opacity: 1;
+            transform: translateY(0);
+        }
+
+        /* ── Responsive ────────────────────────────────── */
+        @media (max-width: 1024px) {
+            .features-grid { grid-template-columns: repeat(2, 1fr); }
+            .steps-grid { grid-template-columns: repeat(2, 1fr); }
+            .step-card::after { display: none; }
+            .hero-title { font-size: 3.2rem; }
+        }
+
+        @media (max-width: 768px) {
+            .features-grid { grid-template-columns: 1fr; }
+            .subjects-grid { grid-template-columns: 1fr !important; }
+            .steps-grid { grid-template-columns: 1fr; }
+            .hero-title { font-size: 2.5rem; }
+            .hero-subtitle { font-size: 1rem; }
+            .hero-stats { gap: 30px; flex-wrap: wrap; }
+            .hero-decoration { display: none; }
+            .section-title { font-size: 2rem; }
+        }
+    </style>
+</head>
+
+<body class="platform-page">
+
+    <!-- ════════ HERO ════════ -->
+    <section class="landing-hero">
+        <div class="hero-decoration hero-decoration-1"></div>
+        <div class="hero-decoration hero-decoration-2"></div>
+
+        <div class="hero-inner">
+            <div class="hero-badge">
+                <span class="hero-badge-dot"></span>
+                NCERT Class 9 Curriculum
+            </div>
+
+            <h1 class="hero-title">
+                Learn Everything with<br>
+                <span class="accent-text">Your Hands</span>
+            </h1>
+
+            <p class="hero-subtitle">
+                Explore 3D models across Science, Maths, Social Science &amp; more.
+                Interact with hand gestures, get AI-powered explanations,
+                and ace your NCERT exams &mdash; all from your browser.
+            </p>
+
+            <div class="hero-actions">
+                <a href="signup.html" class="btn-hero-primary">
+                    Get Started Free &#x2192;
+                </a>
+                <a href="index.html" class="btn-hero-secondary">
+                    &#x270B; Try 3D Viewer
+                </a>
+            </div>
+
+            <div class="hero-stats">
+                <div class="hero-stat">
+                    <div class="hero-stat-num">5+</div>
+                    <div class="hero-stat-label">3D Models</div>
+                </div>
+                <div class="hero-stat">
+                    <div class="hero-stat-num">All</div>
+                    <div class="hero-stat-label">NCERT Subjects</div>
+                </div>
+                <div class="hero-stat">
+                    <div class="hero-stat-num">&#x1F91A;</div>
+                    <div class="hero-stat-label">Gesture Controlled</div>
+                </div>
+                <div class="hero-stat">
+                    <div class="hero-stat-num">AI</div>
+                    <div class="hero-stat-label">Powered Tutor</div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- ════════ FEATURES ════════ -->
+    <section class="landing-section">
+        <div class="section-header animate-on-scroll">
+            <span class="section-tag">Why HandSpace?</span>
+            <h2 class="section-title">Learning That Feels Like Playing</h2>
+            <p class="section-desc">Forget boring textbooks. Rotate a cell, zoom into a chloroplast, and let AI explain what you see.</p>
+        </div>
+
+        <div class="features-grid">
+            <div class="feature-card animate-on-scroll">
+                <div class="feature-icon" style="background: var(--primary-subtle);">&#x270B;</div>
+                <h3>Hand Gesture Control</h3>
+                <p>Rotate, zoom, and pan 3D models using natural hand gestures detected by your webcam. No mouse needed.</p>
+            </div>
+            <div class="feature-card animate-on-scroll">
+                <div class="feature-icon" style="background: var(--secondary-subtle);">&#x1F4DA;</div>
+                <h3>Full NCERT Curriculum</h3>
+                <p>Science, Maths, Social Science, English &mdash; 3D models and interactive content across every subject.</p>
+            </div>
+            <div class="feature-card animate-on-scroll">
+                <div class="feature-icon" style="background: var(--danger-subtle);">&#x1F916;</div>
+                <h3>AI Tutor</h3>
+                <p>Point at any part of a model and get instant explanations powered by Gemini AI, in any language.</p>
+            </div>
+            <div class="feature-card animate-on-scroll">
+                <div class="feature-icon" style="background: var(--secondary-subtle);">&#x1F3A8;</div>
+                <h3>AI Image Generation</h3>
+                <p>Generate detailed scientific illustrations of any model with one click. Perfect for study notes.</p>
+            </div>
+            <div class="feature-card animate-on-scroll">
+                <div class="feature-icon" style="background: var(--accent-subtle);">&#x1F3AE;</div>
+                <h3>Chapter-Wise Quizzes</h3>
+                <p>Test your understanding with quizzes mapped to NCERT chapters. Earn XP and track your progress.</p>
+            </div>
+            <div class="feature-card animate-on-scroll">
+                <div class="feature-icon" style="background: var(--primary-subtle);">&#x1F7E2;</div>
+                <h3>Green Band Security</h3>
+                <p>Wear a green band to activate gestures. Prevents accidental interactions and keeps you in control.</p>
+            </div>
+        </div>
+    </section>
+
+    <!-- ════════ HOW IT WORKS ════════ -->
+    <section class="landing-section">
+        <div class="section-header animate-on-scroll">
+            <span class="section-tag">How It Works</span>
+            <h2 class="section-title">Start Learning in 4 Steps</h2>
+        </div>
+
+        <div class="steps-grid">
+            <div class="step-card animate-on-scroll">
+                <div class="step-number">1</div>
+                <h4>Select Your Class</h4>
+                <p>Pick Class 9 from the dropdown. Your dashboard, library, and quizzes personalize instantly.</p>
+            </div>
+            <div class="step-card animate-on-scroll">
+                <div class="step-number">2</div>
+                <h4>Explore 3D Models</h4>
+                <p>Open any biology model in the interactive viewer. Rotate, zoom, and inspect every detail.</p>
+            </div>
+            <div class="step-card animate-on-scroll">
+                <div class="step-number">3</div>
+                <h4>Use Hand Gestures</h4>
+                <p>Put on a green band, show your hand to the webcam, and control models with natural gestures.</p>
+            </div>
+            <div class="step-card animate-on-scroll">
+                <div class="step-number">4</div>
+                <h4>Ask AI &amp; Take Quizzes</h4>
+                <p>Point at parts for AI explanations, generate images, then test your knowledge with chapter quizzes.</p>
+            </div>
+        </div>
+    </section>
+
+    <!-- ════════ CLASS 9 SUBJECTS ════════ -->
+    <section class="landing-section">
+        <div class="section-header animate-on-scroll">
+            <span class="section-tag">Class 9 NCERT Curriculum</span>
+            <h2 class="section-title">Every Subject, One Platform</h2>
+            <p class="section-desc">3D models, interactive content, and AI tutoring across the entire Class 9 NCERT syllabus.</p>
+        </div>
+
+        <div class="subjects-grid" style="grid-template-columns: repeat(3, 1fr);">
+            <div class="subject-card animate-on-scroll" style="border-top: 3px solid var(--secondary);">
+                <span class="subject-icon">&#x1F9EC;</span>
+                <h3>Science</h3>
+                <p>Biology, Chemistry, Physics &mdash; Cells, Atoms, Motion, Energy &amp; more</p>
+                <span class="subject-tag" style="background: var(--secondary-subtle); color: var(--secondary);">5 Models Live</span>
+            </div>
+            <div class="subject-card animate-on-scroll" style="border-top: 3px solid var(--primary);">
+                <span class="subject-icon">&#x1F4D0;</span>
+                <h3>Mathematics</h3>
+                <p>Number Systems, Geometry, Algebra, Statistics, Coordinate Geometry</p>
+                <span class="subject-tag" style="background: var(--primary-subtle); color: var(--primary);">Coming Soon</span>
+            </div>
+            <div class="subject-card animate-on-scroll" style="border-top: 3px solid var(--info);">
+                <span class="subject-icon">&#x1F30D;</span>
+                <h3>Social Science</h3>
+                <p>History, Geography, Civics, Economics &mdash; interactive maps &amp; timelines</p>
+                <span class="subject-tag" style="background: var(--primary-subtle); color: var(--info);">Coming Soon</span>
+            </div>
+            <div class="subject-card animate-on-scroll" style="border-top: 3px solid var(--danger);">
+                <span class="subject-icon">&#x1F4D6;</span>
+                <h3>English</h3>
+                <p>Beehive, Moments &mdash; literature, grammar, and comprehension</p>
+                <span class="subject-tag" style="background: var(--danger-subtle); color: var(--danger);">Coming Soon</span>
+            </div>
+            <div class="subject-card animate-on-scroll" style="border-top: 3px solid var(--accent);">
+                <span class="subject-icon">&#x1F1EE;&#x1F1F3;</span>
+                <h3>Hindi</h3>
+                <p>Kshitij, Kritika &mdash; prose, poetry, and vyakaran</p>
+                <span class="subject-tag" style="background: var(--accent-subtle); color: var(--accent);">Coming Soon</span>
+            </div>
+            <div class="subject-card animate-on-scroll" style="border-top: 3px solid var(--warning);">
+                <span class="subject-icon">&#x1F4BB;</span>
+                <h3>IT / Computer Science</h3>
+                <p>Information Technology, coding basics, digital literacy</p>
+                <span class="subject-tag" style="background: var(--accent-subtle); color: var(--warning);">Coming Soon</span>
+            </div>
+        </div>
+    </section>
+
+    <!-- ════════ CTA ════════ -->
+    <section class="cta-section">
+        <div class="cta-box animate-on-scroll">
+            <h2>Ready to Learn in 3D?</h2>
+            <p>Join HandSpace and turn your screen into an interactive classroom for every subject.</p>
+            <div class="hero-actions">
+                <a href="signup.html" class="btn-hero-primary">
+                    Create Free Account &#x2192;
+                </a>
+                <a href="library.html" class="btn-hero-secondary">
+                    &#x1F4DA; Browse Library
+                </a>
+            </div>
+        </div>
+    </section>
+
+    <!-- ════════ FOOTER ════════ -->
+    <footer class="landing-footer">
+        <p>&#x270B; HandSpace &mdash; Interactive 3D Learning with Gestures &mdash; Built for the complete NCERT Class 9 Curriculum</p>
+    </footer>
+
+    <!-- ════════ Scroll Animations ════════ -->
+    <script>
+        const observer = new IntersectionObserver((entries) => {
+            entries.forEach(entry => {
+                if (entry.isIntersecting) {
+                    entry.target.classList.add('visible');
+                }
+            });
+        }, { threshold: 0.15 });
+
+        document.querySelectorAll('.animate-on-scroll').forEach(el => observer.observe(el));
+    </script>
+
+    <!-- ════════ Navbar ════════ -->
+    <script type="module">
+        import { initNavbar } from './src/ui/navbar.js';
+        initNavbar('home');
+    </script>
+</body>
+
+</html>

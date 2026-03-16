@@ -41,6 +41,50 @@ export const MODELS = [
     { name: 'Default Model', file: 'model.glb', category: 'Basics', icon: '📦', thumbnail: 'thumbnails/default.webp' }
 ];
 
+// Registers the legacy spec/gloss workflow so GLTFLoader doesn't warn about the extension.
+class KHRMaterialsPbrSpecularGlossinessExtension {
+    constructor(parser) {
+        this.parser = parser;
+        this.name = 'KHR_materials_pbrSpecularGlossiness';
+    }
+
+    getMaterialType() {
+        return THREE.MeshPhysicalMaterial;
+    }
+
+    extendMaterialParams(materialIndex, materialParams) {
+        const parser = this.parser;
+        const matDef = parser.json.materials?.[materialIndex];
+        const ext = matDef?.extensions?.KHR_materials_pbrSpecularGlossiness;
+        if (!ext) return;
+
+        const diffuseFactor = Array.isArray(ext.diffuseFactor) ? ext.diffuseFactor : [1, 1, 1, 1];
+        materialParams.color = new THREE.Color().fromArray(diffuseFactor);
+        materialParams.opacity = typeof diffuseFactor[3] === 'number' ? diffuseFactor[3] : 1;
+        materialParams.transparent = materialParams.opacity < 1;
+
+        // Approximate conversion to metal/rough.
+        materialParams.metalness = 0.0;
+        if (typeof ext.glossinessFactor === 'number') {
+            materialParams.roughness = Math.min(1, Math.max(0, 1 - ext.glossinessFactor));
+        }
+
+        const pending = [];
+        if (ext.diffuseTexture?.index != null) {
+            pending.push(
+                parser.getDependency('texture', ext.diffuseTexture.index).then((tex) => {
+                    if (!tex) return;
+                    tex.colorSpace = THREE.SRGBColorSpace;
+                    tex.needsUpdate = true;
+                    materialParams.map = tex;
+                })
+            );
+        }
+
+        if (pending.length) return Promise.all(pending);
+    }
+}
+
 export class ModelManager {
     constructor(sceneRef) {
         this.sceneRef = sceneRef;
@@ -55,9 +99,9 @@ export class ModelManager {
     /**
      * Update animations - call this in render loop
      */
-    update() {
+    update(dtSeconds) {
         if (this.mixer) {
-            const delta = this.clock.getDelta();
+            const delta = dtSeconds != null ? dtSeconds : this.clock.getDelta();
             this.mixer.update(delta);
         }
     }
@@ -229,6 +273,7 @@ export class ModelManager {
         }
 
         const gltfLoader = new GLTFLoader();
+        gltfLoader.register((parser) => new KHRMaterialsPbrSpecularGlossinessExtension(parser));
         updateStatus(`Loading ${this.currentModelMeta.name}...`);
 
         // All models (built-in and uploaded) are in the same 'models/' folder

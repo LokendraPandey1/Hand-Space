@@ -1,0 +1,17 @@
+{
+  "name": "handspace",
+  "private": true,
+  "type": "module",
+  "dependencies": {
+    "@mediapipe/camera_utils": "0.3.1675466862",
+    "@mediapipe/control_utils": "0.6.1675466023",
+    "@mediapipe/drawing_utils": "0.3.1675466124",
+    "@mediapipe/hands": "0.4.1675469240",
+    "@tensorflow/tfjs": "^4.22.0",
+    "@tensorflow/tfjs-tflite": "0.0.1-alpha.10",
+    "three": "0.160.0"
+  },
+  "scripts": {
+    "serve": "node tools/static-server.mjs --port 8000"
+  }
+}

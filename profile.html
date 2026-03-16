@@ -7,281 +7,33 @@
     <title>Settings - HandSpace</title>
     <link rel="stylesheet" href="style_platform.css">
     <style>
-        .settings-container {
-            max-width: 900px;
-            margin: 30px auto;
-            padding: 0 30px;
+        /* Page Header */
+        .page-header {
+            margin-bottom: 28px;
         }
 
-        .settings-header {
-            margin-bottom: 30px;
+        .page-title {
+            font-family: var(--font-display);
+            font-size: 1.75rem;
+            font-weight: 700;
+            color: var(--text-primary);
+            margin: 0 0 6px;
         }
 
-        .settings-header h1 {
-            font-size: 2.2rem;
-            margin: 0 0 10px;
-            background: linear-gradient(135deg, #00f2fe, #4facfe);
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
-            background-clip: text;
-        }
-
-        .settings-header p {
-            color: #888;
-            margin: 0;
-        }
-
-        .settings-tabs {
-            display: flex;
-            gap: 10px;
-            margin-bottom: 30px;
-            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
-            padding-bottom: 15px;
-        }
-
-        .tab-btn {
-            padding: 10px 20px;
-            background: transparent;
-            border: none;
-            color: #888;
-            font-size: 1rem;
-            cursor: pointer;
-            border-radius: 8px;
-            transition: all 0.3s;
-        }
-
-        .tab-btn:hover {
-            color: white;
-            background: rgba(255, 255, 255, 0.05);
-        }
-
-        .tab-btn.active {
-            color: #00f2fe;
-            background: rgba(0, 242, 254, 0.1);
-        }
-
-        .settings-section {
-            background: rgba(255, 255, 255, 0.03);
-            border: 1px solid rgba(255, 255, 255, 0.08);
-            border-radius: 16px;
-            padding: 30px;
-            margin-bottom: 25px;
-        }
-
-        .section-title {
-            font-size: 1.2rem;
-            color: #00f2fe;
-            margin: 0 0 25px;
-            display: flex;
-            align-items: center;
-            gap: 10px;
-        }
-
-        .setting-row {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            padding: 18px 0;
-            border-bottom: 1px solid rgba(255, 255, 255, 0.05);
-        }
-
-        .setting-row:last-child {
-            border-bottom: none;
-        }
-
-        .setting-info h4 {
-            margin: 0 0 5px;
-            font-size: 1rem;
-        }
-
-        .setting-info p {
-            margin: 0;
-            color: #666;
-            font-size: 0.85rem;
-        }
-
-        .setting-control select,
-        .setting-control input[type="text"],
-        .setting-control input[type="email"] {
-            padding: 10px 15px;
-            background: rgba(0, 0, 0, 0.3);
-            border: 1px solid rgba(255, 255, 255, 0.1);
-            border-radius: 8px;
-            color: white;
-            font-size: 0.95rem;
-            min-width: 180px;
-        }
-
-        .setting-control select:focus,
-        .setting-control input:focus {
-            outline: none;
-            border-color: #00f2fe;
-        }
-
-        /* Toggle Switch */
-        .toggle-switch {
-            position: relative;
-            display: inline-block;
-            width: 52px;
-            height: 28px;
-            flex-shrink: 0;
-        }
-
-        .toggle-switch input {
-            opacity: 0;
-            width: 0;
-            height: 0;
-            position: absolute;
-        }
-
-        .toggle-slider {
-            position: absolute;
-            cursor: pointer;
-            top: 0;
-            left: 0;
-            right: 0;
-            bottom: 0;
-            background-color: rgba(255, 255, 255, 0.15);
-            transition: 0.3s;
-            border-radius: 28px;
-        }
-
-        .toggle-slider::before {
-            position: absolute;
-            content: "";
-            height: 22px;
-            width: 22px;
-            left: 3px;
-            top: 3px;
-            background-color: white;
-            transition: 0.3s;
-            border-radius: 50%;
-            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.3);
-        }
-
-        .toggle-switch input:checked+.toggle-slider {
-            background: linear-gradient(135deg, #00f2fe, #4facfe);
-        }
-
-        .toggle-switch input:checked+.toggle-slider::before {
-            transform: translateX(24px);
-        }
-
-        /* Profile Avatar */
-        .profile-section {
-            display: flex;
-            align-items: center;
-            gap: 25px;
-            margin-bottom: 30px;
-        }
-
-        .avatar-wrapper {
-            position: relative;
-        }
-
-        .avatar {
-            width: 100px;
-            height: 100px;
-            border-radius: 50%;
-            background: linear-gradient(135deg, #00f2fe, #4facfe);
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-size: 2.5rem;
-            color: #0a0a1a;
-            font-weight: bold;
-        }
-
-        .avatar-edit {
-            position: absolute;
-            bottom: 0;
-            right: 0;
-            width: 32px;
-            height: 32px;
-            background: #4facfe;
-            border-radius: 50%;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            cursor: pointer;
+        .page-subtitle {
+            color: var(--text-muted);
             font-size: 0.9rem;
-        }
-
-        .profile-info h2 {
-            margin: 0 0 5px;
-            font-size: 1.5rem;
-        }
-
-        .profile-info p {
             margin: 0;
-            color: #888;
         }
 
-        .profile-info .badge {
-            display: inline-block;
-            padding: 4px 12px;
-            background: rgba(74, 222, 128, 0.2);
-            color: #4ade80;
-            border-radius: 20px;
-            font-size: 0.8rem;
-            margin-top: 8px;
+        /* Profile email text */
+        .profile-info p {
+            color: var(--text-muted);
+            font-size: 0.85rem;
+            margin: 2px 0 0;
         }
 
-        /* Buttons */
-        .btn-save {
-            padding: 14px 35px;
-            background: linear-gradient(135deg, #00f2fe, #4facfe);
-            border: none;
-            border-radius: 10px;
-            color: #0a0a1a;
-            font-size: 1rem;
-            font-weight: 600;
-            cursor: pointer;
-            transition: all 0.3s;
-        }
-
-        .btn-save:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 10px 30px rgba(0, 242, 254, 0.3);
-        }
-
-        .btn-danger {
-            padding: 12px 25px;
-            background: transparent;
-            border: 1px solid #ef4444;
-            border-radius: 10px;
-            color: #ef4444;
-            font-size: 0.95rem;
-            cursor: pointer;
-            transition: all 0.3s;
-        }
-
-        .btn-danger:hover {
-            background: rgba(239, 68, 68, 0.1);
-        }
-
-        /* Toast */
-        .toast {
-            position: fixed;
-            bottom: 30px;
-            right: 30px;
-            padding: 15px 25px;
-            border-radius: 10px;
-            color: white;
-            font-weight: 500;
-            transform: translateY(100px);
-            opacity: 0;
-            transition: all 0.3s ease;
-            z-index: 1000;
-            background: linear-gradient(135deg, #10b981, #059669);
-        }
-
-        .toast.show {
-            transform: translateY(0);
-            opacity: 1;
-        }
-
-        /* Tab content */
+        /* Tab content visibility */
         .tab-content {
             display: none;
         }
@@ -290,16 +42,31 @@
             display: block;
         }
 
+        /* Save bar */
+        .save-bar {
+            display: flex;
+            justify-content: flex-end;
+            gap: 12px;
+            margin-top: 24px;
+            padding-top: 20px;
+            border-top: 1px solid var(--border);
+        }
+
+        /* Responsive */
         @media (max-width: 600px) {
-            .setting-row {
+            .settings-row {
                 flex-direction: column;
                 align-items: flex-start;
-                gap: 15px;
+                gap: 10px;
             }
 
             .profile-section {
                 flex-direction: column;
                 text-align: center;
+            }
+
+            .profile-xp-row {
+                flex-direction: column;
             }
         }
     </style>
@@ -307,66 +74,78 @@
 
 <body class="platform-page">
 
-    <!-- Navbar injected here -->
-
     <div class="settings-container">
 
-        <div class="settings-header">
-            <h1>⚙️ Settings</h1>
-            <p>Customize your HandSpace experience</p>
+        <div class="page-header">
+            <h1 class="page-title">Settings</h1>
+            <p class="page-subtitle">Customize your HandSpace experience</p>
         </div>
 
         <!-- Tabs -->
         <div class="settings-tabs">
-            <button class="tab-btn active" data-tab="profile">👤 Profile</button>
-            <button class="tab-btn" data-tab="preferences">🎨 Preferences</button>
-            <button class="tab-btn" data-tab="accessibility">♿ Accessibility</button>
-            <button class="tab-btn" data-tab="account">🔐 Account</button>
+            <button class="tab-btn active" data-tab="profile">Profile</button>
+            <button class="tab-btn" data-tab="preferences">Preferences</button>
+            <button class="tab-btn" data-tab="accessibility">Accessibility</button>
+            <button class="tab-btn" data-tab="account">Account</button>
         </div>
 
         <!-- Profile Tab -->
         <div class="tab-content active" id="tab-profile">
             <div class="settings-section">
                 <div class="profile-section">
-                    <div class="avatar-wrapper">
-                        <div class="avatar" id="avatar-initials">U</div>
-                        <div class="avatar-edit">✏️</div>
+                    <div class="avatar">
+                        <span id="avatar-initials">U</span>
+                        <div class="avatar-edit">&#9998;</div>
                     </div>
                     <div class="profile-info">
                         <h2 id="display-name">User Name</h2>
                         <p id="display-email">user@example.com</p>
-                        <span class="badge" id="role-badge">Student</span>
+                        <span class="role-badge" id="role-badge">Student</span>
                     </div>
                 </div>
 
-                <div class="setting-row">
-                    <div class="setting-info">
-                        <h4>Display Name</h4>
-                        <p>How others see you</p>
+                <!-- XP Stats -->
+                <div class="profile-xp-row">
+                    <div class="profile-xp-card">
+                        <div class="xp-num" id="profile-xp">2,450</div>
+                        <div class="xp-label">Total XP</div>
                     </div>
-                    <div class="setting-control">
-                        <input type="text" id="input-name" placeholder="Your name">
+                    <div class="profile-xp-card">
+                        <div class="xp-num" id="profile-level">5</div>
+                        <div class="xp-label">Level</div>
                     </div>
-                </div>
-
-                <div class="setting-row">
-                    <div class="setting-info">
-                        <h4>Email Address</h4>
-                        <p>Your account email</p>
-                    </div>
-                    <div class="setting-control">
-                        <input type="email" id="input-email" placeholder="email@example.com" disabled>
+                    <div class="profile-xp-card">
+                        <div class="xp-num" id="profile-streak">3</div>
+                        <div class="xp-label">Day Streak</div>
                     </div>
                 </div>
+            </div>
 
-                <div class="setting-row">
-                    <div class="setting-info">
-                        <h4>Bio</h4>
-                        <p>Tell us about yourself</p>
+            <div class="settings-section">
+                <h3>Profile Details</h3>
+
+                <div class="settings-row">
+                    <div class="settings-label">
+                        <span>Display Name</span>
+                        <small>How others see you</small>
                     </div>
-                    <div class="setting-control">
-                        <input type="text" id="input-bio" placeholder="Science enthusiast...">
+                    <input type="text" class="form-input" id="input-name" placeholder="Your name">
+                </div>
+
+                <div class="settings-row">
+                    <div class="settings-label">
+                        <span>Email Address</span>
+                        <small>Your account email</small>
                     </div>
+                    <input type="email" class="form-input" id="input-email" placeholder="email@example.com" disabled>
+                </div>
+
+                <div class="settings-row">
+                    <div class="settings-label">
+                        <span>Bio</span>
+                        <small>Tell us about yourself</small>
+                    </div>
+                    <input type="text" class="form-input" id="input-bio" placeholder="Science enthusiast...">
                 </div>
             </div>
         </div>
@@ -374,127 +153,103 @@
         <!-- Preferences Tab -->
         <div class="tab-content" id="tab-preferences">
             <div class="settings-section">
-                <h3 class="section-title">🎨 Appearance</h3>
-
-                <div class="setting-row">
-                    <div class="setting-info">
-                        <h4>Dark Mode</h4>
-                        <p>Switch between light and dark themes</p>
+                <h3>Appearance</h3>
+                <div class="settings-row">
+                    <div class="settings-label">
+                        <span>Dark Mode</span>
+                        <small>Switch between light and dark themes</small>
                     </div>
-                    <div class="setting-control">
-                        <label class="toggle-switch">
-                            <input type="checkbox" id="pref-dark-mode" checked>
-                            <span class="toggle-slider"></span>
-                        </label>
-                    </div>
+                    <label class="toggle-switch">
+                        <input type="checkbox" id="pref-dark-mode" checked>
+                        <span class="toggle-slider"></span>
+                    </label>
                 </div>
             </div>
 
             <div class="settings-section">
-                <h3 class="section-title">🌐 Language & Region</h3>
-
-                <div class="setting-row">
-                    <div class="setting-info">
-                        <h4>Language</h4>
-                        <p>Interface and AI explanations</p>
+                <h3>Language &amp; Region</h3>
+                <div class="settings-row">
+                    <div class="settings-label">
+                        <span>Language</span>
+                        <small>Interface and AI explanations</small>
                     </div>
-                    <div class="setting-control">
-                        <select id="pref-language">
-                            <option value="English">English</option>
-                            <option value="Hindi">हिंदी (Hindi)</option>
-                            <option value="Telugu">తెలుగు (Telugu)</option>
-                            <option value="Tamil">தமிழ் (Tamil)</option>
-                            <option value="Bengali">বাংলা (Bengali)</option>
-                            <option value="Marathi">मराठी (Marathi)</option>
-                        </select>
-                    </div>
+                    <select class="form-select" id="pref-language">
+                        <option value="English">English</option>
+                        <option value="Hindi">Hindi</option>
+                        <option value="Telugu">Telugu</option>
+                        <option value="Tamil">Tamil</option>
+                        <option value="Bengali">Bengali</option>
+                        <option value="Marathi">Marathi</option>
+                    </select>
                 </div>
             </div>
 
             <div class="settings-section">
-                <h3 class="section-title">🎮 3D Viewer</h3>
-
-                <div class="setting-row">
-                    <div class="setting-info">
-                        <h4>Default Hand Mode</h4>
-                        <p>One-handed or two-handed gestures</p>
+                <h3>3D Viewer</h3>
+                <div class="settings-row">
+                    <div class="settings-label">
+                        <span>Default Hand Mode</span>
+                        <small>One-handed or two-handed gestures</small>
                     </div>
-                    <div class="setting-control">
-                        <select id="pref-hand-mode">
-                            <option value="one">One-Handed</option>
-                            <option value="two">Two-Handed</option>
-                        </select>
-                    </div>
+                    <select class="form-select" id="pref-hand-mode">
+                        <option value="one">One-Handed</option>
+                        <option value="two">Two-Handed</option>
+                    </select>
                 </div>
-
-                <div class="setting-row">
-                    <div class="setting-info">
-                        <h4>Model Quality</h4>
-                        <p>Balance between quality and performance</p>
+                <div class="settings-row">
+                    <div class="settings-label">
+                        <span>Model Quality</span>
+                        <small>Balance between quality and performance</small>
                     </div>
-                    <div class="setting-control">
-                        <select id="pref-quality">
-                            <option value="low">Low (Fast)</option>
-                            <option value="medium" selected>Medium</option>
-                            <option value="high">High (Best)</option>
-                        </select>
-                    </div>
+                    <select class="form-select" id="pref-quality">
+                        <option value="low">Low (Fast)</option>
+                        <option value="medium" selected>Medium</option>
+                        <option value="high">High (Best)</option>
+                    </select>
                 </div>
-
-                <div class="setting-row">
-                    <div class="setting-info">
-                        <h4>Show Gesture Guide</h4>
-                        <p>Display gesture hints in viewer</p>
+                <div class="settings-row">
+                    <div class="settings-label">
+                        <span>Show Gesture Guide</span>
+                        <small>Display gesture hints in viewer</small>
                     </div>
-                    <div class="setting-control">
-                        <label class="toggle-switch">
-                            <input type="checkbox" id="pref-gesture-guide" checked>
-                            <span class="toggle-slider"></span>
-                        </label>
-                    </div>
+                    <label class="toggle-switch">
+                        <input type="checkbox" id="pref-gesture-guide" checked>
+                        <span class="toggle-slider"></span>
+                    </label>
                 </div>
-
-                <div class="setting-row">
-                    <div class="setting-info">
-                        <h4>Auto-Rotate Models</h4>
-                        <p>Models spin slowly when idle</p>
+                <div class="settings-row">
+                    <div class="settings-label">
+                        <span>Auto-Rotate Models</span>
+                        <small>Models spin slowly when idle</small>
                     </div>
-                    <div class="setting-control">
-                        <label class="toggle-switch">
-                            <input type="checkbox" id="pref-auto-rotate">
-                            <span class="toggle-slider"></span>
-                        </label>
-                    </div>
+                    <label class="toggle-switch">
+                        <input type="checkbox" id="pref-auto-rotate">
+                        <span class="toggle-slider"></span>
+                    </label>
                 </div>
             </div>
 
             <div class="settings-section">
-                <h3 class="section-title">🔔 Notifications</h3>
-
-                <div class="setting-row">
-                    <div class="setting-info">
-                        <h4>Email Notifications</h4>
-                        <p>Receive updates about new content</p>
+                <h3>Notifications</h3>
+                <div class="settings-row">
+                    <div class="settings-label">
+                        <span>Email Notifications</span>
+                        <small>Receive updates about new content</small>
                     </div>
-                    <div class="setting-control">
-                        <label class="toggle-switch">
-                            <input type="checkbox" id="pref-email-notif" checked>
-                            <span class="toggle-slider"></span>
-                        </label>
-                    </div>
+                    <label class="toggle-switch">
+                        <input type="checkbox" id="pref-email-notif" checked>
+                        <span class="toggle-slider"></span>
+                    </label>
                 </div>
-
-                <div class="setting-row">
-                    <div class="setting-info">
-                        <h4>Quiz Reminders</h4>
-                        <p>Remind me to complete quizzes</p>
+                <div class="settings-row">
+                    <div class="settings-label">
+                        <span>Quiz Reminders</span>
+                        <small>Remind me to complete quizzes</small>
                     </div>
-                    <div class="setting-control">
-                        <label class="toggle-switch">
-                            <input type="checkbox" id="pref-quiz-remind" checked>
-                            <span class="toggle-slider"></span>
-                        </label>
-                    </div>
+                    <label class="toggle-switch">
+                        <input type="checkbox" id="pref-quiz-remind" checked>
+                        <span class="toggle-slider"></span>
+                    </label>
                 </div>
             </div>
         </div>
@@ -502,72 +257,57 @@
         <!-- Accessibility Tab -->
         <div class="tab-content" id="tab-accessibility">
             <div class="settings-section">
-                <h3 class="section-title">♿ Accessibility Options</h3>
-
-                <div class="setting-row">
-                    <div class="setting-info">
-                        <h4>Text-to-Speech</h4>
-                        <p>Read AI explanations aloud</p>
+                <h3>Accessibility Options</h3>
+                <div class="settings-row">
+                    <div class="settings-label">
+                        <span>Text-to-Speech</span>
+                        <small>Read AI explanations aloud</small>
                     </div>
-                    <div class="setting-control">
-                        <label class="toggle-switch">
-                            <input type="checkbox" id="pref-tts" checked>
-                            <span class="toggle-slider"></span>
-                        </label>
-                    </div>
+                    <label class="toggle-switch">
+                        <input type="checkbox" id="pref-tts" checked>
+                        <span class="toggle-slider"></span>
+                    </label>
                 </div>
-
-                <div class="setting-row">
-                    <div class="setting-info">
-                        <h4>High Contrast Mode</h4>
-                        <p>Improve visibility of UI elements</p>
+                <div class="settings-row">
+                    <div class="settings-label">
+                        <span>High Contrast Mode</span>
+                        <small>Improve visibility of UI elements</small>
                     </div>
-                    <div class="setting-control">
-                        <label class="toggle-switch">
-                            <input type="checkbox" id="pref-high-contrast">
-                            <span class="toggle-slider"></span>
-                        </label>
-                    </div>
+                    <label class="toggle-switch">
+                        <input type="checkbox" id="pref-high-contrast">
+                        <span class="toggle-slider"></span>
+                    </label>
                 </div>
-
-                <div class="setting-row">
-                    <div class="setting-info">
-                        <h4>Larger Text</h4>
-                        <p>Increase text size throughout app</p>
+                <div class="settings-row">
+                    <div class="settings-label">
+                        <span>Larger Text</span>
+                        <small>Increase text size throughout app</small>
                     </div>
-                    <div class="setting-control">
-                        <label class="toggle-switch">
-                            <input type="checkbox" id="pref-large-text">
-                            <span class="toggle-slider"></span>
-                        </label>
-                    </div>
+                    <label class="toggle-switch">
+                        <input type="checkbox" id="pref-large-text">
+                        <span class="toggle-slider"></span>
+                    </label>
                 </div>
-
-                <div class="setting-row">
-                    <div class="setting-info">
-                        <h4>Reduce Motion</h4>
-                        <p>Minimize animations and transitions</p>
+                <div class="settings-row">
+                    <div class="settings-label">
+                        <span>Reduce Motion</span>
+                        <small>Minimize animations and transitions</small>
                     </div>
-                    <div class="setting-control">
-                        <label class="toggle-switch">
-                            <input type="checkbox" id="pref-reduce-motion">
-                            <span class="toggle-slider"></span>
-                        </label>
-                    </div>
+                    <label class="toggle-switch">
+                        <input type="checkbox" id="pref-reduce-motion">
+                        <span class="toggle-slider"></span>
+                    </label>
                 </div>
-
-                <div class="setting-row">
-                    <div class="setting-info">
-                        <h4>Gesture Sensitivity</h4>
-                        <p>How responsive hand tracking should be</p>
+                <div class="settings-row">
+                    <div class="settings-label">
+                        <span>Gesture Sensitivity</span>
+                        <small>How responsive hand tracking should be</small>
                     </div>
-                    <div class="setting-control">
-                        <select id="pref-sensitivity">
-                            <option value="low">Low</option>
-                            <option value="medium" selected>Medium</option>
-                            <option value="high">High</option>
-                        </select>
-                    </div>
+                    <select class="form-select" id="pref-sensitivity">
+                        <option value="low">Low</option>
+                        <option value="medium" selected>Medium</option>
+                        <option value="high">High</option>
+                    </select>
                 </div>
             </div>
         </div>
@@ -575,99 +315,82 @@
         <!-- Account Tab -->
         <div class="tab-content" id="tab-account">
             <div class="settings-section">
-                <h3 class="section-title">🔐 Security</h3>
-
-                <div class="setting-row">
-                    <div class="setting-info">
-                        <h4>Change Password</h4>
-                        <p>Update your account password</p>
+                <h3>Security</h3>
+                <div class="settings-row">
+                    <div class="settings-label">
+                        <span>Change Password</span>
+                        <small>Update your account password</small>
                     </div>
-                    <div class="setting-control">
-                        <button class="btn-danger" style="border-color: #4facfe; color: #4facfe;"
-                            onclick="alert('Password change feature coming soon!')">
-                            Change Password
-                        </button>
-                    </div>
+                    <button class="btn-secondary"
+                        onclick="alert('Password change feature coming soon!')">
+                        Change Password
+                    </button>
                 </div>
-
-                <div class="setting-row">
-                    <div class="setting-info">
-                        <h4>Two-Factor Authentication</h4>
-                        <p>Add extra security to your account</p>
+                <div class="settings-row">
+                    <div class="settings-label">
+                        <span>Two-Factor Authentication</span>
+                        <small>Add extra security to your account</small>
                     </div>
-                    <div class="setting-control">
-                        <label class="toggle-switch">
-                            <input type="checkbox" id="pref-2fa">
-                            <span class="toggle-slider"></span>
-                        </label>
-                    </div>
+                    <label class="toggle-switch">
+                        <input type="checkbox" id="pref-2fa">
+                        <span class="toggle-slider"></span>
+                    </label>
                 </div>
             </div>
 
             <div class="settings-section">
-                <h3 class="section-title">📊 Data & Privacy</h3>
-
-                <div class="setting-row">
-                    <div class="setting-info">
-                        <h4>Download My Data</h4>
-                        <p>Get a copy of your learning history</p>
+                <h3>Data &amp; Privacy</h3>
+                <div class="settings-row">
+                    <div class="settings-label">
+                        <span>Download My Data</span>
+                        <small>Get a copy of your learning history</small>
                     </div>
-                    <div class="setting-control">
-                        <button class="btn-danger" style="border-color: #4facfe; color: #4facfe;"
-                            onclick="alert('Data export feature coming soon!')">
-                            Download
-                        </button>
-                    </div>
+                    <button class="btn-secondary"
+                        onclick="alert('Data export feature coming soon!')">
+                        Download
+                    </button>
                 </div>
-
-                <div class="setting-row">
-                    <div class="setting-info">
-                        <h4>Delete Account</h4>
-                        <p>Permanently delete your account and data</p>
+                <div class="settings-row">
+                    <div class="settings-label">
+                        <span>Delete Account</span>
+                        <small>Permanently delete your account and data</small>
                     </div>
-                    <div class="setting-control">
-                        <button class="btn-danger" onclick="confirmDelete()">
-                            Delete Account
-                        </button>
-                    </div>
+                    <button class="btn-danger" onclick="confirmDelete()">
+                        Delete Account
+                    </button>
                 </div>
             </div>
 
             <div class="settings-section">
-                <h3 class="section-title">🚪 Session</h3>
-
-                <div class="setting-row">
-                    <div class="setting-info">
-                        <h4>Logout</h4>
-                        <p>Sign out from this device</p>
+                <h3>Session</h3>
+                <div class="settings-row">
+                    <div class="settings-label">
+                        <span>Logout</span>
+                        <small>Sign out from this device</small>
                     </div>
-                    <div class="setting-control">
-                        <button class="btn-danger" id="btn-logout">
-                            Logout
-                        </button>
-                    </div>
+                    <button class="btn-ghost" id="btn-logout">
+                        Logout
+                    </button>
                 </div>
             </div>
         </div>
 
         <!-- Save Button -->
-        <div style="margin-top: 20px; text-align: right;">
-            <button class="btn-save" id="btn-save">💾 Save All Changes</button>
+        <div class="save-bar">
+            <button class="btn-primary" id="btn-save">Save All Changes</button>
         </div>
     </div>
 
     <!-- Toast -->
-    <div class="toast" id="toast">✅ Settings saved successfully!</div>
+    <div class="toast" id="toast">Settings saved successfully!</div>
 
     <script type="module">
         import { initNavbar } from './src/ui/navbar.js';
         import { Auth } from './src/auth/auth.js';
 
-        // Initialize
         initNavbar('profile');
         Auth.requireAuth();
 
-        // Load user data
         const user = Auth.getUser();
         if (user) {
             document.getElementById('display-name').textContent = user.name || 'User';
@@ -676,15 +399,17 @@
             document.getElementById('input-email').value = user.email || '';
             document.getElementById('avatar-initials').textContent = (user.name || 'U')[0].toUpperCase();
 
-            // Display role badge based on account type
             const roleBadge = document.getElementById('role-badge');
             if (user.role === 'teacher') {
-                roleBadge.textContent = '👨‍🏫 Teacher';
+                roleBadge.textContent = 'Teacher';
+                roleBadge.style.background = 'var(--accent-subtle)';
+                roleBadge.style.color = 'var(--accent)';
             } else if (user.role === 'university') {
-                roleBadge.textContent = '🏫 University';
-                roleBadge.style.background = 'linear-gradient(135deg, #a855f7, #7c3aed)';
+                roleBadge.textContent = 'University';
+                roleBadge.style.background = 'var(--secondary-subtle)';
+                roleBadge.style.color = 'var(--secondary)';
             } else {
-                roleBadge.textContent = '🎓 Student';
+                roleBadge.textContent = 'Student';
             }
         }
 
@@ -696,7 +421,6 @@
             btn.addEventListener('click', () => {
                 tabBtns.forEach(b => b.classList.remove('active'));
                 tabContents.forEach(c => c.classList.remove('active'));
-
                 btn.classList.add('active');
                 document.getElementById(`tab-${btn.dataset.tab}`).classList.add('active');
             });
@@ -705,7 +429,6 @@
         // Load saved preferences
         const prefs = JSON.parse(localStorage.getItem('handspace_prefs') || '{}');
 
-        // Apply saved values
         if (prefs.language) document.getElementById('pref-language').value = prefs.language;
         if (prefs.handMode) document.getElementById('pref-hand-mode').value = prefs.handMode;
         if (prefs.quality) document.getElementById('pref-quality').value = prefs.quality;
@@ -715,11 +438,9 @@
         if (prefs.highContrast !== undefined) document.getElementById('pref-high-contrast').checked = prefs.highContrast;
         if (prefs.largeText !== undefined) document.getElementById('pref-large-text').checked = prefs.largeText;
         if (prefs.reduceMotion !== undefined) document.getElementById('pref-reduce-motion').checked = prefs.reduceMotion;
-
-        // Dark mode toggle: checked = dark mode (default), unchecked = light mode
         document.getElementById('pref-dark-mode').checked = prefs.theme !== 'light';
 
-        // Save preferences
+        // Save
         document.getElementById('btn-save').addEventListener('click', () => {
             const newPrefs = {
                 theme: document.getElementById('pref-dark-mode').checked ? 'dark' : 'light',
@@ -740,10 +461,8 @@
             localStorage.setItem('handspace_prefs', JSON.stringify(newPrefs));
             localStorage.setItem('handspace_lang', newPrefs.language);
 
-            // Apply theme immediately
             window.dispatchEvent(new Event('prefs_updated'));
 
-            // Show toast
             const toast = document.getElementById('toast');
             toast.classList.add('show');
             setTimeout(() => toast.classList.remove('show'), 3000);
@@ -754,10 +473,10 @@
             Auth.logout();
         });
 
-        // Delete account confirmation
+        // Delete
         window.confirmDelete = () => {
             if (confirm('Are you sure you want to delete your account? This cannot be undone.')) {
-                if (confirm('This will permanently delete all your data. Type "DELETE" to confirm.')) {
+                if (confirm('This will permanently delete all your data. Are you absolutely sure?')) {
                     alert('Account deletion feature will be implemented with backend support.');
                 }
             }

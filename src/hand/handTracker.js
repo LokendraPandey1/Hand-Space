@@ -1,53 +1,57 @@
-let handDetectorRef = null;
+export function initHandTracker(videoElem, resultHandler, {
+    maxFps = 30,
+    width = 640,
+    height = 480,
+    maxNumHands = 1,
+    modelComplexity = 0,
+    minDetectionConfidence = 0.55,
+    minTrackingConfidence = 0.55
+} = {}) {
+    if (typeof Hands === 'undefined' || typeof Camera === 'undefined') {
+        throw new Error('MediaPipe Hands scripts not loaded (Hands/Camera missing).');
+    }
 
-export function initHandTracker(videoElem, resultHandler) {
     const handDetector = new Hands({
         locateFile: (f) => `https://cdn.jsdelivr.net/npm/@mediapipe/hands/${f}`
     });
 
     handDetector.setOptions({
-        maxNumHands: 1, // Default to one-handed mode
-        modelComplexity: 1,
-        minDetectionConfidence: 0.5,
-        minTrackingConfidence: 0.5
+        maxNumHands,
+        modelComplexity,
+        minDetectionConfidence,
+        minTrackingConfidence
     });
 
     handDetector.onResults(resultHandler);
-    handDetectorRef = handDetector;
+
+    let lastSendMs = 0;
+    const minIntervalMs = maxFps > 0 ? (1000 / maxFps) : 0;
 
     const cam = new Camera(videoElem, {
-        onFrame: async () => await handDetector.send({ image: videoElem }),
-        width: 640,
-        height: 480
+        onFrame: async () => {
+            if (minIntervalMs > 0) {
+                const now = performance.now();
+                if ((now - lastSendMs) < minIntervalMs) return;
+                lastSendMs = now;
+            }
+            await handDetector.send({ image: videoElem });
+        },
+        width,
+        height
     });
 
     cam.start()
-        .then(() => {
-            console.log("Camera started successfully");
-        })
+        .then(() => console.log('Camera started successfully'))
         .catch((err) => {
-            console.error("Camera Access Error:", err);
-
-            // Helpful user alert
-            let msg = "Camera access failed.";
+            console.error('Camera Access Error:', err);
+            let msg = 'Camera access failed.';
             if (err.name === 'NotAllowedError' || err.name === 'PermissionDeniedError') {
-                msg = "🚫 Camera Access Denied.\n\nPlease click the 'Lock' icon 🔒 in your address bar, Allow Camera access, and Reload the page.";
+                msg = 'Camera Access Denied. Please allow camera access and reload.';
             } else if (err.name === 'NotFoundError' || err.name === 'DevicesNotFoundError') {
-                msg = "📷 No Camera Found.\n\nPlease connect a webcam to use this app.";
+                msg = 'No Camera Found. Please connect a webcam.';
             } else {
-                msg = `⚠️ Camera Error: ${err.message}`;
+                msg = `Camera Error: ${err.message}`;
             }
             alert(msg);
         });
-}
-
-/**
- * Dynamically set the number of hands to detect
- * @param {number} numHands - 1 or 2
- */
-export function setMaxHands(numHands) {
-    if (handDetectorRef) {
-        handDetectorRef.setOptions({ maxNumHands: numHands });
-        console.log(`Hand detection set to: ${numHands} hand(s)`);
-    }
 }
